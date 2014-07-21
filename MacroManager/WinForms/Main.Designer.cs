@@ -30,10 +30,11 @@
         {
             this.applicationTabs = new System.Windows.Forms.TabControl();
             this.playbackTab = new System.Windows.Forms.TabPage();
+            this.playbackButton = new System.Windows.Forms.Button();
             this.recordTab = new System.Windows.Forms.TabPage();
             this.stopButton = new System.Windows.Forms.Button();
             this.recordButton = new System.Windows.Forms.Button();
-            this.playbackButton = new System.Windows.Forms.Button();
+            this.macroList = new System.Windows.Forms.ListView();
             this.applicationTabs.SuspendLayout();
             this.playbackTab.SuspendLayout();
             this.recordTab.SuspendLayout();
@@ -52,6 +53,7 @@
             // 
             // playbackTab
             // 
+            this.playbackTab.Controls.Add(this.macroList);
             this.playbackTab.Controls.Add(this.playbackButton);
             this.playbackTab.Location = new System.Drawing.Point(4, 22);
             this.playbackTab.Name = "playbackTab";
@@ -60,6 +62,18 @@
             this.playbackTab.TabIndex = 0;
             this.playbackTab.Text = "Playback Macro";
             this.playbackTab.UseVisualStyleBackColor = true;
+            // 
+            // playbackButton
+            // 
+            this.playbackButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.playbackButton.Location = new System.Drawing.Point(258, 411);
+            this.playbackButton.Name = "playbackButton";
+            this.playbackButton.Size = new System.Drawing.Size(75, 23);
+            this.playbackButton.TabIndex = 0;
+            this.playbackButton.Text = "Playback First Macro";
+            this.playbackButton.UseVisualStyleBackColor = true;
+            this.playbackButton.Click += new System.EventHandler(this.playbackButton_Click);
             // 
             // recordTab
             // 
@@ -94,15 +108,18 @@
             this.recordButton.UseVisualStyleBackColor = true;
             this.recordButton.Click += new System.EventHandler(this.recordButton_Click);
             // 
-            // playbackButton
+            // macroList
             // 
-            this.playbackButton.Location = new System.Drawing.Point(241, 386);
-            this.playbackButton.Name = "playbackButton";
-            this.playbackButton.Size = new System.Drawing.Size(75, 23);
-            this.playbackButton.TabIndex = 0;
-            this.playbackButton.Text = "Playback First Macro";
-            this.playbackButton.UseVisualStyleBackColor = true;
-            this.playbackButton.Click += new System.EventHandler(this.playbackButton_Click);
+            this.macroList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.macroList.CheckBoxes = true;
+            this.macroList.Location = new System.Drawing.Point(6, 6);
+            this.macroList.MultiSelect = false;
+            this.macroList.Name = "macroList";
+            this.macroList.Size = new System.Drawing.Size(609, 399);
+            this.macroList.TabIndex = 1;
+            this.macroList.UseCompatibleStateImageBehavior = false;
+            this.macroList.View = System.Windows.Forms.View.List;
             // 
             // Main
             // 
@@ -127,6 +144,7 @@
         private System.Windows.Forms.Button recordButton;
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.Button playbackButton;
+        private System.Windows.Forms.ListView macroList;
     }
 }
 

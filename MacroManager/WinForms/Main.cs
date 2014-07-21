@@ -21,10 +21,14 @@ namespace MacroManager
             InitializeComponent();
         }
 
-        public Main(IMacroService macroService)
-            : this()
+        public Main(IMacroService macroService) : this()
         {
             this.macroService = macroService;
+            var macros = this.macroService.GetAllMacros();
+            foreach (var macro in macros)
+            {
+                this.macroList.Items.Add(new ListViewItem(macro.macroId.ToString()));
+            }
         }
 
         private void recordButton_Click(object sender, EventArgs e)
