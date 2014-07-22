@@ -25,15 +25,24 @@ namespace MacroManager
         {
             this.macroService = macroService;
             this.macroService.RecordingStopped += (sender, e) => this.LoadMacros();
+
+            this.macroList.Columns.AddRange(new [] { new ColumnHeader(), new ColumnHeader()});
+
             this.LoadMacros();
         }
 
         private void LoadMacros()
         {
             var macros = this.macroService.GetAllMacros();
+            this.macroList.Items.Clear();
+
             foreach (var macro in macros)
             {
-                this.macroList.Items.Add(new ListViewItem(macro.MacroId.ToString()));
+                this.macroList.Items.Add(
+                    new ListViewItem(
+                        new [] {macro.Name, macro.Description}
+                    )
+                );
             }
         }
 
@@ -106,6 +115,7 @@ namespace MacroManager
         {
             this.recordButton.Enabled = this.nameTextBox.Text != "";
         }
+
 
     }
 }

@@ -28,42 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.maniMenuStrip = new System.Windows.Forms.MenuStrip();
+            this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.applicationTabs = new System.Windows.Forms.TabControl();
             this.playbackTab = new System.Windows.Forms.TabPage();
             this.macroList = new System.Windows.Forms.ListView();
             this.playbackButton = new System.Windows.Forms.Button();
             this.recordTab = new System.Windows.Forms.TabPage();
             this.editMacroGroup = new System.Windows.Forms.GroupBox();
+            this.descriptionTextBox = new System.Windows.Forms.TextBox();
+            this.editDescriptionLabel = new System.Windows.Forms.Label();
             this.nameTextBox = new System.Windows.Forms.TextBox();
             this.editNameLabel = new System.Windows.Forms.Label();
             this.stopButton = new System.Windows.Forms.Button();
             this.recordButton = new System.Windows.Forms.Button();
-            this.editDescriptionLabel = new System.Windows.Forms.Label();
-            this.descriptionTextBox = new System.Windows.Forms.TextBox();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.maniMenuStrip.SuspendLayout();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.mainMenuStrip.SuspendLayout();
             this.applicationTabs.SuspendLayout();
             this.playbackTab.SuspendLayout();
             this.recordTab.SuspendLayout();
             this.editMacroGroup.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // maniMenuStrip
+            // mainMenuStrip
             // 
-            this.maniMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem});
-            this.maniMenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.maniMenuStrip.Name = "maniMenuStrip";
-            this.maniMenuStrip.Size = new System.Drawing.Size(700, 24);
-            this.maniMenuStrip.TabIndex = 0;
-            this.maniMenuStrip.Text = "menuStrip1";
+            this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.mainMenuStrip.Name = "mainMenuStrip";
+            this.mainMenuStrip.Size = new System.Drawing.Size(700, 24);
+            this.mainMenuStrip.TabIndex = 0;
+            this.mainMenuStrip.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
@@ -75,23 +78,50 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.openToolStripMenuItem.Text = "Open...";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(137, 6);
+            // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            // 
             // applicationTabs
             // 
+            this.applicationTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.applicationTabs.Controls.Add(this.playbackTab);
             this.applicationTabs.Controls.Add(this.recordTab);
-            this.applicationTabs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.applicationTabs.Location = new System.Drawing.Point(0, 24);
+            this.applicationTabs.Location = new System.Drawing.Point(3, 24);
             this.applicationTabs.Name = "applicationTabs";
             this.applicationTabs.SelectedIndex = 0;
-            this.applicationTabs.Size = new System.Drawing.Size(700, 338);
+            this.applicationTabs.Size = new System.Drawing.Size(695, 315);
             this.applicationTabs.TabIndex = 2;
             // 
             // playbackTab
@@ -101,7 +131,7 @@
             this.playbackTab.Location = new System.Drawing.Point(4, 22);
             this.playbackTab.Name = "playbackTab";
             this.playbackTab.Padding = new System.Windows.Forms.Padding(3);
-            this.playbackTab.Size = new System.Drawing.Size(692, 312);
+            this.playbackTab.Size = new System.Drawing.Size(687, 289);
             this.playbackTab.TabIndex = 0;
             this.playbackTab.Text = "Playback Macro";
             this.playbackTab.UseVisualStyleBackColor = true;
@@ -111,11 +141,12 @@
             this.macroList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.macroList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.macroList.GridLines = true;
             this.macroList.Location = new System.Drawing.Point(6, 6);
             this.macroList.MultiSelect = false;
             this.macroList.Name = "macroList";
-            this.macroList.Size = new System.Drawing.Size(680, 274);
+            this.macroList.Size = new System.Drawing.Size(678, 251);
             this.macroList.TabIndex = 1;
             this.macroList.TileSize = new System.Drawing.Size(168, 50);
             this.macroList.UseCompatibleStateImageBehavior = false;
@@ -124,7 +155,7 @@
             // playbackButton
             // 
             this.playbackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.playbackButton.Location = new System.Drawing.Point(611, 286);
+            this.playbackButton.Location = new System.Drawing.Point(609, 263);
             this.playbackButton.Name = "playbackButton";
             this.playbackButton.Size = new System.Drawing.Size(75, 23);
             this.playbackButton.TabIndex = 0;
@@ -140,7 +171,7 @@
             this.recordTab.Location = new System.Drawing.Point(4, 22);
             this.recordTab.Name = "recordTab";
             this.recordTab.Padding = new System.Windows.Forms.Padding(3);
-            this.recordTab.Size = new System.Drawing.Size(692, 312);
+            this.recordTab.Size = new System.Drawing.Size(687, 289);
             this.recordTab.TabIndex = 1;
             this.recordTab.Text = "Record Macro";
             this.recordTab.UseVisualStyleBackColor = true;
@@ -156,10 +187,29 @@
             this.editMacroGroup.Controls.Add(this.editNameLabel);
             this.editMacroGroup.Location = new System.Drawing.Point(6, 6);
             this.editMacroGroup.Name = "editMacroGroup";
-            this.editMacroGroup.Size = new System.Drawing.Size(683, 274);
+            this.editMacroGroup.Size = new System.Drawing.Size(678, 250);
             this.editMacroGroup.TabIndex = 2;
             this.editMacroGroup.TabStop = false;
             this.editMacroGroup.Text = "Edit Macro";
+            // 
+            // descriptionTextBox
+            // 
+            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.descriptionTextBox.Location = new System.Drawing.Point(82, 44);
+            this.descriptionTextBox.Multiline = true;
+            this.descriptionTextBox.Name = "descriptionTextBox";
+            this.descriptionTextBox.Size = new System.Drawing.Size(588, 154);
+            this.descriptionTextBox.TabIndex = 3;
+            // 
+            // editDescriptionLabel
+            // 
+            this.editDescriptionLabel.AutoSize = true;
+            this.editDescriptionLabel.Location = new System.Drawing.Point(6, 47);
+            this.editDescriptionLabel.Name = "editDescriptionLabel";
+            this.editDescriptionLabel.Size = new System.Drawing.Size(60, 13);
+            this.editDescriptionLabel.TabIndex = 2;
+            this.editDescriptionLabel.Text = "Description";
             // 
             // nameTextBox
             // 
@@ -167,7 +217,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nameTextBox.Location = new System.Drawing.Point(82, 17);
             this.nameTextBox.Name = "nameTextBox";
-            this.nameTextBox.Size = new System.Drawing.Size(595, 20);
+            this.nameTextBox.Size = new System.Drawing.Size(588, 20);
             this.nameTextBox.TabIndex = 1;
             this.nameTextBox.TextChanged += new System.EventHandler(this.nameTextBox_TextChanged);
             // 
@@ -184,7 +234,7 @@
             // 
             this.stopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.stopButton.Enabled = false;
-            this.stopButton.Location = new System.Drawing.Point(564, 286);
+            this.stopButton.Location = new System.Drawing.Point(559, 262);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(125, 23);
             this.stopButton.TabIndex = 1;
@@ -196,7 +246,7 @@
             // 
             this.recordButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.recordButton.Enabled = false;
-            this.recordButton.Location = new System.Drawing.Point(448, 286);
+            this.recordButton.Location = new System.Drawing.Point(443, 262);
             this.recordButton.Name = "recordButton";
             this.recordButton.Size = new System.Drawing.Size(110, 23);
             this.recordButton.TabIndex = 0;
@@ -204,67 +254,42 @@
             this.recordButton.UseVisualStyleBackColor = true;
             this.recordButton.Click += new System.EventHandler(this.recordButton_Click);
             // 
-            // editDescriptionLabel
+            // statusStrip
             // 
-            this.editDescriptionLabel.AutoSize = true;
-            this.editDescriptionLabel.Location = new System.Drawing.Point(6, 47);
-            this.editDescriptionLabel.Name = "editDescriptionLabel";
-            this.editDescriptionLabel.Size = new System.Drawing.Size(60, 13);
-            this.editDescriptionLabel.TabIndex = 2;
-            this.editDescriptionLabel.Text = "Description";
+            this.statusStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatus});
+            this.statusStrip.Location = new System.Drawing.Point(0, 340);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(700, 22);
+            this.statusStrip.TabIndex = 3;
+            this.statusStrip.Text = "statusStrip1";
             // 
-            // descriptionTextBox
+            // toolStripStatus
             // 
-            this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.descriptionTextBox.Location = new System.Drawing.Point(82, 44);
-            this.descriptionTextBox.Multiline = true;
-            this.descriptionTextBox.Name = "descriptionTextBox";
-            this.descriptionTextBox.Size = new System.Drawing.Size(595, 154);
-            this.descriptionTextBox.TabIndex = 3;
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.openToolStripMenuItem.Text = "Open...";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripStatus.Name = "toolStripStatus";
+            this.toolStripStatus.Size = new System.Drawing.Size(0, 17);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 362);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.applicationTabs);
-            this.Controls.Add(this.maniMenuStrip);
-            this.MainMenuStrip = this.maniMenuStrip;
+            this.Controls.Add(this.mainMenuStrip);
+            this.MainMenuStrip = this.mainMenuStrip;
             this.Name = "Main";
             this.Text = "Macro Manager";
-            this.maniMenuStrip.ResumeLayout(false);
-            this.maniMenuStrip.PerformLayout();
+            this.mainMenuStrip.ResumeLayout(false);
+            this.mainMenuStrip.PerformLayout();
             this.applicationTabs.ResumeLayout(false);
             this.playbackTab.ResumeLayout(false);
             this.recordTab.ResumeLayout(false);
             this.editMacroGroup.ResumeLayout(false);
             this.editMacroGroup.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -272,7 +297,7 @@
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip maniMenuStrip;
+        private System.Windows.Forms.MenuStrip mainMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.TabControl applicationTabs;
@@ -291,6 +316,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
 
 
     }
