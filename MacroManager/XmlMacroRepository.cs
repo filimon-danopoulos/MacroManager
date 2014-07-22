@@ -54,7 +54,16 @@ namespace MacroManager
         public XmlMacroRepository(string fileName)
         {
             FILE_NAME = fileName;
-            this.document = XDocument.Load(fileName);
+            if (!File.Exists(FILE_NAME))
+            {
+                this.document = new XDocument(
+                    new XElement(MACRO_ROOT_LABEL, "")
+                );
+            }
+            else
+            {
+                this.document = XDocument.Load(fileName);
+            }
         }
 
         #endregion

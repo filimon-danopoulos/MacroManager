@@ -116,6 +116,21 @@ namespace MacroManager
             this.macroRepository.SaveChanges();
         }
 
+        public void SaveChanges(string fileName)
+        {
+            if (!(this.macroRepository is XmlMacroRepository))
+            {
+                throw new Exception("The save changes with a fileName parameter method only works if the repository is an XmlMacroRepository.");
+            }
+            var existingMacros = this.macroRepository.Read();
+            this.macroRepository = new XmlMacroRepository(fileName);
+            foreach (var macro in existingMacros)
+            {
+                this.macroRepository.Add(macro);
+            }
+            this.macroRepository.SaveChanges();
+        }
+
         #endregion
 
         #region Events

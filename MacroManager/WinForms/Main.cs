@@ -178,7 +178,11 @@ namespace MacroManager
                 Multiselect = false,
                 CheckFileExists = true
             };
-            dialog.ShowDialog();
+            var dialogResult = dialog.ShowDialog();
+            if (dialogResult != DialogResult.OK)
+            {
+                return;
+            }
             var fileName = dialog.FileName;
             var macroRepository = new XmlMacroRepository(fileName);
             this.macroService.IntitializeRepository(macroRepository);
@@ -189,6 +193,21 @@ namespace MacroManager
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.macroService.SaveChanges();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog() { 
+                Title = "Save changes...",
+                OverwritePrompt = true             
+            };
+            var dialogResult = dialog.ShowDialog();
+            if (dialogResult != DialogResult.OK)
+            {
+                return;
+            }
+            var fileName = dialog.FileName;
+            this.macroService.SaveChanges(fileName);
         }
 
 
