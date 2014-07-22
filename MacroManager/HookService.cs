@@ -42,8 +42,15 @@ namespace MacroManager
         /// </summary>
         private static Macro macro = null;
 
+        /// <summary>
+        /// Keeps track of when the last user action was recorded. Used to add a WaitingAction before each action.
+        /// </summary>
         private static DateTime previousAction = DateTime.MinValue;
 
+        /// <summary>
+        /// Add an action to the macro, also adds a WaitAction before the supplied action. 
+        /// The WaitAction is added so that the macro replays in the same time the user entered it.
+        /// </summary>
         private static void AddActionToMacro(UserAction action)
         {
             if (previousAction == DateTime.MinValue)
@@ -146,7 +153,7 @@ namespace MacroManager
             WM_KEYDOWN = 0x0100
         }
         /// <summary>
-        /// Enumeration of mouse messages
+        /// Enumeration of mouse messages, used when intercepting messages.
         /// </summary>
         private enum MouseMessages
         {
@@ -156,6 +163,9 @@ namespace MacroManager
             WM_RBUTTONDOWN = 0x0204,
             WM_RBUTTONUP = 0x0205
         }
+        /// <summary>
+        /// Enumeration of mouse events, used when emulating events.
+        /// </summary>
         private enum MouseEvents
         {
             MOUSEEVENTF_LEFTDOWN = 0x02,

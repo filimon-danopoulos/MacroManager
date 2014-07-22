@@ -9,10 +9,13 @@ using System.Xml.Linq;
 
 namespace MacroManager
 {
+    /// <summary>
+    /// Repository class for persisting Macros to an XML file. 
+    /// </summary>
     public class XmlMacroRepository : IMacroRepository
     {
         #region Constants
-
+        // TODO: Figure out a better way to handle these constants. Reflection maybe?
         private const string FILE_NAME = "Macros.xml";
         private const string MACRO_ROOT_LABEL = "macros";
         private const string MACRO_LABEL = "macro";
@@ -32,13 +35,35 @@ namespace MacroManager
 
         #endregion
 
+        #region Fields
+
+        /// <summary>
+        /// The XML document we are working with.
+        /// </summary>
         private readonly XDocument document;
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor that inializes the document field with a file. 
+        /// Reads the file name from a constant.
+        /// 
+        /// TODO: Make more dynamic in regards to what file we read.
+        /// </summary>
         public XmlMacroRepository()
         {
             this.document = XDocument.Load(FILE_NAME);
         }
 
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Returns all the macros from the XML file.
+        /// </summary>
         public IEnumerable<Macro> Read()
         {
             return this.document
@@ -73,6 +98,11 @@ namespace MacroManager
                 ));
         }
 
+        /// <summary>
+        /// Adds the supplied Macro to the XML file and saves it.
+        /// 
+        /// TODO: Remove the saving from this method. That action should be a separate method call. 
+        /// </summary>
         public void Add(Macro macro)
         {
             var root = document.Element(MACRO_ROOT_LABEL);
@@ -136,6 +166,11 @@ namespace MacroManager
             document.Save(FILE_NAME);
         }
 
+        /// <summary>
+        /// Removes the supplied macro from the document and saves it.
+        /// 
+        /// TODO: Remove the saving form this method. All changes should be saved in bulk.
+        /// </summary>
         public void Remove(Macro macro)
         {
             var toRemove = document.Element(MACRO_ROOT_LABEL)
@@ -150,5 +185,6 @@ namespace MacroManager
             document.Save(FILE_NAME);
         }
 
+        #endregion
     }
 }

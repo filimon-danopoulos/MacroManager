@@ -24,7 +24,7 @@ namespace MacroManager
         public Main(IMacroService macroService) : this()
         {
             this.macroService = macroService;
-            this.macroService.RecordingStoped += (sender, e) => this.LoadMacros();
+            this.macroService.RecordingStopped += (sender, e) => this.LoadMacros();
             this.LoadMacros();
         }
 

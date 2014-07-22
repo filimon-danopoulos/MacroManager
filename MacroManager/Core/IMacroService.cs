@@ -9,7 +9,7 @@ namespace MacroManager.Core
     public interface IMacroService
     {
         event EventHandler RecordingStarted;
-        event EventHandler RecordingStoped;
+        event EventHandler RecordingStopped;
 
         Macro CreateMacro(string name, string description = "");
         void StartRecording(Macro macro);
