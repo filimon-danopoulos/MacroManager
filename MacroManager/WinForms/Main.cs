@@ -24,7 +24,7 @@ namespace MacroManager
 
         #region Fields
 
-        private IMacroService macroService;
+        private MacroService macroService;
         private Macro currentMacro;
 
         #endregion
@@ -36,7 +36,7 @@ namespace MacroManager
             InitializeComponent();
         }
 
-        public Main(IMacroService macroService)
+        public Main(MacroService macroService)
             : this()
         {
             this.macroService = macroService;
@@ -190,6 +190,7 @@ namespace MacroManager
         {
             this.macroService.SaveChanges();
         }
+
 
     }
 }

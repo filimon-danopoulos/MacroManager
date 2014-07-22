@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MacroManager
 {
-    public class MacroService : IMacroService
+    public class MacroService
     {
 
         #region Fields

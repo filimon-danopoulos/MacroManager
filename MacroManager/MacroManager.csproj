@@ -50,7 +50,6 @@
     <Compile Include="HookService.cs" />
     <Compile Include="Core\Actions\UserAction.cs" />
     <Compile Include="Core\IHookService.cs" />
-    <Compile Include="Core\IMacroService.cs" />
     <Compile Include="Core\IMacroRepository.cs" />
     <Compile Include="Core\Macro.cs" />
     <Compile Include="Core\Actions\WaitAction.cs" />
