@@ -8,12 +8,13 @@ namespace MacroManager.Core
 {
     public interface IMacroService
     {
-        Macro CreateNewMacro();
+        event EventHandler RecordingStarted;
+        event EventHandler RecordingStoped;
 
+        Macro CreateMacro(string name, string description = "");
         void StartRecording(Macro macro);
         void StopRecording(Macro macro);
         void ReplayMacro(Macro macro);
-
         IEnumerable<Macro> GetAllMacros();
     }
 }

@@ -11,7 +11,7 @@ using System.Threading;
 namespace MacroManager
 {
     /// <summary>
-    /// A service that allows you to record user actions via low level hooks.
+    /// A service that allows you to record and emulate user actions via low level hooks.
     /// </summary>
     public class HookService : IHookService
     {

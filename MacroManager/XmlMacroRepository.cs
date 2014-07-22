@@ -14,17 +14,21 @@ namespace MacroManager
         #region Constants
 
         private const string FILE_NAME = "Macros.xml";
-        private const string ROOT_ELEMENT = "macros";
+        private const string MACRO_ROOT_LABEL = "macros";
         private const string MACRO_LABEL = "macro";
+        private const string MACRO_ID_LABEL = "id";
+        private const string MACRO_NAME_LABEL = "name";
+        private const string MACRO_DESCRIPTION_LABEL = "description";
+
         private const string MACRO_ACTION_LABEL = "action";
         private const string MACRO_ACTION_TYPE_LABEL = "type";
         private const string MACRO_ACTION_X_LABEL = "X";
         private const string MACRO_ACTION_Y_LABEL = "Y";
         private const string MACRO_ACTION_DURATION_LABEL = "duration";
+
         private const string LEFT_CLICK_ACTION_TYPE = "leftClickAction";
         private const string RIGHT_CLICK_ACTION_TYPE = "rightClickAction";
         private const string WAIT_ACTION_TYPE = "waitAction";
-        private const string MACRO_ID_LABEL = "id";
 
         #endregion
 
@@ -38,7 +42,7 @@ namespace MacroManager
         public IEnumerable<Macro> Read()
         {
             return this.document
-                .Element(ROOT_ELEMENT)
+                .Element(MACRO_ROOT_LABEL)
                 .Elements(MACRO_LABEL)
                 .Select(macro => new Macro(
                     macro.Elements(MACRO_ACTION_LABEL).Select(action =>
@@ -62,22 +66,26 @@ namespace MacroManager
                                 throw new Exception("Unknown action type!");
                         }
                     })
-                        .ToList(),
-                    Guid.Parse(macro.Attribute(MACRO_ID_LABEL).Value)
+                    .ToList(),
+                    Guid.Parse(macro.Attribute(MACRO_ID_LABEL).Value),
+                    macro.Attribute(MACRO_NAME_LABEL).Value,
+                    macro.Element(MACRO_DESCRIPTION_LABEL).Value
                 ));
         }
 
         public void Add(Macro macro)
         {
-            var root = document.Element(ROOT_ELEMENT);
-            if (root.Elements(MACRO_LABEL).Any(x => x.Attribute(MACRO_ID_LABEL).Value == macro.macroId.ToString()))
+            var root = document.Element(MACRO_ROOT_LABEL);
+            if (root.Elements(MACRO_LABEL).Any(x => x.Attribute(MACRO_ID_LABEL).Value == macro.MacroId.ToString()))
             {
                 throw new Exception("Can't add the same macro twice!");
             }
             var userActions = macro.GetUserActions();
             var macroXml = new XElement(
                 MACRO_LABEL,
-                new XAttribute(MACRO_ID_LABEL, macro.macroId.ToString()),
+                new XAttribute(MACRO_ID_LABEL, macro.MacroId.ToString()),
+                new XAttribute(MACRO_NAME_LABEL, macro.Name),
+                new XElement(MACRO_DESCRIPTION_LABEL, macro.Description),
                 userActions 
                     // Tempory solution, the last four actions are always the same:
                     //      1. Wait
@@ -130,9 +138,9 @@ namespace MacroManager
 
         public void Remove(Macro macro)
         {
-            var toRemove = document.Element(ROOT_ELEMENT)
+            var toRemove = document.Element(MACRO_ROOT_LABEL)
                 .Elements(MACRO_LABEL)
-                .FirstOrDefault(x => x.Attribute(MACRO_ID_LABEL).Value == macro.macroId.ToString());
+                .FirstOrDefault(x => x.Attribute(MACRO_ID_LABEL).Value == macro.MacroId.ToString());
 
             if (toRemove == null)
             {
