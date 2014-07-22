@@ -199,7 +199,8 @@ namespace MacroManager
         {
             var dialog = new SaveFileDialog() { 
                 Title = "Save changes...",
-                OverwritePrompt = true             
+                OverwritePrompt = true,
+                Filter = "XML (*.xml)|*.xml"
             };
             var dialogResult = dialog.ShowDialog();
             if (dialogResult != DialogResult.OK)
