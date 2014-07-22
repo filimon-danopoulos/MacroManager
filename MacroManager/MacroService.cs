@@ -116,8 +116,15 @@ namespace MacroManager
             this.macroRepository.SaveChanges();
         }
 
+        /// <summary>
+        /// Saves changes to a specific file, only works when an XML-file is used as a persistence.
+        /// </summary>
         public void SaveChanges(string fileName)
         {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
             if (!(this.macroRepository is XmlMacroRepository))
             {
                 throw new Exception("The save changes with a fileName parameter method only works if the repository is an XmlMacroRepository.");
