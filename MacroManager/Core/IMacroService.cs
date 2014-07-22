@@ -16,5 +16,7 @@ namespace MacroManager.Core
         void StopRecording(Macro macro);
         void ReplayMacro(Macro macro);
         IEnumerable<Macro> GetAllMacros();
+        void SaveChanges();
+        void IntitializeRepository(IMacroRepository macroRepository);
     }
 }

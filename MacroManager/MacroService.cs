@@ -26,9 +26,8 @@ namespace MacroManager
         /// <summary>
         /// Constructor, two dependencies are injected. 
         /// </summary>
-        public MacroService(IMacroRepository macroRepository, IHookService hookService)
+        public MacroService(IHookService hookService)
         {
-            this.macroRepository = macroRepository;
             this.hookService = hookService;
         }
 
@@ -50,6 +49,10 @@ namespace MacroManager
         /// </summary>
         public void StartRecording(Macro macro)
         {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
             this.hookService.StartRecording(macro);
             this.OnRecordingStarted();
         }
@@ -60,6 +63,10 @@ namespace MacroManager
         /// </summary>
         public void StopRecording(Macro macro)
         {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
             this.hookService.StopRecording();
             this.macroRepository.Add(macro);
             this.OnRecordingStopped();
@@ -70,6 +77,10 @@ namespace MacroManager
         /// </summary>
         public void ReplayMacro(Macro macro)
         {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
             this.hookService.ReplayMacro(macro);
         }
 
@@ -78,7 +89,31 @@ namespace MacroManager
         /// </summary>
         public IEnumerable<Macro> GetAllMacros()
         {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
             return this.macroRepository.Read();
+        }
+
+        /// <summary>
+        /// Initializes the repository of the service. 
+        /// </summary>
+        public void IntitializeRepository(IMacroRepository macroRepository)
+        {
+            this.macroRepository = macroRepository;
+        }
+
+        /// <summary>
+        /// Saves all the changes that have been made.
+        /// </summary>
+        public void SaveChanges()
+        {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
+            this.macroRepository.SaveChanges();
         }
 
         #endregion
@@ -118,6 +153,7 @@ namespace MacroManager
         }
 
         #endregion
+
 
     }
 }

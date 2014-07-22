@@ -16,7 +16,7 @@ namespace MacroManager
     {
         #region Constants
         // TODO: Figure out a better way to handle these constants. Reflection maybe?
-        private const string FILE_NAME = "Macros.xml";
+        private readonly string FILE_NAME;
         private const string MACRO_ROOT_LABEL = "macros";
         private const string MACRO_LABEL = "macro";
         private const string MACRO_ID_LABEL = "id";
@@ -50,11 +50,11 @@ namespace MacroManager
         /// Default constructor that inializes the document field with a file. 
         /// Reads the file name from a constant.
         /// 
-        /// TODO: Make more dynamic in regards to what file we read.
         /// </summary>
-        public XmlMacroRepository()
+        public XmlMacroRepository(string fileName)
         {
-            this.document = XDocument.Load(FILE_NAME);
+            FILE_NAME = fileName;
+            this.document = XDocument.Load(fileName);
         }
 
         #endregion
@@ -100,8 +100,6 @@ namespace MacroManager
 
         /// <summary>
         /// Adds the supplied Macro to the XML file and saves it.
-        /// 
-        /// TODO: Remove the saving from this method. That action should be a separate method call. 
         /// </summary>
         public void Add(Macro macro)
         {
@@ -163,13 +161,10 @@ namespace MacroManager
                     })
             );
             root.Add(macroXml);
-            document.Save(FILE_NAME);
         }
 
         /// <summary>
         /// Removes the supplied macro from the document and saves it.
-        /// 
-        /// TODO: Remove the saving form this method. All changes should be saved in bulk.
         /// </summary>
         public void Remove(Macro macro)
         {
@@ -179,12 +174,31 @@ namespace MacroManager
 
             if (toRemove == null)
             {
-                throw new Exception("Soupplied macro cannot be deleted since it does not exists in the repository.");
+                throw new Exception("Supplied macro cannot be deleted since it does not exists in the repository.");
             }
             toRemove.Remove();
+        }
+
+        /// <summary>
+        /// Saves all the changes made to the repository
+        /// </summary>
+        public void SaveChanges()
+        {
             document.Save(FILE_NAME);
         }
 
+        /// <summary>
+        /// Checks if the repository has any changes
+        /// </summary>
+        /// <returns></returns>
+        public bool HasChanges()
+        {
+            var originalDocument = new XDocument(FILE_NAME);
+            return !XNode.DeepEquals(originalDocument, this.document);
+        }
+
         #endregion
+
+
     }
 }

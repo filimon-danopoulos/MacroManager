@@ -11,5 +11,7 @@ namespace MacroManager.Core
         IEnumerable<Macro> Read();
         void Add(Macro macro);
         void Remove(Macro macro);
+        void SaveChanges();
+        bool HasChanges();
     }
 }
