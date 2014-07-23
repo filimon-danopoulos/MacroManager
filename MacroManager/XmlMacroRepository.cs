@@ -47,15 +47,25 @@ namespace MacroManager
         #region Constructors
 
         /// <summary>
-        /// Default constructor that inializes the document field with a file. 
-        /// Reads the file name from a constant.
-        /// 
+        /// Inializes the document field from a file. 
+        /// Creates an in memory document if the file does not exist.
         /// </summary>
-        public XmlMacroRepository(string fileName)
+        public XmlMacroRepository(string fileName) : this(fileName, false){}
+
+        /// <summary>
+        /// Intializes the document field from a file. Provides a means to forcefully create a new
+        /// file. This WILL remove any existing file if forceNew is true.
+        /// </summary>
+        public XmlMacroRepository(string fileName, bool forceNew)
         {
             FILE_NAME = fileName;
-            if (!File.Exists(FILE_NAME))
+            var fileExists = File.Exists(FILE_NAME);
+            if (!fileExists || forceNew)
             {
+                if (fileExists)
+                {
+                    File.Delete(FILE_NAME);
+                }
                 this.document = new XDocument(
                     new XElement(MACRO_ROOT_LABEL, "")
                 );
@@ -124,12 +134,6 @@ namespace MacroManager
                 new XAttribute(MACRO_NAME_LABEL, macro.Name),
                 new XElement(MACRO_DESCRIPTION_LABEL, macro.Description),
                 userActions 
-                    // Tempory solution, the last four actions are always the same:
-                    //      1. Wait
-                    //      2. Open MacroManager from task bar
-                    //      3. Wait
-                    //      4. Stop recording
-                    .Take(userActions.Count() - 4)
                     .Select(action =>
                     {
                         var type = String.Empty;

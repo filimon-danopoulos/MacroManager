@@ -130,12 +130,17 @@ namespace MacroManager
                 throw new Exception("The save changes with a fileName parameter method only works if the repository is an XmlMacroRepository.");
             }
             var existingMacros = this.macroRepository.Read();
-            this.macroRepository = new XmlMacroRepository(fileName);
+            this.macroRepository = new XmlMacroRepository(fileName, true);
             foreach (var macro in existingMacros)
             {
                 this.macroRepository.Add(macro);
             }
             this.macroRepository.SaveChanges();
+        }
+
+        public void RemoveMacro(Macro macro)
+        {
+            this.macroRepository.Remove(macro);
         }
 
         #endregion

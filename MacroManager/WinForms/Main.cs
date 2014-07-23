@@ -211,6 +211,20 @@ namespace MacroManager
             this.macroService.SaveChanges(fileName);
         }
 
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            var selected = this.macroList.SelectedItems;
+            if (selected.Count != 1)
+            {
+                throw new Exception("No macro selected from list");
+            }
+            var selectedGuid = (Guid)selected[0].Tag;
+            var macro = this.macroService
+                .GetAllMacros()
+                .FirstOrDefault(x => x.MacroId == selectedGuid);
+            this.macroService.RemoveMacro(macro);
+        }
+
 
     }
 }

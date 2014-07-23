@@ -54,6 +54,7 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.removeButton = new System.Windows.Forms.Button();
             this.applicationTabs.SuspendLayout();
             this.playbackTab.SuspendLayout();
             this.recordTab.SuspendLayout();
@@ -79,6 +80,7 @@
             // 
             // playbackTab
             // 
+            this.playbackTab.Controls.Add(this.removeButton);
             this.playbackTab.Controls.Add(this.macroList);
             this.playbackTab.Controls.Add(this.playbackButton);
             this.playbackTab.Location = new System.Drawing.Point(4, 22);
@@ -127,11 +129,11 @@
             // playbackButton
             // 
             this.playbackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.playbackButton.Location = new System.Drawing.Point(606, 263);
+            this.playbackButton.Location = new System.Drawing.Point(579, 263);
             this.playbackButton.Name = "playbackButton";
-            this.playbackButton.Size = new System.Drawing.Size(75, 23);
+            this.playbackButton.Size = new System.Drawing.Size(102, 23);
             this.playbackButton.TabIndex = 0;
-            this.playbackButton.Text = "Playback First Macro";
+            this.playbackButton.Text = "Playback Macro";
             this.playbackButton.UseVisualStyleBackColor = true;
             this.playbackButton.Click += new System.EventHandler(this.playbackButton_Click);
             // 
@@ -315,6 +317,16 @@
             this.statusMessage.Size = new System.Drawing.Size(96, 17);
             this.statusMessage.Text = "Everything is OK!";
             // 
+            // removeButton
+            // 
+            this.removeButton.Location = new System.Drawing.Point(476, 263);
+            this.removeButton.Name = "removeButton";
+            this.removeButton.Size = new System.Drawing.Size(97, 23);
+            this.removeButton.TabIndex = 4;
+            this.removeButton.Text = "Remove Macro";
+            this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -368,6 +380,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusMessage;
+        private System.Windows.Forms.Button removeButton;
 
 
     }

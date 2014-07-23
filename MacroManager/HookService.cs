@@ -48,6 +48,11 @@ namespace MacroManager
         private static DateTime previousAction = DateTime.MinValue;
 
         /// <summary>
+        /// Keeps track of all the recorded actions.
+        /// </summary>
+        private static IList<UserAction> actions = new List<UserAction>();
+
+        /// <summary>
         /// Add an action to the macro, also adds a WaitAction before the supplied action. 
         /// The WaitAction is added so that the macro replays in the same time the user entered it.
         /// </summary>
@@ -61,10 +66,10 @@ namespace MacroManager
             {
                 var thisActionTime = DateTime.Now;
                 var duration = thisActionTime - previousAction;
-                macro.AddUserAction(new WaitAction((int) duration.TotalMilliseconds));
+                actions.Add(new WaitAction((int)duration.TotalMilliseconds));
                 previousAction = thisActionTime;
             }
-            macro.AddUserAction(action);
+            actions.Add(action);
         }
 
         /// <summary>
@@ -90,6 +95,11 @@ namespace MacroManager
             if (macro != null)
             {
                 UnhookWindowsHookEx(mouseHookId);
+                foreach (var action in actions.Take(actions.Count - 4))
+                {
+                    macro.AddUserAction(action);
+                }
+                actions.Clear();
                 macro = null;
             }
         }
