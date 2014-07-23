@@ -223,6 +223,7 @@ namespace MacroManager
                 .GetAllMacros()
                 .FirstOrDefault(x => x.MacroId == selectedGuid);
             this.macroService.RemoveMacro(macro);
+            this.LoadMacros();
         }
 
 
