@@ -28,10 +28,12 @@ namespace MacroManager.Data
         private const string MACRO_ACTION_X_LABEL = "X";
         private const string MACRO_ACTION_Y_LABEL = "Y";
         private const string MACRO_ACTION_DURATION_LABEL = "duration";
+        private const string MACRO_ACTION_KEY_LABEL = "key";
 
         private const string LEFT_CLICK_ACTION_TYPE = "leftClickAction";
         private const string RIGHT_CLICK_ACTION_TYPE = "rightClickAction";
         private const string WAIT_ACTION_TYPE = "waitAction";
+        private const string KEY_PRESS_ACTION_TYPE = "keyPressAction";
 
         #endregion
 
@@ -92,20 +94,26 @@ namespace MacroManager.Data
                     macro.Elements(MACRO_ACTION_LABEL).Select(action =>
                     {
                         var type = action.Element(MACRO_ACTION_TYPE_LABEL).Value;
-                        int x, y; // Variables are used in the cases where the type is a mouse action
                         switch (type)
                         {
                             case RIGHT_CLICK_ACTION_TYPE:
-                                x = int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value);
-                                y = int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value);
-                                return new RightClickAction(x, y) as UserAction;
+                                return new RightClickAction(
+                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value), 
+                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value)
+                                ) as UserAction;
                             case LEFT_CLICK_ACTION_TYPE:
-                                x = int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value);
-                                y = int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value);
-                                return new LeftClickAction(x, y) as UserAction;
+                                return new LeftClickAction(
+                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value), 
+                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value)
+                                ) as UserAction;
+                            case KEY_PRESS_ACTION_TYPE:
+                                return new KeyPressAction(
+                                    int.Parse(action.Element(MACRO_ACTION_KEY_LABEL).Value)
+                                ) as UserAction;
                             case WAIT_ACTION_TYPE:
-                                var duration = int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value);
-                                return new WaitAction(duration);
+                                return new WaitAction(
+                                    int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value)
+                                );
                             default:
                                 throw new Exception("Unknown action type!");
                         }
@@ -140,10 +148,9 @@ namespace MacroManager.Data
                         if (action is LeftClickAction)
                         {
                             var tempAction = action as LeftClickAction;
-                            type = LEFT_CLICK_ACTION_TYPE;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
-                                new XElement(MACRO_ACTION_TYPE_LABEL, type),
+                                new XElement(MACRO_ACTION_TYPE_LABEL, LEFT_CLICK_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_X_LABEL, tempAction.X),
                                 new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y)
                             );
@@ -151,12 +158,19 @@ namespace MacroManager.Data
                         else if (action is RightClickAction)
                         {
                             var tempAction = action as RightClickAction;
-                            type = RIGHT_CLICK_ACTION_TYPE;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
-                                new XElement(MACRO_ACTION_TYPE_LABEL, type),
+                                new XElement(MACRO_ACTION_TYPE_LABEL, RIGHT_CLICK_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_X_LABEL, tempAction.X),
                                 new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y)
+                            );
+                        }
+                        else if (action is KeyPressAction)
+                        {
+                            return new XElement(
+                                MACRO_ACTION_LABEL,
+                                new XElement(MACRO_ACTION_TYPE_LABEL, KEY_PRESS_ACTION_TYPE),
+                                new XElement(MACRO_ACTION_KEY_LABEL, (action as KeyPressAction).VirtualKey)
                             );
                         }
                         else if (action is WaitAction) {

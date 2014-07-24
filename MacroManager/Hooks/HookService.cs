@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace MacroManager
 {
@@ -37,6 +38,22 @@ namespace MacroManager
             }
             return CallNextHookEx(mouseHookId, nCode, wParam, lParam);
         }
+
+
+        /// <summary>
+        /// The keyboard callback function
+        /// </summary>
+        private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            var message = (KeyboardMessages)wParam;
+            if (nCode >= 0 && message == KeyboardMessages.WM_KEYDOWN)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                AddActionToMacro(new KeyPressAction(vkCode));
+            }
+            return CallNextHookEx(keyboardHookId, nCode, wParam, lParam);
+        }
+
 
         /// <summary>
         /// The macro that is used as a container for all user actions
@@ -84,8 +101,10 @@ namespace MacroManager
                 throw new Exception("Previous macro is not null. Can only record a single macro at a time!");
             }
             macro = inputMacro;
-            proc = MouseHookCallback;
-            mouseHookId = SetMouseHook(proc);
+            mouseProc = MouseHookCallback;
+            keyboardProc = KeyboardHookCallback;
+            mouseHookId = SetMouseHook(mouseProc);
+            keyboardHookId = SetKeyboardHook(keyboardProc);
         }
 
         /// <summary>
@@ -131,10 +150,16 @@ namespace MacroManager
                     SetCursorPos(tempAction.X, tempAction.Y);
                     mouse_event(mouseEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
                 }
+                else if (action is KeyPressAction)
+                {
+                    var key = (byte)(action as KeyPressAction).VirtualKey;
+                    keybd_event(key, 0, (int)KeyboardEvents.KEYBOARDEVENTF_KEYDOWN, 0);
+                    keybd_event(key, 0, (int)KeyboardEvents.KEYBOARDEVENTF_KEYUP, 0);
+                }
                 else if (action is WaitAction)
                 {
                     Thread.Sleep((action as WaitAction).Duration);
-                } 
+                }
             }
         }
 
@@ -163,6 +188,16 @@ namespace MacroManager
         {
             WM_KEYDOWN = 0x0100
         }
+
+        /// <summary>
+        /// Enumeration of keyboard events, used when emulating events.
+        /// </summary>
+        private enum KeyboardEvents
+        {
+            KEYBOARDEVENTF_KEYDOWN = 0x00,
+            KEYBOARDEVENTF_KEYUP = 0x7F
+        }
+
         /// <summary>
         /// Enumeration of mouse messages, used when intercepting messages.
         /// </summary>
@@ -174,6 +209,7 @@ namespace MacroManager
             WM_RBUTTONDOWN = 0x0204,
             WM_RBUTTONUP = 0x0205
         }
+
         /// <summary>
         /// Enumeration of mouse events, used when emulating events.
         /// </summary>
@@ -209,21 +245,23 @@ namespace MacroManager
 
         #endregion
 
+        #region Mouse related code
+
         /// <summary>
         /// Defines the signature for the low level hook mouse callback
         /// </summary>
         private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
-        /// The mouse hook call back procedure
+        /// The mouse hook callback procedure
         /// </summary>
-        private static LowLevelMouseProc proc;
+        private static LowLevelMouseProc mouseProc;
 
         /// <summary>
         /// Mouse hook id is used to identify the current mouse hook
         /// </summary>
         private static IntPtr mouseHookId = IntPtr.Zero;
-
+        
         /// <summary>
         /// Sets a low level mouse hook
         /// </summary>
@@ -238,10 +276,48 @@ namespace MacroManager
             }
         }
 
+        #endregion
+
+        #region Keyboard related code
+
+        /// <summary>
+        /// Defines the signature for the low level keyboard callback
+        /// </summary>
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        /// <summary>
+        /// The keyboard hook callback procedure.
+        /// </summary>
+        private static LowLevelKeyboardProc keyboardProc;
+
+        /// <summary>
+        /// Keyboard hook id is used to identify the current keyboard hook
+        /// </summary>
+        private static IntPtr keyboardHookId = IntPtr.Zero;
+
+        /// <summary>
+        /// Sets a low level keyboard hook
+        /// </summary>
+        private static IntPtr SetKeyboardHook(LowLevelKeyboardProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            {
+                using (ProcessModule curModule = curProcess.MainModule)
+                {
+                    return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                }
+            }
+        }
+
+        #endregion
+
         #region Un-managed code import
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -255,7 +331,10 @@ namespace MacroManager
 
         [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetCursorPos(int X, int Y);  
+        private static extern bool SetCursorPos(int X, int Y);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern uint keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);

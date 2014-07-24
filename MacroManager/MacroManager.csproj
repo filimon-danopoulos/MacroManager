@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Actions\ClickAction.cs" />
+    <Compile Include="Data\Actions\KeyPressAction.cs" />
     <Compile Include="Data\Actions\LeftClickAction.cs" />
     <Compile Include="Data\Actions\RightClickAction.cs" />
     <Compile Include="Hooks\HookService.cs" />
