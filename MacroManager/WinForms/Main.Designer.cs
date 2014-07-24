@@ -30,6 +30,7 @@
         {
             this.applicationTabs = new System.Windows.Forms.TabControl();
             this.playbackTab = new System.Windows.Forms.TabPage();
+            this.removeButton = new System.Windows.Forms.Button();
             this.macroList = new System.Windows.Forms.ListView();
             this.playbackNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.playbackDescriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -54,7 +55,6 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.removeButton = new System.Windows.Forms.Button();
             this.applicationTabs.SuspendLayout();
             this.playbackTab.SuspendLayout();
             this.recordTab.SuspendLayout();
@@ -90,6 +90,16 @@
             this.playbackTab.TabIndex = 0;
             this.playbackTab.Text = "Playback Macro";
             this.playbackTab.UseVisualStyleBackColor = true;
+            // 
+            // removeButton
+            // 
+            this.removeButton.Location = new System.Drawing.Point(476, 263);
+            this.removeButton.Name = "removeButton";
+            this.removeButton.Size = new System.Drawing.Size(97, 23);
+            this.removeButton.TabIndex = 4;
+            this.removeButton.Text = "Remove Macro";
+            this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
             // macroList
             // 
@@ -273,6 +283,7 @@
             // 
             // saveToolStripMenuItem
             // 
+            this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
@@ -281,6 +292,7 @@
             // 
             // saveAsToolStripMenuItem
             // 
+            this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
@@ -316,16 +328,6 @@
             this.statusMessage.Name = "statusMessage";
             this.statusMessage.Size = new System.Drawing.Size(96, 17);
             this.statusMessage.Text = "Everything is OK!";
-            // 
-            // removeButton
-            // 
-            this.removeButton.Location = new System.Drawing.Point(476, 263);
-            this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(97, 23);
-            this.removeButton.TabIndex = 4;
-            this.removeButton.Text = "Remove Macro";
-            this.removeButton.UseVisualStyleBackColor = true;
-            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
             // Main
             // 

@@ -188,6 +188,8 @@ namespace MacroManager
             this.macroService.IntitializeRepository(macroRepository);
             this.LoadMacros();
             this.applicationTabs.Enabled = true;
+            this.saveAsToolStripMenuItem.Enabled = true;
+            this.saveToolStripMenuItem.Enabled = true;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
