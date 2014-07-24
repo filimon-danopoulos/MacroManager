@@ -138,6 +138,9 @@ namespace MacroManager
             this.macroRepository.SaveChanges();
         }
 
+        /// <summary>
+        /// Removes a macro from presistent storage.
+        /// </summary>
         public void RemoveMacro(Macro macro)
         {
             this.macroRepository.Remove(macro);
