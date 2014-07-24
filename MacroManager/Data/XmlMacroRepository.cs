@@ -1,5 +1,5 @@
-﻿using MacroManager.Core;
-using MacroManager.Core.Action;
+﻿using MacroManager.Hooks;
+using MacroManager.Data.Actions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace MacroManager
+namespace MacroManager.Data
 {
     /// <summary>
     /// Repository class for persisting Macros to an XML file. 

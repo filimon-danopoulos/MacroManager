@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MacroManager.Core.Action
+namespace MacroManager.Data.Actions
 {
     /// <summary>
     /// A concrete click action, represents the right clik.

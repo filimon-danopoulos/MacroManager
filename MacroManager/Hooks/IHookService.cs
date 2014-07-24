@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MacroManager.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MacroManager.Core
+namespace MacroManager.Hooks
 {
     public interface IHookService
     {

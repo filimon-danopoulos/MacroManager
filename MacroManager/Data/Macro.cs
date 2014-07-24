@@ -1,11 +1,11 @@
-﻿using MacroManager.Core.Action;
+﻿using MacroManager.Data.Actions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace MacroManager.Core
+namespace MacroManager.Data
 {
     /// <summary>
     /// Represents a sequence of user actions.

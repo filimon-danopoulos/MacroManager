@@ -1,4 +1,5 @@
-﻿using MacroManager.Core;
+﻿using MacroManager.Hooks;
+using MacroManager.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

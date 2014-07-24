@@ -44,21 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Actions\ClickAction.cs" />
-    <Compile Include="Core\Actions\LeftClickAction.cs" />
-    <Compile Include="Core\Actions\RightClickAction.cs" />
-    <Compile Include="HookService.cs" />
-    <Compile Include="Core\Actions\UserAction.cs" />
-    <Compile Include="Core\IHookService.cs" />
-    <Compile Include="Core\IMacroRepository.cs" />
-    <Compile Include="Core\Macro.cs" />
-    <Compile Include="Core\Actions\WaitAction.cs" />
+    <Compile Include="Data\Actions\ClickAction.cs" />
+    <Compile Include="Data\Actions\LeftClickAction.cs" />
+    <Compile Include="Data\Actions\RightClickAction.cs" />
+    <Compile Include="Hooks\HookService.cs" />
+    <Compile Include="Data\Actions\UserAction.cs" />
+    <Compile Include="Hooks\IHookService.cs" />
+    <Compile Include="Data\IMacroRepository.cs" />
+    <Compile Include="Data\Macro.cs" />
+    <Compile Include="Data\Actions\WaitAction.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="XmlMacroRepository.cs" />
+    <Compile Include="Data\XmlMacroRepository.cs" />
     <Compile Include="MacroService.cs" />
     <Compile Include="WinForms\Main.cs">
       <SubType>Form</SubType>

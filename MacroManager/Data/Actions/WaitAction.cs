@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MacroManager.Core.Action
+namespace MacroManager.Data.Actions
 {
     /// <summary>
     /// An action that represents wainting. The user usualy moves the mouse or something similar during this type of action.

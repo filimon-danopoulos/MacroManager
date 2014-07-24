@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MacroManager.Hooks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MacroManager.Core
+namespace MacroManager.Data
 {
     public interface IMacroRepository
     {

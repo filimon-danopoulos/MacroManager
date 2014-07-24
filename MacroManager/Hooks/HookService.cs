@@ -1,5 +1,6 @@
-﻿using MacroManager.Core;
-using MacroManager.Core.Action;
+﻿using MacroManager.Hooks;
+using MacroManager.Data;
+using MacroManager.Data.Actions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
