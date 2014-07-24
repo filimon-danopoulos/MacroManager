@@ -47,6 +47,8 @@ namespace MacroManager
 
         #endregion
 
+        #region Methods
+
         private void LoadMacros()
         {
             var macros = this.macroService.GetAllMacros();
@@ -65,6 +67,33 @@ namespace MacroManager
                 );
             }
         }
+
+        private void UpdateStatusText()
+        {
+            var message = "";
+            if (this.applicationTabs.SelectedIndex == 1)
+            {
+                if (this.nameTextBox.Text == "")
+                {
+                    message = RECORD_TAB_STATUS_EMPTY_NAME_MESSAGE;
+                }
+                else
+                {
+                    message = RECORD_TAB_STATUS_MESSAGE;
+                }
+            }
+            else
+            {
+                message = PLAYBACK_TAB_STATUS_MESSAGE;
+            }
+            this.statusMessage.Text = message;
+        }
+
+        #endregion
+
+        #region Eventhandlers
+
+        #region Record Macro Tab
 
         private void recordButton_Click(object sender, EventArgs e)
         {
@@ -108,6 +137,15 @@ namespace MacroManager
             this.stopButton.Enabled = false;
         }
 
+        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.recordButton.Enabled = this.nameTextBox.Text != "";
+            this.UpdateStatusText();
+        }
+        #endregion
+
+        #region Playback Macro Tab
+
         private void playbackButton_Click(object sender, EventArgs e)
         {
             var selected = this.macroList.SelectedItems;
@@ -126,6 +164,26 @@ namespace MacroManager
             this.macroService.ReplayMacro(macro);
         }
 
+
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            var selected = this.macroList.SelectedItems;
+            if (selected.Count != 1)
+            {
+                throw new Exception("No macro selected from list");
+            }
+            var selectedGuid = (Guid)selected[0].Tag;
+            var macro = this.macroService
+                .GetAllMacros()
+                .FirstOrDefault(x => x.MacroId == selectedGuid);
+            this.macroService.RemoveMacro(macro);
+            this.LoadMacros();
+        }
+
+        #endregion
+
+        #region Toolstrip
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var dialogInput = MessageBox.Show(
@@ -140,41 +198,16 @@ namespace MacroManager
             }
         }
 
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
-        {
-            this.recordButton.Enabled = this.nameTextBox.Text != "";
-            this.UpdateStatusText();
-        }
 
         private void applicationTabs_Click(object sender, EventArgs e)
         {
             this.UpdateStatusText();
         }
 
-        private void UpdateStatusText()
-        {
-            var message = "";
-            if (this.applicationTabs.SelectedIndex == 1)
-            {
-                if (this.nameTextBox.Text == "")
-                {
-                    message = RECORD_TAB_STATUS_EMPTY_NAME_MESSAGE;
-                }
-                else
-                {
-                    message = RECORD_TAB_STATUS_MESSAGE;
-                }
-            }
-            else
-            {
-                message = PLAYBACK_TAB_STATUS_MESSAGE;
-            }
-            this.statusMessage.Text = message;
-        }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new OpenFileDialog() { 
+            var dialog = new OpenFileDialog()
+            {
                 Title = "Open Macro file...",
                 Multiselect = false,
                 CheckFileExists = true
@@ -200,7 +233,8 @@ namespace MacroManager
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var dialog = new SaveFileDialog() { 
+            var dialog = new SaveFileDialog()
+            {
                 Title = "Save changes...",
                 OverwritePrompt = true,
                 Filter = "XML (*.xml)|*.xml"
@@ -214,21 +248,9 @@ namespace MacroManager
             this.macroService.SaveChanges(fileName);
         }
 
-        private void removeButton_Click(object sender, EventArgs e)
-        {
-            var selected = this.macroList.SelectedItems;
-            if (selected.Count != 1)
-            {
-                throw new Exception("No macro selected from list");
-            }
-            var selectedGuid = (Guid)selected[0].Tag;
-            var macro = this.macroService
-                .GetAllMacros()
-                .FirstOrDefault(x => x.MacroId == selectedGuid);
-            this.macroService.RemoveMacro(macro);
-            this.LoadMacros();
-        }
+        #endregion
 
+        #endregion
 
     }
 }
