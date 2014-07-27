@@ -29,6 +29,14 @@ namespace MacroManager
                 if (message == MouseMessages.WM_LBUTTONDOWN)
                 {
                     AddActionToMacro(new LeftClickAction(hookStruct.pt.x, hookStruct.pt.y));
+                    clikDown = DateTime.Now;
+                }
+                else if (message == MouseMessages.WM_LBUTTONUP)
+                {
+                    var ellapsedTime = (int)Math.Floor((DateTime.Now - clikDown).TotalMilliseconds);
+                    if ( ellapsedTime > 200) {
+                        AddActionToMacro(new LongClickAction(ellapsedTime));
+                    }
                 }
                 else if (message == MouseMessages.WM_RBUTTONDOWN)
                 {
@@ -64,6 +72,8 @@ namespace MacroManager
         /// Keeps track of when the last user action was recorded. Used to add a WaitingAction before each action.
         /// </summary>
         private static DateTime previousAction = DateTime.MinValue;
+
+        private static DateTime clikDown = DateTime.MaxValue;
 
         /// <summary>
         /// Keeps track of all the recorded actions.

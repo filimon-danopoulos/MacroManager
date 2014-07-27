@@ -47,6 +47,7 @@
     <Compile Include="Data\Actions\ClickAction.cs" />
     <Compile Include="Data\Actions\KeyPressAction.cs" />
     <Compile Include="Data\Actions\LeftClickAction.cs" />
+    <Compile Include="Data\Actions\LongClickAction.cs" />
     <Compile Include="Data\Actions\RightClickAction.cs" />
     <Compile Include="Hooks\HookService.cs" />
     <Compile Include="Data\Actions\UserAction.cs" />
