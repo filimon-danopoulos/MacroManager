@@ -26,22 +26,18 @@ namespace MacroManager
             if (nCode >= 0 && message != MouseMessages.WM_MOUSEMOVE)
             {
                 MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                if (message == MouseMessages.WM_LBUTTONDOWN)
+                if (message == MouseMessages.WM_LBUTTONDOWN || message == MouseMessages.WM_RBUTTONDOWN)
                 {
-                    AddActionToMacro(new LeftClickAction(hookStruct.pt.x, hookStruct.pt.y));
+                    var pressedButton = message == MouseMessages.WM_LBUTTONDOWN ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
+                    AddActionToMacro(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
                     clikDown = DateTime.Now;
                 }
-                else if (message == MouseMessages.WM_LBUTTONUP)
+                else if (message == MouseMessages.WM_LBUTTONUP || message == MouseMessages.WM_RBUTTONUP)
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - clikDown).TotalMilliseconds);
                     if ( ellapsedTime > 200) {
                         AddActionToMacro(new LongClickAction(ellapsedTime));
                     }
-                }
-                else if (message == MouseMessages.WM_RBUTTONDOWN)
-                {
-
-                    AddActionToMacro(new RightClickAction(hookStruct.pt.x, hookStruct.pt.y));
                 }
             }
             return CallNextHookEx(mouseHookId, nCode, wParam, lParam);
@@ -145,11 +141,11 @@ namespace MacroManager
                 {
                     uint mouseEvent;
                     var tempAction = action as ClickAction;
-                    if (action is RightClickAction)
+                    if (tempAction.PressedButton == ClickAction.MouseButton.Right)
                     {
                         mouseEvent = (uint)MouseEvents.MOUSEEVENTF_RIGHTDOWN | (uint)MouseEvents.MOUSEEVENTF_RIGHTUP;
                     }
-                    else if (action is LeftClickAction)
+                    else if (tempAction.PressedButton == ClickAction.MouseButton.Left)
                     {
                         mouseEvent = (uint)MouseEvents.MOUSEEVENTF_LEFTDOWN | (uint)MouseEvents.MOUSEEVENTF_LEFTUP;
                     }

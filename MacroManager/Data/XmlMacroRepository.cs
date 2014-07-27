@@ -29,9 +29,9 @@ namespace MacroManager.Data
         private const string MACRO_ACTION_Y_LABEL = "Y";
         private const string MACRO_ACTION_DURATION_LABEL = "duration";
         private const string MACRO_ACTION_KEY_LABEL = "key";
+        private const string MACRO_ACTION_BUTTON_LABEL = "button";
 
-        private const string LEFT_CLICK_ACTION_TYPE = "leftClickAction";
-        private const string RIGHT_CLICK_ACTION_TYPE = "rightClickAction";
+        private const string CLICK_ACTION_TYPE = "clickAction";
         private const string WAIT_ACTION_TYPE = "waitAction";
         private const string KEY_PRESS_ACTION_TYPE = "keyPressAction";
 
@@ -96,15 +96,11 @@ namespace MacroManager.Data
                         var type = action.Element(MACRO_ACTION_TYPE_LABEL).Value;
                         switch (type)
                         {
-                            case RIGHT_CLICK_ACTION_TYPE:
-                                return new RightClickAction(
+                            case CLICK_ACTION_TYPE:
+                                return new ClickAction(
                                     int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value), 
-                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value)
-                                ) as UserAction;
-                            case LEFT_CLICK_ACTION_TYPE:
-                                return new LeftClickAction(
-                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value), 
-                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value)
+                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
+                                    (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
                                 ) as UserAction;
                             case KEY_PRESS_ACTION_TYPE:
                                 return new KeyPressAction(
@@ -145,24 +141,15 @@ namespace MacroManager.Data
                     .Select(action =>
                     {
                         var type = String.Empty;
-                        if (action is LeftClickAction)
+                        if (action is ClickAction)
                         {
-                            var tempAction = action as LeftClickAction;
+                            var tempAction = action as ClickAction;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
-                                new XElement(MACRO_ACTION_TYPE_LABEL, LEFT_CLICK_ACTION_TYPE),
+                                new XElement(MACRO_ACTION_TYPE_LABEL, CLICK_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_X_LABEL, tempAction.X),
-                                new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y)
-                            );
-                        }
-                        else if (action is RightClickAction)
-                        {
-                            var tempAction = action as RightClickAction;
-                            return new XElement(
-                                MACRO_ACTION_LABEL,
-                                new XElement(MACRO_ACTION_TYPE_LABEL, RIGHT_CLICK_ACTION_TYPE),
-                                new XElement(MACRO_ACTION_X_LABEL, tempAction.X),
-                                new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y)
+                                new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y),
+                                new XElement(MACRO_ACTION_BUTTON_LABEL, (int)tempAction.PressedButton)
                             );
                         }
                         else if (action is KeyPressAction)
