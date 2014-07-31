@@ -185,6 +185,5 @@ namespace MacroManager
 
         #endregion
 
-
     }
 }
