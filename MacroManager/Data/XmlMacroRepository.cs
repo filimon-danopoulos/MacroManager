@@ -32,6 +32,7 @@ namespace MacroManager.Data
         private const string MACRO_ACTION_BUTTON_LABEL = "button";
 
         private const string CLICK_ACTION_TYPE = "clickAction";
+        private const string LONG_CLICK_ACTION_TYPE = "longClickAction";
         private const string WAIT_ACTION_TYPE = "waitAction";
         private const string KEY_PRESS_ACTION_TYPE = "keyPressAction";
 
@@ -102,6 +103,13 @@ namespace MacroManager.Data
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
                                     (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
                                 ) as UserAction;
+                            case LONG_CLICK_ACTION_TYPE:
+                                return new LongClickAction(
+                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value),
+                                    int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
+                                    (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
+                                    int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
+                                );
                             case KEY_PRESS_ACTION_TYPE:
                                 return new KeyPressAction(
                                     int.Parse(action.Element(MACRO_ACTION_KEY_LABEL).Value)
@@ -143,13 +151,25 @@ namespace MacroManager.Data
                         var type = String.Empty;
                         if (action is ClickAction)
                         {
-                            var tempAction = action as ClickAction;
+                            var longClickAction = action as LongClickAction;
+                            if (longClickAction != null)
+                            {
+                                return new XElement(
+                                    MACRO_ACTION_LABEL,
+                                    new XElement(MACRO_ACTION_TYPE_LABEL, LONG_CLICK_ACTION_TYPE),
+                                    new XElement(MACRO_ACTION_X_LABEL, longClickAction.X),
+                                    new XElement(MACRO_ACTION_Y_LABEL, longClickAction.Y),
+                                    new XElement(MACRO_ACTION_BUTTON_LABEL, (int)longClickAction.PressedButton),
+                                    new XElement(MACRO_ACTION_DURATION_LABEL, longClickAction.Duration)
+                                );
+                            }
+                            var clickAction = action as ClickAction;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
                                 new XElement(MACRO_ACTION_TYPE_LABEL, CLICK_ACTION_TYPE),
-                                new XElement(MACRO_ACTION_X_LABEL, tempAction.X),
-                                new XElement(MACRO_ACTION_Y_LABEL, tempAction.Y),
-                                new XElement(MACRO_ACTION_BUTTON_LABEL, (int)tempAction.PressedButton)
+                                new XElement(MACRO_ACTION_X_LABEL, clickAction.X),
+                                new XElement(MACRO_ACTION_Y_LABEL, clickAction.Y),
+                                new XElement(MACRO_ACTION_BUTTON_LABEL, (int)clickAction.PressedButton)
                             );
                         }
                         else if (action is KeyPressAction)

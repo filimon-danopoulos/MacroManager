@@ -34,7 +34,8 @@ namespace MacroManager
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - clikDown).TotalMilliseconds);
                     var pressedButton = message == MouseMessages.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
-                    if ( ellapsedTime > 200) {
+                    if (ellapsedTime > 200)
+                    {
                         AddActionToMacro(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
                     }
                     else
@@ -270,7 +271,7 @@ namespace MacroManager
         /// Mouse hook id is used to identify the current mouse hook
         /// </summary>
         private static IntPtr mouseHookId = IntPtr.Zero;
-        
+
         /// <summary>
         /// Sets a low level mouse hook
         /// </summary>
