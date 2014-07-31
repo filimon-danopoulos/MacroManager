@@ -22,18 +22,18 @@ namespace MacroManager
         /// </summary>
         private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var message = (MouseMessages)wParam;
-            if (nCode >= 0 && message != MouseMessages.WM_MOUSEMOVE)
+            var message = (VirtualMouse.Messages)wParam;
+            if (nCode >= 0 && message != VirtualMouse.Messages.WM_MOUSEMOVE)
             {
-                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                if (message == MouseMessages.WM_LBUTTONDOWN || message == MouseMessages.WM_RBUTTONDOWN)
+                VirtualMouse.MSLLHOOKSTRUCT hookStruct = (VirtualMouse.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(VirtualMouse.MSLLHOOKSTRUCT));
+                if (message == VirtualMouse.Messages.WM_LBUTTONDOWN || message == VirtualMouse.Messages.WM_RBUTTONDOWN)
                 {
                     clikDown = DateTime.Now;
                 }
-                else if (message == MouseMessages.WM_LBUTTONUP || message == MouseMessages.WM_RBUTTONUP)
+                else if (message == VirtualMouse.Messages.WM_LBUTTONUP || message == VirtualMouse.Messages.WM_RBUTTONUP)
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - clikDown).TotalMilliseconds);
-                    var pressedButton = message == MouseMessages.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
+                    var pressedButton = message == VirtualMouse.Messages.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
                     if (ellapsedTime > 200)
                     {
                         AddActionToMacro(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
@@ -147,11 +147,11 @@ namespace MacroManager
                     var tempAction = action as ClickAction;
                     if (tempAction.PressedButton == ClickAction.MouseButton.Right)
                     {
-                        mouseEvent = (uint)MouseEvents.MOUSEEVENTF_RIGHTDOWN | (uint)MouseEvents.MOUSEEVENTF_RIGHTUP;
+                        mouseEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTDOWN | (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTUP;
                     }
                     else if (tempAction.PressedButton == ClickAction.MouseButton.Left)
                     {
-                        mouseEvent = (uint)MouseEvents.MOUSEEVENTF_LEFTDOWN | (uint)MouseEvents.MOUSEEVENTF_LEFTUP;
+                        mouseEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTDOWN | (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTUP;
                     }
                     else
                     {
@@ -183,10 +183,6 @@ namespace MacroManager
 
         #region Constants, structs and enumerations
         /// <summary>
-        /// Low level mouse hook identifier
-        /// </summary>
-        private const int WH_MOUSE_LL = 14;
-        /// <summary>
         /// Low level keyboard hook identifier
         /// </summary>
         private const int WH_KEYBOARD_LL = 13;
@@ -206,51 +202,6 @@ namespace MacroManager
         {
             KEYBOARDEVENTF_KEYDOWN = 0x00,
             KEYBOARDEVENTF_KEYUP = 0x7F
-        }
-
-        /// <summary>
-        /// Enumeration of mouse messages, used when intercepting messages.
-        /// </summary>
-        private enum MouseMessages
-        {
-            WM_LBUTTONDOWN = 0x0201,
-            WM_LBUTTONUP = 0x0202,
-            WM_MOUSEMOVE = 0x0200,
-            WM_RBUTTONDOWN = 0x0204,
-            WM_RBUTTONUP = 0x0205
-        }
-
-        /// <summary>
-        /// Enumeration of mouse events, used when emulating events.
-        /// </summary>
-        private enum MouseEvents
-        {
-            MOUSEEVENTF_LEFTDOWN = 0x02,
-            MOUSEEVENTF_LEFTUP = 0x04,
-            MOUSEEVENTF_RIGHTDOWN = 0x08,
-            MOUSEEVENTF_RIGHTUP = 0x10
-        }
-
-        /// <summary>
-        /// Managed wrapper for the point struct used in the un-managed code
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)] // StructLayout is specified as sequential so that it behaves as C/C++ would
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-        /// <summary>
-        /// Managed wrapper for the hook struct used in the un-managed code
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MSLLHOOKSTRUCT
-        {
-            public POINT pt;
-            public uint mouseData;
-            public uint flags;
-            public uint time;
-            public IntPtr dwExtraInfo;
         }
 
         #endregion
@@ -281,7 +232,7 @@ namespace MacroManager
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(WH_MOUSE_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(VirtualMouse.WH_MOUSE_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }

@@ -53,6 +53,7 @@
     <Compile Include="Data\IMacroRepository.cs" />
     <Compile Include="Data\Macro.cs" />
     <Compile Include="Data\Actions\WaitAction.cs" />
+    <Compile Include="Hooks\VirtualMouse.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
