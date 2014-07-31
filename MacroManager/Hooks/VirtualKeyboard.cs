@@ -29,6 +29,5 @@ namespace MacroManager.Hooks
             KEYBOARDEVENTF_KEYDOWN = 0x00,
             KEYBOARDEVENTF_KEYUP = 0x7F
         }
-
     }
 }

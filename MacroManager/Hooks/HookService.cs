@@ -141,25 +141,38 @@ namespace MacroManager
         public async Task ReplayMacroAsync(Macro macro)
         {
             foreach (var action in macro.GetUserActions())
-            {
+            { 
                 if (action is ClickAction)
                 {
-                    uint mouseEvent;
+                    uint mouseDownEvent;
+                    uint mouseUpEvent;
                     var tempAction = action as ClickAction;
                     if (tempAction.PressedButton == ClickAction.MouseButton.Right)
                     {
-                        mouseEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTDOWN | (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTUP;
+                        mouseDownEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTDOWN;
+                        mouseUpEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTUP;
                     }
                     else if (tempAction.PressedButton == ClickAction.MouseButton.Left)
                     {
-                        mouseEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTDOWN | (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTUP;
+                        mouseDownEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTDOWN;
+                        mouseUpEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTUP;
                     }
                     else
                     {
                         throw new Exception("Unknown mouse action");
                     }
                     SetCursorPos(tempAction.X, tempAction.Y);
-                    mouse_event(mouseEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
+                    var longClickAction = (action as LongClickAction);
+                    if (longClickAction != null)
+                    {
+                        mouse_event(mouseDownEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
+                        await Task.Delay(longClickAction.Duration);
+                        mouse_event(mouseUpEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
+                    }
+                    else
+                    {
+                        mouse_event(mouseDownEvent|mouseUpEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
+                    }
                 }
                 else if (action is KeyPressAction)
                 {
