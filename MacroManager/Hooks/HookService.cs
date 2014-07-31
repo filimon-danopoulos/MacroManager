@@ -28,15 +28,18 @@ namespace MacroManager
                 MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
                 if (message == MouseMessages.WM_LBUTTONDOWN || message == MouseMessages.WM_RBUTTONDOWN)
                 {
-                    var pressedButton = message == MouseMessages.WM_LBUTTONDOWN ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
-                    AddActionToMacro(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
                     clikDown = DateTime.Now;
                 }
                 else if (message == MouseMessages.WM_LBUTTONUP || message == MouseMessages.WM_RBUTTONUP)
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - clikDown).TotalMilliseconds);
+                    var pressedButton = message == MouseMessages.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
                     if ( ellapsedTime > 200) {
-                        AddActionToMacro(new LongClickAction(ellapsedTime));
+                        AddActionToMacro(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
+                    }
+                    else
+                    {
+                        AddActionToMacro(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
                     }
                 }
             }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MacroManager.Data.Actions
 {
-    public class LongClickAction : UserAction
+    public class LongClickAction : ClickAction
     {
-        public LongClickAction(int duration)
+        public LongClickAction(int x, int y, ClickAction.MouseButton button, int duration) : base(x, y, button)
         {
             this.Duration = duration;
         }
