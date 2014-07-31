@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MacroManager.Hooks
 {
@@ -10,6 +11,6 @@ namespace MacroManager.Hooks
     {
         void StartRecording(Macro macro);
         void StopRecording();
-        void ReplayMacro(Macro macro);
+        Task ReplayMacroAsync(Macro macro);
     }
 }

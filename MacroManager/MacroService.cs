@@ -82,7 +82,7 @@ namespace MacroManager
             {
                 throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
             }
-            this.hookService.ReplayMacro(macro);
+            this.hookService.ReplayMacroAsync(macro).ConfigureAwait(false);
         }
 
         /// <summary>

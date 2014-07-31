@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace MacroManager
 {
@@ -135,9 +136,9 @@ namespace MacroManager
         }
 
         /// <summary>
-        /// Replays a macro
+        /// Replays a macro asynchronously
         /// </summary>
-        public void ReplayMacro(Macro macro)
+        public async Task ReplayMacroAsync(Macro macro)
         {
             foreach (var action in macro.GetUserActions())
             {
@@ -168,7 +169,7 @@ namespace MacroManager
                 }
                 else if (action is WaitAction)
                 {
-                    Thread.Sleep((action as WaitAction).Duration);
+                    await Task.Delay((action as WaitAction).Duration);
                 }
             }
         }
