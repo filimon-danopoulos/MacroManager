@@ -53,8 +53,8 @@ namespace MacroManager
         /// </summary>
         private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var message = (KeyboardMessages)wParam;
-            if (nCode >= 0 && message == KeyboardMessages.WM_KEYDOWN)
+            var message = (VirtualKeyboard.Messages)wParam;
+            if (nCode >= 0 && message == VirtualKeyboard.Messages.WM_KEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
                 AddActionToMacro(new KeyPressAction(vkCode));
@@ -163,8 +163,8 @@ namespace MacroManager
                 else if (action is KeyPressAction)
                 {
                     var key = (byte)(action as KeyPressAction).VirtualKey;
-                    keybd_event(key, 0, (int)KeyboardEvents.KEYBOARDEVENTF_KEYDOWN, 0);
-                    keybd_event(key, 0, (int)KeyboardEvents.KEYBOARDEVENTF_KEYUP, 0);
+                    keybd_event(key, 0, (int)VirtualKeyboard.Events.KEYBOARDEVENTF_KEYDOWN, 0);
+                    keybd_event(key, 0, (int)VirtualKeyboard.Events.KEYBOARDEVENTF_KEYUP, 0);
                 }
                 else if (action is WaitAction)
                 {
@@ -180,31 +180,6 @@ namespace MacroManager
         **      http://blogs.msdn.com/b/toub/archive/2006/05/03/589423.aspx
         ** I have added comments and tried to make the code a bit more concise
         **/
-
-        #region Constants, structs and enumerations
-        /// <summary>
-        /// Low level keyboard hook identifier
-        /// </summary>
-        private const int WH_KEYBOARD_LL = 13;
-
-        /// <summary>
-        /// Enumeration of keyboard messages
-        /// </summary>
-        private enum KeyboardMessages
-        {
-            WM_KEYDOWN = 0x0100
-        }
-
-        /// <summary>
-        /// Enumeration of keyboard events, used when emulating events.
-        /// </summary>
-        private enum KeyboardEvents
-        {
-            KEYBOARDEVENTF_KEYDOWN = 0x00,
-            KEYBOARDEVENTF_KEYUP = 0x7F
-        }
-
-        #endregion
 
         #region Mouse related code
 
@@ -265,7 +240,7 @@ namespace MacroManager
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(VirtualKeyboard.WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }
