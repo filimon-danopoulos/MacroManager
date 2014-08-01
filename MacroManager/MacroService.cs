@@ -80,7 +80,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new NullReferenceException("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             this.hookService.ReplayMacroAsync(macro).ConfigureAwait(false);
         }
@@ -92,7 +92,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't read macros if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new NullReferenceException("Can't read macros if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             return this.macroRepository.Read();
         }
@@ -112,7 +112,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't check for changes if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new NullReferenceException("Can't check for changes if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             return this.macroRepository.HasChanges();
         }
@@ -125,7 +125,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new NullReferenceException("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             this.macroRepository.SaveChanges();
         }
@@ -137,11 +137,11 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new NullReferenceException("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             if (!(this.macroRepository is XmlMacroRepository))
             {
-                throw new Exception("The save changes with a fileName parameter method only works if the repository is an XmlMacroRepository.");
+                throw new Exception("The method SaveChanges(string fileName) only works if the service was initialized with an XmlMacroRepository.");
             }
             var existingMacros = this.macroRepository.Read();
             this.macroRepository = new XmlMacroRepository(fileName, true);
