@@ -18,6 +18,22 @@ namespace MacroManager
     /// </summary>
     public class HookService : IHookService
     {
+        #region Fields
+
+        private readonly VirtualMouse virtualMouse;
+
+        #endregion
+
+        #region Constructors
+
+        public HookService()
+        {
+            this.virtualMouse = new VirtualMouse();
+        }
+
+        #endregion
+
+
         /// <summary>
         /// The mouse hook callback function, this is where the money is at! 
         /// </summary>
@@ -142,38 +158,14 @@ namespace MacroManager
         public async Task ReplayMacroAsync(Macro macro)
         {
             foreach (var action in macro.GetUserActions())
-            { 
-                if (action is ClickAction)
+            {
+                if (action is LongClickAction)
                 {
-                    uint mouseDownEvent;
-                    uint mouseUpEvent;
-                    var tempAction = action as ClickAction;
-                    if (tempAction.PressedButton == ClickAction.MouseButton.Right)
-                    {
-                        mouseDownEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTDOWN;
-                        mouseUpEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_RIGHTUP;
-                    }
-                    else if (tempAction.PressedButton == ClickAction.MouseButton.Left)
-                    {
-                        mouseDownEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTDOWN;
-                        mouseUpEvent = (uint)VirtualMouse.Events.MOUSEEVENTF_LEFTUP;
-                    }
-                    else
-                    {
-                        throw new Exception("Unknown mouse action");
-                    }
-                    SetCursorPos(tempAction.X, tempAction.Y);
-                    var longClickAction = (action as LongClickAction);
-                    if (longClickAction != null)
-                    {
-                        mouse_event(mouseDownEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
-                        await Task.Delay(longClickAction.Duration);
-                        mouse_event(mouseUpEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
-                    }
-                    else
-                    {
-                        mouse_event(mouseDownEvent|mouseUpEvent, (uint)tempAction.X, (uint)tempAction.Y, 0, 0);
-                    }
+                    await this.virtualMouse.LongClickAsync(action as LongClickAction);
+                }
+                else if (action is ClickAction)
+                {
+                    this.virtualMouse.Click(action as ClickAction);
                 }
                 else if (action is KeyPressAction)
                 {
@@ -277,15 +269,8 @@ namespace MacroManager
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
-
-        [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetCursorPos(int X, int Y);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern uint keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
+        private static extern uint keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
