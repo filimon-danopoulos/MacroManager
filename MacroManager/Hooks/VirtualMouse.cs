@@ -15,6 +15,8 @@ namespace MacroManager.Hooks
 
         private IntPtr mouseHookId;
         private DateTime clickDown;
+        private int clickDownX;
+        private int clickDownY;
 
         #endregion
 
@@ -74,7 +76,7 @@ namespace MacroManager.Hooks
         {
             this.mouseHookId = this.SetMouseHook(this.HandleMouseHook);
         }
-        
+
         /// <summary>
         /// Stops recording all the mouse activity the user makes.
         /// </summary>
@@ -92,22 +94,27 @@ namespace MacroManager.Hooks
         /// </summary>
         private IntPtr HandleMouseHook(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var message = (VirtualMouse.Message)wParam;
-            if (nCode >= 0 && message != VirtualMouse.Message.WM_MOUSEMOVE)
+            var message = (Message)wParam;
+            if (nCode >= 0 && message != Message.WM_MOUSEMOVE)
             {
-                VirtualMouse.MSLLHOOKSTRUCT hookStruct = (VirtualMouse.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(VirtualMouse.MSLLHOOKSTRUCT));
-                if (message == VirtualMouse.Message.WM_LBUTTONDOWN || message == VirtualMouse.Message.WM_RBUTTONDOWN)
+                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                if (message == Message.WM_LBUTTONDOWN || message == Message.WM_RBUTTONDOWN)
                 {
                     this.clickDown = DateTime.Now;
-                } else if (message == VirtualMouse.Message.WM_LBUTTONUP || message == VirtualMouse.Message.WM_RBUTTONUP)
+                    this.clickDownX = hookStruct.pt.x;
+                    this.clickDownY = hookStruct.pt.y;
+                }
+                else if (message == Message.WM_LBUTTONUP || message == Message.WM_RBUTTONUP)
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - this.clickDown).TotalMilliseconds);
-                    var pressedButton = message == VirtualMouse.Message.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
-                    if (ellapsedTime > 200)
+                    var pressedButton = message == Message.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
+                    var stillClick = this.clickDownX == hookStruct.pt.x && this.clickDownY == hookStruct.pt.y;
+                    if (ellapsedTime > 200 && stillClick)
                     {
                         var args = new MouseEventArgs(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
                         this.OnMouseClicked(args);
-                    } else
+                    }
+                    else
                     {
                         var args = new MouseEventArgs(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
                         this.OnMouseClicked(args);
@@ -126,7 +133,7 @@ namespace MacroManager.Hooks
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(VirtualMouse.WH_MOUSE_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(WH_MOUSE_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }
