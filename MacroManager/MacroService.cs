@@ -92,7 +92,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new Exception("Can't read macros if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             return this.macroRepository.Read();
         }
@@ -105,6 +105,7 @@ namespace MacroManager
             this.macroRepository = macroRepository;
         }
 
+
         /// <summary>
         /// Saves all the changes that have been made.
         /// </summary>
@@ -112,7 +113,7 @@ namespace MacroManager
         {
             if (this.macroRepository == null)
             {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
+                throw new Exception("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
             }
             this.macroRepository.SaveChanges();
         }
