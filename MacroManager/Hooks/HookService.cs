@@ -126,6 +126,7 @@ namespace MacroManager
             if (macro != null)
             {
                 UnhookWindowsHookEx(mouseHookId);
+                UnhookWindowsHookEx(keyboardHookId);
                 foreach (var action in actions.Take(actions.Count - 4))
                 {
                     macro.AddUserAction(action);
