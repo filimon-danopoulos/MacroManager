@@ -1,6 +1,7 @@
 ﻿using MacroManager.Data.Actions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,70 +11,18 @@ namespace MacroManager.Hooks
 {
     public class VirtualMouse
     {
-        #region Constants
+        #region Fields
 
-        /// <summary>
-        /// Low level mouse hook identifier
-        /// </summary>
-        public const int WH_MOUSE_LL = 14;
+        private IntPtr mouseHookId;
+        private DateTime clickDown;
 
         #endregion
 
-        #region Enums
+        #region Public Methods
 
         /// <summary>
-        /// Enumeration of mouse messages, used when intercepting messages.
+        /// Executes a single click
         /// </summary>
-        public enum Messages
-        {
-            WM_LBUTTONDOWN = 0x0201,
-            WM_LBUTTONUP = 0x0202,
-            WM_MOUSEMOVE = 0x0200,
-            WM_RBUTTONDOWN = 0x0204,
-            WM_RBUTTONUP = 0x0205
-        }
-
-        /// <summary>
-        /// Enumeration of mouse events, used when emulating events.
-        /// </summary>
-        private enum Event
-        {
-            MOUSEEVENTF_LEFTDOWN = 0x02,
-            MOUSEEVENTF_LEFTUP = 0x04,
-            MOUSEEVENTF_RIGHTDOWN = 0x08,
-            MOUSEEVENTF_RIGHTUP = 0x10
-        }
-
-        #endregion
-
-        #region Structs
-
-        /// <summary>
-        /// Managed wrapper for the point struct used in the un-managed code
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)] // StructLayout is specified as sequential so that it behaves as C/C++ would
-        public struct POINT
-        {
-            public int x;
-            public int y;
-        }
-        /// <summary>
-        /// Managed wrapper for the hook struct used in the un-managed code
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MSLLHOOKSTRUCT
-        {
-            public POINT pt;
-            public uint mouseData;
-            public uint flags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        #endregion
-
-        #region Methods
-
         public void Click(ClickAction action)
         {
             uint mouseEvent;
@@ -92,6 +41,9 @@ namespace MacroManager.Hooks
             mouse_event(mouseEvent, (uint)action.X, (uint)action.Y, 0, 0);
         }
 
+        /// <summary>
+        /// Executes a long click
+        /// </summary>
         public async Task LongClickAsync(LongClickAction action)
         {
             uint mouseDownEvent;
@@ -115,7 +67,159 @@ namespace MacroManager.Hooks
             mouse_event(mouseUpEvent, (uint)action.X, (uint)action.Y, 0, 0);
         }
 
+        /// <summary>
+        /// Starts recording all mouse activity the user makes
+        /// </summary>
+        public void StartRecording()
+        {
+            this.mouseHookId = this.SetMouseHook(this.HandleMouseHook);
+        }
+        
+        /// <summary>
+        /// Stops recording all the mouse activity the user makes.
+        /// </summary>
+        public void StopRecording()
+        {
+            HookHelper.UnhookWindowsHookEx(this.mouseHookId);
+        }
+
         #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Handles the low level mouse hook and fires an event on each click action.
+        /// </summary>
+        private IntPtr HandleMouseHook(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            var message = (VirtualMouse.Message)wParam;
+            if (nCode >= 0 && message != VirtualMouse.Message.WM_MOUSEMOVE)
+            {
+                VirtualMouse.MSLLHOOKSTRUCT hookStruct = (VirtualMouse.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(VirtualMouse.MSLLHOOKSTRUCT));
+                if (message == VirtualMouse.Message.WM_LBUTTONDOWN || message == VirtualMouse.Message.WM_RBUTTONDOWN)
+                {
+                    this.clickDown = DateTime.Now;
+                } else if (message == VirtualMouse.Message.WM_LBUTTONUP || message == VirtualMouse.Message.WM_RBUTTONUP)
+                {
+                    var ellapsedTime = (int)Math.Floor((DateTime.Now - this.clickDown).TotalMilliseconds);
+                    var pressedButton = message == VirtualMouse.Message.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
+                    if (ellapsedTime > 200)
+                    {
+                        var args = new MouseEventArgs(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
+                        this.OnMouseClicked(args);
+                    } else
+                    {
+                        var args = new MouseEventArgs(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
+                        this.OnMouseClicked(args);
+                    }
+                }
+            }
+            return HookHelper.CallNextHookEx(mouseHookId, nCode, wParam, lParam);
+        }
+
+        /// <summary>
+        /// Sets a low level mouse hook
+        /// </summary>
+        private IntPtr SetMouseHook(LowLevelMouseProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            {
+                using (ProcessModule curModule = curProcess.MainModule)
+                {
+                    return SetWindowsHookEx(VirtualMouse.WH_MOUSE_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Events
+
+        #region Nested class MouseEventArgs
+        public class MouseEventArgs : EventArgs
+        {
+            public MouseEventArgs(ClickAction action)
+            {
+                this.Action = action;
+            }
+            public ClickAction Action
+            {
+                get;
+                private set;
+            }
+        }
+        #endregion
+
+        public event EventHandler<MouseEventArgs> MouseClicked;
+        private void OnMouseClicked(MouseEventArgs args)
+        {
+            var handler = this.MouseClicked;
+            if (handler != null)
+            {
+                this.MouseClicked(this, args);
+            }
+        }
+
+        #endregion
+
+        #region Hook related code
+
+        /// <summary>
+        /// Low level mouse hook identifier
+        /// </summary>
+        private const int WH_MOUSE_LL = 14;
+
+        /// <summary>
+        /// Defines the signature for the low level hook mouse callback
+        /// </summary>
+        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        /// <summary>
+        /// Enumeration of mouse messages, used when intercepting messages.
+        /// </summary>
+        private enum Message
+        {
+            WM_LBUTTONDOWN = 0x0201,
+            WM_LBUTTONUP = 0x0202,
+            WM_MOUSEMOVE = 0x0200,
+            WM_RBUTTONDOWN = 0x0204,
+            WM_RBUTTONUP = 0x0205
+        }
+
+        /// <summary>
+        /// Enumeration of mouse events, used when emulating events.
+        /// </summary>
+        private enum Event
+        {
+            MOUSEEVENTF_LEFTDOWN = 0x02,
+            MOUSEEVENTF_LEFTUP = 0x04,
+            MOUSEEVENTF_RIGHTDOWN = 0x08,
+            MOUSEEVENTF_RIGHTUP = 0x10
+        }
+
+        /// <summary>
+        /// Managed wrapper for the point struct used in the un-managed code
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)] // StructLayout is specified as sequential so that it behaves as C/C++ would
+        private struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        /// <summary>
+        /// Managed wrapper for the hook struct used in the un-managed code
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MSLLHOOKSTRUCT
+        {
+            public POINT pt;
+            public uint mouseData;
+            public uint flags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
 
         #region Unmanaged imports
 
@@ -125,6 +229,11 @@ namespace MacroManager.Hooks
         [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetCursorPos(int X, int Y);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        #endregion
 
         #endregion
     }
