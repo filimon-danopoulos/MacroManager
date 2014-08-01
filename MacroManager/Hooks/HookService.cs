@@ -11,7 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 
-namespace MacroManager
+namespace MacroManager.Hooks
 {
     /// <summary>
     /// A service that allows you to record and emulate user actions via low level hooks.
