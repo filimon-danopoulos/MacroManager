@@ -68,6 +68,43 @@ namespace MacroManager
             }
         }
 
+        /// <summary>
+        /// Checks for unsaved changes and prompts the user for a save. Then returns a boolean representing what is to be done.
+        /// Returns true if the application is to be terminated.
+        /// </summary>
+        private bool Quit()
+        {
+            bool hasChanges;
+            try
+            {
+                hasChanges = this.macroService.HasChanges();
+            }
+            // This will happen if the user exits before a macro file has been opened. 
+            catch (NullReferenceException)
+            {
+                hasChanges = false;
+            }
+            if (!hasChanges)
+            {
+                return true;
+            }
+            var dialogInput = MessageBox.Show(
+                "There are unsaved changes. Do you want to save them before exit?",
+                "Unsaved changes...",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question
+            );
+            if (dialogInput == DialogResult.Cancel)
+            {
+                return false;
+            }
+            if (dialogInput == DialogResult.Yes)
+            {
+                this.macroService.SaveChanges();
+            }
+            return true;
+        }
+
         private void UpdateStatusText()
         {
             var message = "";
@@ -186,35 +223,10 @@ namespace MacroManager
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            bool hasChanges;
-            try
-            {
-                hasChanges = this.macroService.HasChanges();
-            }
-            // This will happen if the user exits before a macro file has been opened. 
-            catch (NullReferenceException)
-            {
-                hasChanges = false;
-            }
-            if (!hasChanges)
+            if (this.Quit())
             {
                 Application.Exit();
             }
-            var dialogInput = MessageBox.Show(
-                "There are unsaved changes. Do you want to save them before exit?",
-                "Unsaved changes...",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question
-            );
-            if (dialogInput == DialogResult.Cancel)
-            {
-                return;
-            }
-            if (dialogInput == DialogResult.Yes)
-            {
-                this.macroService.SaveChanges();
-            }
-            Application.Exit();
         }
 
 
@@ -268,6 +280,11 @@ namespace MacroManager
         }
 
         #endregion
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = !this.Quit();
+        }
 
         #endregion
 

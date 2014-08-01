@@ -342,6 +342,7 @@
             this.MainMenuStrip = this.mainMenuStrip;
             this.Name = "Main";
             this.Text = "Macro Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.applicationTabs.ResumeLayout(false);
             this.playbackTab.ResumeLayout(false);
             this.recordTab.ResumeLayout(false);
