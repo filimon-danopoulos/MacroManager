@@ -186,6 +186,16 @@ namespace MacroManager
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            bool hasChanges;
+            try {
+                hasChanges = this.macroService.HasChanges();
+            } catch (NullReferenceException ex) {
+                hasChanges = false;
+            }
+            if (!hasChanges)
+            {
+                Application.Exit();
+            }
             var dialogInput = MessageBox.Show(
                 "Are you sure you want to quit?",
                 "Quit?",
