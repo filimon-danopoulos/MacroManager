@@ -108,7 +108,7 @@ namespace MacroManager.Data
                                     int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value),
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
                                     (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
-                                    int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
+                                    int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value)
                                 );
                             case KEY_PRESS_ACTION_TYPE:
                                 return new KeyPressAction(
