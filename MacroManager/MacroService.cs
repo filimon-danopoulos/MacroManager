@@ -34,7 +34,7 @@ namespace MacroManager
 
         #endregion
 
-        #region Methods
+        #region Public methods
 
         /// <summary>
         /// Creates a new Macro. 

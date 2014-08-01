@@ -47,7 +47,7 @@ namespace MacroManager
 
         #endregion
 
-        #region Methods
+        #region Private Methods
 
         private void LoadMacros()
         {
