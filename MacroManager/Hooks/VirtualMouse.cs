@@ -15,8 +15,7 @@ namespace MacroManager.Hooks
 
         private IntPtr mouseHookId;
         private DateTime clickDown;
-        private int clickDownX;
-        private int clickDownY;
+        private POINT clickDownPoint;
 
         #endregion
 
@@ -101,15 +100,14 @@ namespace MacroManager.Hooks
                 if (message == Message.WM_LBUTTONDOWN || message == Message.WM_RBUTTONDOWN)
                 {
                     this.clickDown = DateTime.Now;
-                    this.clickDownX = hookStruct.pt.x;
-                    this.clickDownY = hookStruct.pt.y;
+                    this.clickDownPoint = hookStruct.pt;
                 }
                 else if (message == Message.WM_LBUTTONUP || message == Message.WM_RBUTTONUP)
                 {
                     var ellapsedTime = (int)Math.Floor((DateTime.Now - this.clickDown).TotalMilliseconds);
                     var pressedButton = message == Message.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
-                    var stillClick = this.clickDownX == hookStruct.pt.x && this.clickDownY == hookStruct.pt.y;
-                    if (ellapsedTime > 200 && stillClick)
+                    var mouseMoved = this.clickDownPoint.x != hookStruct.pt.x || this.clickDownPoint.y != hookStruct.pt.y;
+                    if (ellapsedTime > 200 && !mouseMoved)
                     {
                         var args = new MouseEventArgs(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
                         this.OnMouseClicked(args);
