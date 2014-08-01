@@ -105,6 +105,18 @@ namespace MacroManager
             this.macroRepository = macroRepository;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool HasChanges()
+        {
+            if (this.macroRepository == null)
+            {
+                throw new Exception("Can't check for changes if the Macro repository has not been initialized. Run InitializeRepository.");
+            }
+            return this.macroRepository.HasChanges();
+        }
+
 
         /// <summary>
         /// Saves all the changes that have been made.
