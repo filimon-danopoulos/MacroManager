@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MacroManager
 {
@@ -220,7 +221,7 @@ namespace MacroManager
         #endregion
 
         #region Toolstrip
-
+        
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (this.Quit())
@@ -255,6 +256,7 @@ namespace MacroManager
             this.applicationTabs.Enabled = true;
             this.saveAsToolStripMenuItem.Enabled = true;
             this.saveToolStripMenuItem.Enabled = true;
+            this.Text = String.Format("Macro Manager - {0}", Path.GetFileNameWithoutExtension(fileName));
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
