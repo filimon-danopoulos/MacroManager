@@ -187,9 +187,13 @@ namespace MacroManager
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bool hasChanges;
-            try {
+            try
+            {
                 hasChanges = this.macroService.HasChanges();
-            } catch (NullReferenceException ex) {
+            }
+            // This will happen if the user exits before a macro file has been opened. 
+            catch (NullReferenceException)
+            {
                 hasChanges = false;
             }
             if (!hasChanges)
@@ -197,15 +201,20 @@ namespace MacroManager
                 Application.Exit();
             }
             var dialogInput = MessageBox.Show(
-                "Are you sure you want to quit?",
-                "Quit?",
-                MessageBoxButtons.OKCancel,
+                "There are unsaved changes. Do you want to save them before exit?",
+                "Unsaved changes...",
+                MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question
             );
-            if (dialogInput == DialogResult.OK)
+            if (dialogInput == DialogResult.Cancel)
             {
-                Application.Exit();
+                return;
             }
+            if (dialogInput == DialogResult.Yes)
+            {
+                this.macroService.SaveChanges();
+            }
+            Application.Exit();
         }
 
 
