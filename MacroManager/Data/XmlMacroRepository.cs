@@ -227,7 +227,7 @@ namespace MacroManager.Data
         /// <returns></returns>
         public bool HasChanges()
         {
-            var originalDocument = new XDocument(FILE_NAME);
+            var originalDocument = XDocument.Load(FILE_NAME);
             return !XNode.DeepEquals(originalDocument, this.document);
         }
 
