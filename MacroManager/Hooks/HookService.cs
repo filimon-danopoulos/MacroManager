@@ -97,7 +97,11 @@ namespace MacroManager.Hooks
         {
             foreach (var action in macro.GetUserActions())
             {
-                if (action is LongClickAction)
+                if (action is MacroManager.Data.Actions.DragAction)
+                {
+                    await this.virtualMouse.DragAsync(action as MacroManager.Data.Actions.DragAction);
+                } 
+                else if (action is LongClickAction)
                 {
                     await this.virtualMouse.LongClickAsync(action as LongClickAction);
                 } else if (action is ClickAction)

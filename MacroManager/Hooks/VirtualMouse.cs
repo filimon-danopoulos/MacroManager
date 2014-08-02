@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,8 +15,21 @@ namespace MacroManager.Hooks
         #region Fields
 
         private IntPtr mouseHookId;
-        private DateTime clickDown;
+        private DateTime clickDownTime;
+        private DateTime previousPathReadTime;
         private POINT clickDownPoint;
+        private List<POINT> path;
+        private bool mouseDown;
+
+        #endregion
+
+        #region Constructors
+
+        public VirtualMouse()
+        {
+            this.path = new List<POINT>();
+            this.previousPathReadTime = DateTime.Now;
+        }
 
         #endregion
 
@@ -68,6 +82,35 @@ namespace MacroManager.Hooks
             mouse_event(mouseUpEvent, (uint)action.X, (uint)action.Y, 0, 0);
         }
 
+        public async Task DragAsync(DragAction action)
+        {
+            uint mouseDownEvent;
+            uint mouseUpEvent;
+            switch (action.PressedButton)
+            {
+                case ClickAction.MouseButton.Right:
+                    mouseDownEvent = (uint)Event.MOUSEEVENTF_RIGHTDOWN;
+                    mouseUpEvent = (uint)Event.MOUSEEVENTF_RIGHTUP;
+                    break;
+                case ClickAction.MouseButton.Left:
+                    mouseDownEvent = (uint)Event.MOUSEEVENTF_LEFTDOWN;
+                    mouseUpEvent = (uint)Event.MOUSEEVENTF_LEFTUP;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+            var firstPoint = action.Path.First();
+            SetCursorPos(firstPoint.X, firstPoint.Y);
+            mouse_event(mouseDownEvent, (uint)firstPoint.X, (uint)firstPoint.Y, 0, 0);
+            foreach (var point in action.Path.Skip(1))
+            {
+                await Task.Delay(16).ConfigureAwait(false);
+                SetCursorPos(point.X, point.Y);
+            }
+            var lastPoint = action.Path.Last();
+            mouse_event(mouseUpEvent, (uint)lastPoint.X, (uint)lastPoint.Y, 0, 0);
+        }
+
         /// <summary>
         /// Starts recording all mouse activity the user makes
         /// </summary>
@@ -94,17 +137,20 @@ namespace MacroManager.Hooks
         private IntPtr HandleMouseHook(int nCode, IntPtr wParam, IntPtr lParam)
         {
             var message = (Message)wParam;
+            MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
             if (nCode >= 0 && message != Message.WM_MOUSEMOVE)
             {
-                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                Debug.WriteLine("1: "+hookStruct.pt.x + " " + hookStruct.pt.y);
                 if (message == Message.WM_LBUTTONDOWN || message == Message.WM_RBUTTONDOWN)
                 {
-                    this.clickDown = DateTime.Now;
+                    this.clickDownTime = DateTime.Now;
                     this.clickDownPoint = hookStruct.pt;
+                    this.mouseDown = true;
                 }
                 else if (message == Message.WM_LBUTTONUP || message == Message.WM_RBUTTONUP)
                 {
-                    var ellapsedTime = (int)Math.Floor((DateTime.Now - this.clickDown).TotalMilliseconds);
+                    this.mouseDown = false;
+                    var ellapsedTime = (int)Math.Floor((DateTime.Now - this.clickDownTime).TotalMilliseconds);
                     var pressedButton = message == Message.WM_LBUTTONUP ? ClickAction.MouseButton.Left : ClickAction.MouseButton.Right;
                     var mouseMoved = this.clickDownPoint.x != hookStruct.pt.x || this.clickDownPoint.y != hookStruct.pt.y;
                     if (ellapsedTime > 200 && !mouseMoved)
@@ -112,11 +158,28 @@ namespace MacroManager.Hooks
                         var args = new MouseEventArgs(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
                         this.OnMouseClicked(args);
                     }
+                    else if (ellapsedTime > 200 && mouseMoved)
+                    {
+                        var args = new MouseEventArgs(new DragAction(pressedButton, this.path.Select(x => new Point(x.x, x.y)).ToList()));
+                        this.OnMouseClicked(args);
+                    }
                     else
                     {
                         var args = new MouseEventArgs(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
                         this.OnMouseClicked(args);
                     }
+                    this.path.Clear();
+                }
+            }
+            else if (nCode >= 0 && message == Message.WM_MOUSEMOVE && this.mouseDown)
+            {
+                Debug.WriteLine("2: "+hookStruct.pt.x + " " + hookStruct.pt.y);
+                var now = DateTime.Now;
+                var ellapsedTime = (int)Math.Floor((now - this.previousPathReadTime).TotalMilliseconds);
+                if (ellapsedTime >= 16)
+                {
+                    this.previousPathReadTime = now;
+                    this.path.Add(hookStruct.pt);
                 }
             }
             return HookHelper.CallNextHookEx(mouseHookId, nCode, wParam, lParam);
@@ -143,11 +206,11 @@ namespace MacroManager.Hooks
         #region Nested class MouseEventArgs
         public class MouseEventArgs : EventArgs
         {
-            public MouseEventArgs(ClickAction action)
+            public MouseEventArgs(UserAction action)
             {
                 this.Action = action;
             }
-            public ClickAction Action
+            public UserAction Action
             {
                 get;
                 private set;

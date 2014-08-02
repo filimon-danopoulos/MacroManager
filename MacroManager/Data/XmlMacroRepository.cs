@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Drawing;
 
 namespace MacroManager.Data
 {
@@ -30,11 +31,14 @@ namespace MacroManager.Data
         private const string MACRO_ACTION_DURATION_LABEL = "duration";
         private const string MACRO_ACTION_KEY_LABEL = "key";
         private const string MACRO_ACTION_BUTTON_LABEL = "button";
+        private const string MACRO_ACTION_PATH_LABEL = "path";
+        private const string MACRO_ACTION_POINT_LABEL = "point";
 
         private const string CLICK_ACTION_TYPE = "clickAction";
         private const string LONG_CLICK_ACTION_TYPE = "longClickAction";
         private const string WAIT_ACTION_TYPE = "waitAction";
         private const string KEY_PRESS_ACTION_TYPE = "keyPressAction";
+        private const string DRAG_ACTION_TYPE = "dragAction";
 
         #endregion
 
@@ -53,7 +57,9 @@ namespace MacroManager.Data
         /// Inializes the document field from a file. 
         /// Creates an in memory document if the file does not exist.
         /// </summary>
-        public XmlMacroRepository(string fileName) : this(fileName, false){}
+        public XmlMacroRepository(string fileName) : this(fileName, false)
+        {
+        }
 
         /// <summary>
         /// Intializes the document field from a file. Provides a means to forcefully create a new
@@ -99,7 +105,7 @@ namespace MacroManager.Data
                         {
                             case CLICK_ACTION_TYPE:
                                 return new ClickAction(
-                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value), 
+                                    int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value),
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
                                     (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
                                 ) as UserAction;
@@ -109,6 +115,16 @@ namespace MacroManager.Data
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
                                     (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
                                     int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value)
+                                );
+                            case DRAG_ACTION_TYPE:
+                                return new DragAction(
+                                    (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
+                                    action.Element(MACRO_ACTION_PATH_LABEL)
+                                        .Elements(MACRO_ACTION_POINT_LABEL)
+                                        .Select(x => new Point(
+                                            int.Parse(x.Element(MACRO_ACTION_X_LABEL).Value),
+                                            int.Parse(x.Element(MACRO_ACTION_Y_LABEL).Value))
+                                        )
                                 );
                             case KEY_PRESS_ACTION_TYPE:
                                 return new KeyPressAction(
@@ -145,12 +161,27 @@ namespace MacroManager.Data
                 new XAttribute(MACRO_ID_LABEL, macro.MacroId.ToString()),
                 new XAttribute(MACRO_NAME_LABEL, macro.Name),
                 new XElement(MACRO_DESCRIPTION_LABEL, macro.Description),
-                userActions 
+                userActions
                     .Select(action =>
                     {
-                        var type = String.Empty;
-                        if (action is ClickAction)
+                        if (action is DragAction)
                         {
+                            var dragAction = action as DragAction;
+                            return new XElement(
+                                MACRO_ACTION_LABEL,
+                                new XElement(MACRO_ACTION_TYPE_LABEL, DRAG_ACTION_TYPE),
+                                new XElement(MACRO_ACTION_BUTTON_LABEL, (int)dragAction.PressedButton),
+                                new XElement(MACRO_ACTION_PATH_LABEL, dragAction.Path
+                                    .Select(x => new XElement(MACRO_ACTION_POINT_LABEL, new[] {
+                                            new XElement(MACRO_ACTION_X_LABEL, x.X),
+                                            new XElement(MACRO_ACTION_Y_LABEL, x.Y)
+                                        }))
+                                )
+                            );
+                        }
+                        else if (action is ClickAction)
+                        {
+
                             var longClickAction = action as LongClickAction;
                             if (longClickAction != null)
                             {
@@ -180,11 +211,11 @@ namespace MacroManager.Data
                                 new XElement(MACRO_ACTION_KEY_LABEL, (action as KeyPressAction).VirtualKey)
                             );
                         }
-                        else if (action is WaitAction) {
-                            type = WAIT_ACTION_TYPE;
+                        else if (action is WaitAction)
+                        {
                             return new XElement(
                                 MACRO_ACTION_LABEL,
-                                new XElement(MACRO_ACTION_TYPE_LABEL, type),
+                                new XElement(MACRO_ACTION_TYPE_LABEL, WAIT_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_DURATION_LABEL, (action as WaitAction).Duration)
                             );
                         }
