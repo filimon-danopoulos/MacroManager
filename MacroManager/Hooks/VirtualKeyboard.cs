@@ -28,7 +28,7 @@ namespace MacroManager.Hooks
 
         public void StartRecording()
         {
-            this.SetKeyboardHook(this.HandleKeyboardHook);
+            this.keyboardHookId = this.SetKeyboardHook(this.HandleKeyboardHook);
         }
 
         public void StopRecording()
