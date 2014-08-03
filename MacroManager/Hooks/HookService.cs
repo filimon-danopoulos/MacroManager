@@ -102,17 +102,20 @@ namespace MacroManager.Hooks
                 if (action is MacroManager.Data.Actions.DragAction)
                 {
                     await this.virtualMouse.DragAsync(action as MacroManager.Data.Actions.DragAction);
-                } 
+                }
                 else if (action is LongClickAction)
                 {
                     await this.virtualMouse.LongClickAsync(action as LongClickAction);
-                } else if (action is ClickAction)
+                }
+                else if (action is ClickAction)
                 {
                     this.virtualMouse.Click(action as ClickAction);
-                } else if (action is KeyPressAction)
+                }
+                else if (action is KeyPressAction)
                 {
                     this.virtualKeyboard.KeyPress(action as KeyPressAction);
-                } else if (action is WaitAction)
+                }
+                else if (action is WaitAction)
                 {
                     await Task.Delay((action as WaitAction).Duration);
                 }
@@ -132,7 +135,8 @@ namespace MacroManager.Hooks
             if (previousAction == DateTime.MinValue)
             {
                 previousAction = DateTime.Now;
-            } else
+            }
+            else
             {
                 var thisActionTime = DateTime.Now;
                 var duration = thisActionTime - previousAction;
