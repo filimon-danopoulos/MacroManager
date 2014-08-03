@@ -36,7 +36,7 @@ namespace MacroManager.Hooks
         /// <summary>
         /// Keeps track of when the last user action was recorded. Used to add a WaitingAction before each action.
         /// </summary>
-        private DateTime previousAction = DateTime.MinValue;
+        private DateTime previousAction;
 
         #endregion
 
@@ -45,6 +45,7 @@ namespace MacroManager.Hooks
         public HookService()
         {
             this.actions = new List<UserAction>();
+            this.previousAction = DateTime.MinValue;
 
             this.virtualMouse = new VirtualMouse();
             this.virtualMouse.MouseClicked += (sender, args) => this.AddActionToMacro(args.Action);
@@ -68,6 +69,7 @@ namespace MacroManager.Hooks
                 throw new Exception("Previous macro is not null. Can only record a single macro at a time!");
             }
             this.macro = inputMacro;
+            this.previousAction = DateTime.MinValue;
             this.virtualMouse.StartRecording();
             this.virtualKeyboard.StartRecording();
         }
