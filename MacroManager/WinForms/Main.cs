@@ -119,7 +119,8 @@ namespace MacroManager
             {
                 Title = "Open Macro file...",
                 Multiselect = false,
-                CheckFileExists = true
+                CheckFileExists = true,
+                Filter = "XML (*.xml)|*.xml"
             };
             var dialogResult = dialog.ShowDialog();
             if (dialogResult != DialogResult.OK)
@@ -161,11 +162,13 @@ namespace MacroManager
         private void playbackControll_StartPlayback(object sender, Playback.PlaybackEventArgs eventArgs)
         {
             this.macroService.StartPlayback(eventArgs.SelectedMacro);
+            this.statusMessage.Text = "Playing Macro...";
         }
 
         private void playbackControll_StopPlayback(object sender, Playback.PlaybackEventArgs e)
         {
             this.macroService.StopPlayback();
+            this.statusMessage.Text = "Playback stopped!";
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -175,15 +178,15 @@ namespace MacroManager
 
         private void recordingControll_StartRecording(object sender, EventArgs e)
         {
-            this.statusMessage.Text = "Recording...";
+            this.statusMessage.Text = "Recording Macro...";
             this.macroService.StartRecording();
+            this.WindowState = FormWindowState.Minimized;
         }
 
         private void recordingControll_StopRecording(object sender, Recording.RecordingEventArgs args)
         {
             this.macroService.StopRecording(args.MacroName, args.MacroDescription);
             this.statusMessage.Text = "Macro recorded!";
-
         }
 
         #endregion
