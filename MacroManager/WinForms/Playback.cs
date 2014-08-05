@@ -30,12 +30,6 @@ namespace MacroManager.WinForms
             this.macros = new List<Macro>();
             this.playingMacro = null;
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
-
-            var actionIcons = new ImageList();
-            actionIcons.Images.Add("done", Image.FromFile("Icons\\accept.png"));
-            actionIcons.Images.Add("waiting", Image.FromFile("Icons\\clock.png"));
-
-            this.macroActionsList.SmallImageList = actionIcons;
         }
 
         #endregion
@@ -170,7 +164,7 @@ namespace MacroManager.WinForms
                 this.macroActionsList.Items.Add(new ListViewItem(new[] {
                     action.GetType().Name,
                     action.ToString()
-                }, "waiting"));
+                }));
             }
             if (macro.Description == "")
             {
