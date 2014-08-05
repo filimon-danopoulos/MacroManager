@@ -24,12 +24,15 @@ namespace MacroManager
         #endregion
 
         #region Constructors
+        
         /// <summary>
         /// Constructor, two dependencies are injected. 
         /// </summary>
-        public MacroService(IHookService hookService)
+        public MacroService(IHookService hookService, IMacroRepository macroRepository)
         {
+            // TODO: Complete member initialization
             this.hookService = hookService;
+            this.macroRepository = macroRepository;
         }
 
         #endregion
@@ -48,13 +51,9 @@ namespace MacroManager
         /// Starts recording a new Macro. 
         /// Fires the RecordingStarted event.
         /// </summary>
-        public void StartRecording(Macro macro)
+        public void StartRecording()
         {
-            if (this.macroRepository == null)
-            {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
-            this.hookService.StartRecording(macro);
+            this.hookService.StartRecording();
             this.OnRecordingStarted();
         }
 
@@ -62,13 +61,11 @@ namespace MacroManager
         /// Stopes recording the supplied Macro and saves it into the repository. 
         /// Fires the RecordingStopped event.
         /// </summary>
-        public void StopRecording(Macro macro)
+        public void StopRecording(string macroName, string macroDescription)
         {
-            if (this.macroRepository == null)
-            {
-                throw new Exception("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
-            this.hookService.StopRecording();
+            var macro = this.hookService.StopRecording();
+            macro.Name = macroName;
+            macro.Description = macroDescription;
             this.macroRepository.Add(macro);
             this.OnRecordingStopped();
         }
@@ -76,13 +73,13 @@ namespace MacroManager
         /// <summary>
         /// Replays the supplied macro. 
         /// </summary>
-        public void ReplayMacro(Macro macro)
+        public void StartPlayback(Macro macro)
         {
-            if (this.macroRepository == null)
-            {
-                throw new NullReferenceException("Can't start recording if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
-            this.hookService.ReplayMacroAsync(macro).ConfigureAwait(false);
+            this.hookService.PlaybackMacroAsync(macro).ConfigureAwait(false);
+        }
+
+        public void StopPlayback()
+        {
         }
 
         /// <summary>
@@ -90,17 +87,13 @@ namespace MacroManager
         /// </summary>
         public IEnumerable<Macro> GetAllMacros()
         {
-            if (this.macroRepository == null)
-            {
-                throw new NullReferenceException("Can't read macros if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
             return this.macroRepository.Read();
         }
 
         /// <summary>
-        /// Initializes the repository of the service. 
+        /// Updates the repository of the service. 
         /// </summary>
-        public void IntitializeRepository(IMacroRepository macroRepository)
+        public void UpdateRepository(IMacroRepository macroRepository)
         {
             this.macroRepository = macroRepository;
         }
@@ -110,10 +103,6 @@ namespace MacroManager
         /// </summary>
         public bool HasChanges()
         {
-            if (this.macroRepository == null)
-            {
-                throw new NullReferenceException("Can't check for changes if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
             return this.macroRepository.HasChanges();
         }
 
@@ -123,22 +112,15 @@ namespace MacroManager
         /// </summary>
         public void SaveChanges()
         {
-            if (this.macroRepository == null)
-            {
-                throw new NullReferenceException("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
             this.macroRepository.SaveChanges();
         }
 
         /// <summary>
         /// Saves changes to a specific file, only works when an XML-file is used as a persistence.
         /// </summary>
+        /// 
         public void SaveChanges(string fileName)
         {
-            if (this.macroRepository == null)
-            {
-                throw new NullReferenceException("Can't save changes if the Macro repository has not been initialized. Run InitializeRepository.");
-            }
             if (!(this.macroRepository is XmlMacroRepository))
             {
                 throw new Exception("The method SaveChanges(string fileName) only works if the service was initialized with an XmlMacroRepository.");
@@ -168,6 +150,7 @@ namespace MacroManager
         /// This event indicates that the recording of a new Macro has started.
         /// </summary>
         public event EventHandler RecordingStarted;
+        
         /// <summary>
         /// Wrapper for firing the RecordingStarted event that includes null checking.
         /// </summary>
@@ -176,7 +159,7 @@ namespace MacroManager
             var handler = RecordingStarted;
             if (handler != null)
             {
-                this.RecordingStarted(this, null);
+                handler(this, null);
             }
         }
 
@@ -184,6 +167,7 @@ namespace MacroManager
         /// This event indicates that the recording of a Macro is over.
         /// </summary>
         public event EventHandler RecordingStopped;
+        
         /// <summary>
         /// Wrapper for firing the RecordingStoped event that includes null checking.
         /// </summary>
@@ -192,9 +176,45 @@ namespace MacroManager
             var handler = RecordingStopped;
             if (handler != null)
             {
-                this.RecordingStopped(this, null);
+                handler(this, null);
             }
         }
+
+        /// <summary>
+        /// Fires after playback starts.
+        /// </summary>
+        public event EventHandler PlaybackStarted;
+
+        /// <summary>
+        /// Wrapper for firing PlaybackStarted event including a null check on handler.
+        /// </summary>
+        private void OnPlaybackStarted()
+        {
+            var handler = this.PlaybackStarted;
+            if (handler != null)
+            {
+                handler(this, null);
+            }
+        }
+
+        /// <summary>
+        /// Fires after playback stops.
+        /// </summary>
+        public event EventHandler PlaybackStoped;
+
+        /// <summary>
+        /// Wrapper for firing PlaybackStoped event including a null check on handler.
+        /// </summary>
+        private void OnPlaybackStoped()
+        {
+            var handler = this.PlaybackStoped;
+            if (handler != null)
+            {
+                handler(this, null);
+            }
+        }
+
+
 
         #endregion
 

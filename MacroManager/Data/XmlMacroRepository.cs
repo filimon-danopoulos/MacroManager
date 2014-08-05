@@ -258,6 +258,10 @@ namespace MacroManager.Data
         /// <returns></returns>
         public bool HasChanges()
         {
+            if (!File.Exists(FILE_NAME))
+            {
+                return this.document.Root.HasElements;
+            }
             var originalDocument = XDocument.Load(FILE_NAME);
             return !XNode.DeepEquals(originalDocument, this.document);
         }

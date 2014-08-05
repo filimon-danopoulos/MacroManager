@@ -29,11 +29,6 @@ namespace MacroManager.Hooks
         private readonly IList<UserAction> actions;
 
         /// <summary>
-        /// The macro that is used as a container for all user actions
-        /// </summary>
-        private Macro macro;
-
-        /// <summary>
         /// Keeps track of when the last user action was recorded. Used to add a WaitingAction before each action.
         /// </summary>
         private DateTime previousAction;
@@ -62,13 +57,8 @@ namespace MacroManager.Hooks
         /// Starts the recording of a macro, will add all actions to the macro supplied.
         /// </summary>
         /// <param name="inputMacro">The macro that all actions should be writen to.</param>
-        public void StartRecording(Macro inputMacro)
+        public void StartRecording()
         {
-            if (this.macro != null)
-            {
-                throw new Exception("Previous macro is not null. Can only record a single macro at a time!");
-            }
-            this.macro = inputMacro;
             this.previousAction = DateTime.MinValue;
             this.virtualMouse.StartRecording();
             this.virtualKeyboard.StartRecording();
@@ -77,25 +67,24 @@ namespace MacroManager.Hooks
         /// <summary>
         /// Stops recording the current macro (if any)
         /// </summary>
-        public void StopRecording()
+        public Macro StopRecording()
         {
-            if (this.macro != null)
+            this.virtualMouse.StopRecording();
+            this.virtualKeyboard.StopRecording();
+
+            var result = new Macro();
+            foreach (var action in actions.Take(actions.Count - 4))
             {
-                this.virtualMouse.StopRecording();
-                this.virtualKeyboard.StopRecording();
-                foreach (var action in actions.Take(actions.Count - 4))
-                {
-                    this.macro.AddUserAction(action);
-                }
-                actions.Clear();
-                this.macro = null;
+                result.AddUserAction(action);
             }
+            actions.Clear();
+            return result;
         }
 
         /// <summary>
         /// Replays a macro asynchronously
         /// </summary>
-        public async Task ReplayMacroAsync(Macro macro)
+        public async Task PlaybackMacroAsync(Macro macro)
         {
             foreach (var action in macro.GetUserActions())
             {

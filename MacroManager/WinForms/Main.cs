@@ -10,24 +10,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using MacroManager.WinForms;
 
 namespace MacroManager
 {
     public partial class Main : Form
     {
-        #region Constants
-
-        private const string NO_FILE_SELECTED_MESSAGE = "Please open saved macros or create new...";
-        private const string RECORD_TAB_STATUS_EMPTY_NAME_MESSAGE = "Name is required!";
-        private const string RECORD_TAB_STATUS_MESSAGE = "Waiting for recording to start...";
-        private const string PLAYBACK_TAB_STATUS_MESSAGE = "Select a Macro...";
-
-        #endregion
 
         #region Fields
 
         private MacroService macroService;
-        private Macro currentMacro;
 
         #endregion
 
@@ -36,44 +28,33 @@ namespace MacroManager
         public Main()
         {
             InitializeComponent();
-        }
 
-        public Main(MacroService macroService)
-            : this()
-        {
-            this.macroService = macroService;
-            this.macroService.RecordingStopped += (sender, e) => this.LoadMacros();
-            this.statusMessage.Text = NO_FILE_SELECTED_MESSAGE;
+            var fileName = String.Format("macros_{0}.xml", DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss"));
+            var path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                fileName
+            );
+
+            this.macroService = new MacroService(new HookService(), new XmlMacroRepository(path, true));
+            this.macroService.RecordingStopped += (sender, e) =>
+            {
+                var macros = this.macroService.GetAllMacros().ToList();
+                this.playbackControll.LoadMacros(macros);
+            };
+
+            this.SetApplicationTile(fileName.Substring(0, fileName.Length - 4));
+
         }
 
         #endregion
 
         #region Private Methods
 
-        private void LoadMacros()
-        {
-            var macros = this.macroService.GetAllMacros();
-
-            this.playbackButton.Enabled = macros.Count() > 0;
-
-            this.macroList.Items.Clear();
-
-            foreach (var macro in macros)
-            {
-                this.macroList.Items.Add(
-                    new ListViewItem(new[] { macro.Name, macro.Description })
-                    {
-                        Tag = macro.MacroId
-                    }
-                );
-            }
-        }
-
         /// <summary>
         /// Checks for unsaved changes and prompts the user for a save. Then returns a boolean representing what is to be done.
         /// Returns true if the application is to be terminated.
         /// </summary>
-        private bool Quit()
+        private bool CanCloseOpenFile()
         {
             bool hasChanges;
             try
@@ -106,138 +87,34 @@ namespace MacroManager
             return true;
         }
 
-        private void UpdateStatusText()
+        /// <summary>
+        /// Sets the application title with a file name.
+        /// </summary>
+        private void SetApplicationTile(string fileName)
         {
-            var message = "";
-            if (this.applicationTabs.SelectedIndex == 1)
-            {
-                if (this.nameTextBox.Text == "")
-                {
-                    message = RECORD_TAB_STATUS_EMPTY_NAME_MESSAGE;
-                }
-                else
-                {
-                    message = RECORD_TAB_STATUS_MESSAGE;
-                }
-            }
-            else
-            {
-                message = PLAYBACK_TAB_STATUS_MESSAGE;
-            }
-            this.statusMessage.Text = message;
+            this.Text = String.Format("Macro Manager - {0}", fileName);
         }
-
+        
         #endregion
 
         #region Eventhandlers
 
-        #region Record Macro Tab
-
-        private void recordButton_Click(object sender, EventArgs e)
-        {
-            if (this.nameTextBox.Text == "")
-            {
-                throw new Exception("Cannot create a macro whithout a name!");
-            }
-            if (this.currentMacro != null)
-            {
-                throw new Exception("User should not be able to click on start when a macro is recording.");
-            }
-            this.currentMacro = this.macroService.CreateMacro(this.nameTextBox.Text, this.descriptionTextBox.Text);
-            this.macroService.StartRecording(this.currentMacro);
-
-            this.nameTextBox.Enabled = false;
-            this.descriptionTextBox.Enabled = false;
-
-            this.recordButton.Enabled = false;
-            this.stopButton.Enabled = true;
-
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void stopButton_Click(object sender, EventArgs e)
-        {
-            if (this.currentMacro == null)
-            {
-                throw new Exception("User should not be able to click on stop button if a macro is not recording.");
-            }
-
-            this.macroService.StopRecording(this.currentMacro);
-
-            this.currentMacro = null;
-
-            this.nameTextBox.Enabled = true;
-            this.nameTextBox.Text = "";
-
-            this.descriptionTextBox.Enabled = true;
-            this.descriptionTextBox.Text = "";
-
-            this.stopButton.Enabled = false;
-        }
-
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
-        {
-            this.recordButton.Enabled = this.nameTextBox.Text != "";
-            this.UpdateStatusText();
-        }
-        #endregion
-
-        #region Playback Macro Tab
-
-        private void playbackButton_Click(object sender, EventArgs e)
-        {
-            var selected = this.macroList.SelectedItems;
-            if (selected.Count != 1)
-            {
-                throw new Exception("No macro selected from list");
-            }
-            var selectedGuid = (Guid)selected[0].Tag;
-            var macro = this.macroService
-                .GetAllMacros()
-                .FirstOrDefault(x => x.MacroId == selectedGuid);
-            if (macro == null)
-            {
-                throw new Exception("No macros to run");
-            }
-            this.macroService.ReplayMacro(macro);
-        }
-
-
-        private void removeButton_Click(object sender, EventArgs e)
-        {
-            var selected = this.macroList.SelectedItems;
-            if (selected.Count != 1)
-            {
-                throw new Exception("No macro selected from list");
-            }
-            var selectedGuid = (Guid)selected[0].Tag;
-            var macro = this.macroService
-                .GetAllMacros()
-                .FirstOrDefault(x => x.MacroId == selectedGuid);
-            this.macroService.RemoveMacro(macro);
-            this.LoadMacros();
-        }
-
-        #endregion
-
         #region Toolstrip
-        
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.Quit())
+            if (this.CanCloseOpenFile())
             {
                 Application.Exit();
             }
         }
 
-
-        private void applicationTabs_Click(object sender, EventArgs e)
-        {
-            this.UpdateStatusText();
-        }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!this.CanCloseOpenFile())
+            {
+                return;
+            }
             var dialog = new OpenFileDialog()
             {
                 Title = "Open Macro file...",
@@ -251,12 +128,10 @@ namespace MacroManager
             }
             var fileName = dialog.FileName;
             var macroRepository = new XmlMacroRepository(fileName);
-            this.macroService.IntitializeRepository(macroRepository);
-            this.LoadMacros();
-            this.applicationTabs.Enabled = true;
-            this.saveAsToolStripMenuItem.Enabled = true;
-            this.saveToolStripMenuItem.Enabled = true;
-            this.Text = String.Format("Macro Manager - {0}", Path.GetFileNameWithoutExtension(fileName));
+            this.macroService.UpdateRepository(macroRepository);
+            var macros = this.macroService.GetAllMacros().ToList();
+            this.playbackControll.LoadMacros(macros);
+            this.SetApplicationTile(Path.GetFileNameWithoutExtension(fileName));
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -283,12 +158,36 @@ namespace MacroManager
 
         #endregion
 
+        private void playbackControll_StartPlayback(object sender, Playback.PlaybackEventArgs eventArgs)
+        {
+            this.macroService.StartPlayback(eventArgs.SelectedMacro);
+        }
+
+        private void playbackControll_StopPlayback(object sender, Playback.PlaybackEventArgs e)
+        {
+            this.macroService.StopPlayback();
+        }
+
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            e.Cancel = !this.Quit();
+            e.Cancel = !this.CanCloseOpenFile();
+        }
+
+        private void recordingControll_StartRecording(object sender, EventArgs e)
+        {
+            this.statusMessage.Text = "Recording...";
+            this.macroService.StartRecording();
+        }
+
+        private void recordingControll_StopRecording(object sender, Recording.RecordingEventArgs args)
+        {
+            this.macroService.StopRecording(args.MacroName, args.MacroDescription);
+            this.statusMessage.Text = "Macro recorded!";
+
         }
 
         #endregion
+
 
     }
 }

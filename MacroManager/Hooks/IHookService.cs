@@ -9,8 +9,8 @@ namespace MacroManager.Hooks
 {
     public interface IHookService
     {
-        void StartRecording(Macro macro);
-        void StopRecording();
-        Task ReplayMacroAsync(Macro macro);
+        void StartRecording();
+        Macro StopRecording();
+        Task PlaybackMacroAsync(Macro macro);
     }
 }

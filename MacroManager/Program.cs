@@ -17,8 +17,7 @@ namespace MacroManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var hookService = new HookService();
-            Application.Run(new Main(new MacroService(hookService)));
+            Application.Run(new Main());
         }
     }
 }
