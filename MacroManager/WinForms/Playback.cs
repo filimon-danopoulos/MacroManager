@@ -108,7 +108,10 @@ namespace MacroManager.WinForms
         private void hideShortWaitActionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
+            // Reload actions so that any visible wait actions are hiden. 
             this.DisplayActions(this.GetSelectedMacro());
+            // Resize the columns so that any potential scroll bar width is taken into account.
+            this.ResizeActionColumns();
         }
 
         #endregion
