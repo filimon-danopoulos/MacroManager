@@ -62,6 +62,7 @@ namespace MacroManager.Hooks
         /// <param name="inputMacro">The macro that all actions should be writen to.</param>
         public void StartRecording()
         {
+            this.stopPlayback = false;
             this.previousAction = DateTime.MinValue;
             this.virtualMouse.StartRecording();
             this.virtualKeyboard.StartRecording();
