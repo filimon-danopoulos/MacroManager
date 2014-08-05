@@ -23,5 +23,19 @@ namespace MacroManager.Data.Actions
             get;
             private set;
         }
+
+        public override string ToString()
+        {
+            var first = this.Path.First();
+            var last = this.Path.Last();
+            return String.Format(
+                "{0} click drag from ({1}, {2}) to ({3}, {4}).",
+                this.PressedButton == ClickAction.MouseButton.Left ? "Left" : "Right",
+                first.X,
+                first.Y,
+                last.X,
+                last.Y
+            );
+        }
     }
 }

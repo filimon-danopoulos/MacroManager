@@ -22,5 +22,13 @@ namespace MacroManager.Data.Actions
         {
             this.Duration = duration;
         }
+
+        public override string ToString()
+        {
+            return String.Format(
+                "Wait for {0} seconds", 
+                this.Duration/1000f
+            );
+        }
     }
 }

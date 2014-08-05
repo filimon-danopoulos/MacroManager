@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MacroManager.Data.Actions
 {
@@ -12,6 +13,15 @@ namespace MacroManager.Data.Actions
         {
             this.VirtualKey = vkCode;
         }
+
         public int VirtualKey { get; private set; }
+
+        public override string ToString()
+        {
+            return String.Format(
+                "'{0}' pressed.",
+                (Keys)this.VirtualKey
+            );
+        }
     }
 }

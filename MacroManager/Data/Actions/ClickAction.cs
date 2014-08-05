@@ -42,5 +42,14 @@ namespace MacroManager.Data.Actions
             Left,
             Right
         }
+
+        public override string ToString()
+        {
+            return String.Format("{0} click at ({1}, {2})", 
+                this.PressedButton == MouseButton.Left ? "Left" : "Right",
+                this.X, 
+                this.Y
+            );
+        }
     }
 }
