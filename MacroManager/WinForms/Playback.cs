@@ -30,6 +30,12 @@ namespace MacroManager.WinForms
             this.macros = new List<Macro>();
             this.playingMacro = null;
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
+
+            var actionIcons = new ImageList();
+            actionIcons.Images.Add("done", Image.FromFile("Icons\\accept.png"));
+            actionIcons.Images.Add("waiting", Image.FromFile("Icons\\clock.png"));
+
+            this.macroActionsList.SmallImageList = actionIcons;
         }
 
         #endregion
@@ -108,10 +114,14 @@ namespace MacroManager.WinForms
         private void hideShortWaitActionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
-            // Reload actions so that any visible wait actions are hiden. 
-            this.DisplayActions(this.GetSelectedMacro());
-            // Resize the columns so that any potential scroll bar width is taken into account.
-            this.ResizeActionColumns();
+
+            if (this.HasSelectedMacro())
+            {
+                // Reload actions so that any visible wait actions are hiden. 
+                this.DisplayActions(this.GetSelectedMacro());
+                // Resize the columns so that any potential scroll bar width is taken into account.
+                this.ResizeActionColumns();
+            }
         }
 
         #endregion
@@ -160,7 +170,7 @@ namespace MacroManager.WinForms
                 this.macroActionsList.Items.Add(new ListViewItem(new[] {
                     action.GetType().Name,
                     action.ToString()
-                }));
+                }, "waiting"));
             }
             if (macro.Description == "")
             {
@@ -193,7 +203,15 @@ namespace MacroManager.WinForms
             return this.macros[this.macroListBox.SelectedIndex];
         }
 
+        /// <summary>
+        /// Checks that a macro is selected in the macro list box.
+        /// </summary>
+        private bool HasSelectedMacro()
+        {
+            return this.macroListBox.SelectedIndex != -1;
+        }
         #endregion
+
 
     }
 }

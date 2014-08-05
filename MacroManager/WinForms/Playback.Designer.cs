@@ -125,7 +125,10 @@
             this.macroActionsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.actionTypeColumnHeader,
             this.actionDescriptionColumnHeader});
+            this.macroActionsList.FullRowSelect = true;
+            this.macroActionsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.macroActionsList.Location = new System.Drawing.Point(0, 209);
+            this.macroActionsList.MultiSelect = false;
             this.macroActionsList.Name = "macroActionsList";
             this.macroActionsList.Size = new System.Drawing.Size(543, 326);
             this.macroActionsList.TabIndex = 0;
@@ -135,7 +138,7 @@
             // actionTypeColumnHeader
             // 
             this.actionTypeColumnHeader.Text = "Action Type";
-            this.actionTypeColumnHeader.Width = 176;
+            this.actionTypeColumnHeader.Width = 100;
             // 
             // actionDescriptionColumnHeader
             // 
