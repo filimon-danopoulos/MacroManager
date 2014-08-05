@@ -100,7 +100,7 @@ namespace MacroManager.WinForms
         private void stopRecordingButton_Click(object sender, EventArgs e)
         {
             
-            var args = new RecordingEventArgs(this.nameTextBox.Text, this.descriptionTextBox.Name);
+            var args = new RecordingEventArgs(this.nameTextBox.Text, this.descriptionTextBox.Text);
             this.OnStopRecording(args);
 
             this.nameTextBox.Enabled = true;
