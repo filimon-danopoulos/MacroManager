@@ -196,9 +196,9 @@
             // 
             // statusMessage
             // 
+            this.statusMessage.AutoSize = false;
             this.statusMessage.Name = "statusMessage";
-            this.statusMessage.Size = new System.Drawing.Size(96, 17);
-            this.statusMessage.Text = "Everything is OK!";
+            this.statusMessage.Size = new System.Drawing.Size(400, 17);
             // 
             // Main
             // 
