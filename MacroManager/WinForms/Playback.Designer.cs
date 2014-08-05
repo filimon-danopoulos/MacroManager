@@ -39,6 +39,7 @@
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeButton = new System.Windows.Forms.Button();
             this.macrosGroupBox = new System.Windows.Forms.GroupBox();
+            this.hideShortWaitActionCheckBox = new System.Windows.Forms.CheckBox();
             this.macroDetails.SuspendLayout();
             this.descriptionBox.SuspendLayout();
             this.macrosGroupBox.SuspendLayout();
@@ -61,6 +62,7 @@
             this.macroDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.macroDetails.Controls.Add(this.hideShortWaitActionCheckBox);
             this.macroDetails.Controls.Add(this.descriptionBox);
             this.macroDetails.Controls.Add(this.stopPlaybackButton);
             this.macroDetails.Controls.Add(this.startPlaybackButton);
@@ -163,6 +165,19 @@
             this.macrosGroupBox.TabStop = false;
             this.macrosGroupBox.Text = "Macros";
             // 
+            // hideShortWaitActionCheckBox
+            // 
+            this.hideShortWaitActionCheckBox.AutoSize = true;
+            this.hideShortWaitActionCheckBox.Checked = true;
+            this.hideShortWaitActionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.hideShortWaitActionCheckBox.Location = new System.Drawing.Point(0, 184);
+            this.hideShortWaitActionCheckBox.Name = "hideShortWaitActionCheckBox";
+            this.hideShortWaitActionCheckBox.Size = new System.Drawing.Size(134, 17);
+            this.hideShortWaitActionCheckBox.TabIndex = 7;
+            this.hideShortWaitActionCheckBox.Text = "Hide short WaitActions";
+            this.hideShortWaitActionCheckBox.UseVisualStyleBackColor = true;
+            this.hideShortWaitActionCheckBox.CheckedChanged += new System.EventHandler(this.hideShortWaitActionCheckBox_CheckedChanged);
+            // 
             // Playback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -174,6 +189,7 @@
             this.Size = new System.Drawing.Size(795, 541);
             this.Resize += new System.EventHandler(this.applicationTabs_Resize);
             this.macroDetails.ResumeLayout(false);
+            this.macroDetails.PerformLayout();
             this.descriptionBox.ResumeLayout(false);
             this.macrosGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -193,5 +209,6 @@
         private System.Windows.Forms.ColumnHeader actionDescriptionColumnHeader;
         private System.Windows.Forms.Button removeButton;
         private System.Windows.Forms.GroupBox macrosGroupBox;
+        private System.Windows.Forms.CheckBox hideShortWaitActionCheckBox;
     }
 }

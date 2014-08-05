@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MacroManager.Data;
+using MacroManager.Data.Actions;
 
 namespace MacroManager.WinForms
 {
@@ -17,6 +18,7 @@ namespace MacroManager.WinForms
 
         private IList<Macro> macros;
         private Macro playingMacro;
+        private bool hideShortWaitActions;
 
         #endregion
 
@@ -27,6 +29,7 @@ namespace MacroManager.WinForms
             InitializeComponent();
             this.macros = new List<Macro>();
             this.playingMacro = null;
+            this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
         }
 
         #endregion
@@ -102,6 +105,12 @@ namespace MacroManager.WinForms
             this.ResizeActionColumns();
         }
 
+        private void hideShortWaitActionCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
+            this.DisplayActions(this.GetSelectedMacro());
+        }
+
         #endregion
 
         #region Public Method
@@ -134,7 +143,16 @@ namespace MacroManager.WinForms
         private void DisplayActions(Macro macro)
         {
             this.macroActionsList.Items.Clear();
-            foreach (var action in macro.GetUserActions())
+            var actions = macro.GetUserActions();
+            if (this.hideShortWaitActions)
+            {
+                actions = actions.Where(x =>
+                {
+                    var waitAction = x as WaitAction;
+                    return waitAction == null || waitAction.Duration > 500;
+                });
+            }
+            foreach (var action in actions)
             {
                 this.macroActionsList.Items.Add(new ListViewItem(new[] {
                     action.GetType().Name,
@@ -173,7 +191,6 @@ namespace MacroManager.WinForms
         }
 
         #endregion
-
 
     }
 }
