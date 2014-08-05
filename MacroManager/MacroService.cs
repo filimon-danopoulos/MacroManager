@@ -75,11 +75,15 @@ namespace MacroManager
         /// </summary>
         public void StartPlayback(Macro macro)
         {
-            this.hookService.PlaybackMacroAsync(macro).ConfigureAwait(false);
+            this.hookService.StartMacroPlaybackAsync(macro).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Stops playback of a macro
+        /// </summary>
         public void StopPlayback()
         {
+            this.hookService.StopMacroPlayback();
         }
 
         /// <summary>

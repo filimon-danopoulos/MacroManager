@@ -11,6 +11,7 @@ namespace MacroManager.Hooks
     {
         void StartRecording();
         Macro StopRecording();
-        Task PlaybackMacroAsync(Macro macro);
+        Task StartMacroPlaybackAsync(Macro macro);
+        void StopMacroPlayback();
     }
 }

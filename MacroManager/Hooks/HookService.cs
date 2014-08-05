@@ -22,6 +22,7 @@ namespace MacroManager.Hooks
 
         private readonly VirtualMouse virtualMouse;
         private readonly VirtualKeyboard virtualKeyboard;
+        private bool stopPlayback;
 
         /// <summary>
         /// Keeps track of all the recorded actions.
@@ -39,6 +40,8 @@ namespace MacroManager.Hooks
 
         public HookService()
         {
+            this.stopPlayback = false;
+
             this.actions = new List<UserAction>();
             this.previousAction = DateTime.MinValue;
 
@@ -84,10 +87,16 @@ namespace MacroManager.Hooks
         /// <summary>
         /// Replays a macro asynchronously
         /// </summary>
-        public async Task PlaybackMacroAsync(Macro macro)
+        public async Task StartMacroPlaybackAsync(Macro macro)
         {
             foreach (var action in macro.GetUserActions())
             {
+                if (this.stopPlayback)
+                {
+                    this.stopPlayback = false;
+                    return;
+                }
+
                 if (action is MacroManager.Data.Actions.DragAction)
                 {
                     await this.virtualMouse.DragAsync(action as MacroManager.Data.Actions.DragAction);
@@ -109,6 +118,11 @@ namespace MacroManager.Hooks
                     await Task.Delay((action as WaitAction).Duration);
                 }
             }
+        }
+
+        public void StopMacroPlayback()
+        {
+            this.stopPlayback = true;
         }
 
         #endregion
