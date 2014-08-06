@@ -170,6 +170,12 @@ namespace MacroManager
             this.macroService.StopPlayback();
             this.statusMessage.Text = "Playback stopped!";
         }
+        
+        private void playbackControll_RemoveMacro(object sender, Playback.PlaybackEventArgs args)
+        {
+            this.macroService.RemoveMacro(args.SelectedMacro);
+            this.playbackControll.LoadMacros(this.macroService.GetAllMacros().ToList());
+        }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -188,6 +194,7 @@ namespace MacroManager
             this.macroService.StopRecording(args.MacroName, args.MacroDescription);
             this.statusMessage.Text = "Macro recorded!";
         }
+
 
         #endregion
 

@@ -58,7 +58,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.applicationTabs.Controls.Add(this.playbackTab);
             this.applicationTabs.Controls.Add(this.recordTab);
-            this.applicationTabs.Location = new System.Drawing.Point(3, 24);
+            this.applicationTabs.Location = new System.Drawing.Point(3, 22);
             this.applicationTabs.Name = "applicationTabs";
             this.applicationTabs.SelectedIndex = 0;
             this.applicationTabs.Size = new System.Drawing.Size(972, 614);
@@ -86,6 +86,7 @@
             this.playbackControll.TabIndex = 0;
             this.playbackControll.StartPlayback += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_StartPlayback);
             this.playbackControll.StopPlayback += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_StopPlayback);
+            this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_RemoveMacro);
             // 
             // recordTab
             // 

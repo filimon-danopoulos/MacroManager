@@ -53,7 +53,14 @@ namespace MacroManager.WinForms
 
         #endregion
 
+        /// <summary>
+        /// Fires when the start playback button is clicked.
+        /// </summary>
         public event EventHandler<PlaybackEventArgs> StartPlayback;
+
+        /// <summary>
+        /// Wrapper for the StartPlayback event, null checks handler.
+        /// </summary>
         private void OnStartPlayback(PlaybackEventArgs args)
         {
             var handler = this.StartPlayback;
@@ -63,10 +70,34 @@ namespace MacroManager.WinForms
             }
         }
 
+        /// <summary>
+        /// Fires when the stop playback button is clicked.
+        /// </summary>
         public event EventHandler<PlaybackEventArgs> StopPlayback;
+
+        /// <summary>
+        /// Wrapper for the StopPlayback event, null checks the handler.
+        /// </summary>
         private void OnStopPlayback(PlaybackEventArgs args)
         {
             var handler = this.StopPlayback;
+            if (handler != null)
+            {
+                handler(this, args);
+            }
+        }
+
+        /// <summary>
+        /// Fires when the remove macro button is clicked.
+        /// </summary>
+        public event EventHandler<PlaybackEventArgs> RemoveMacro;
+
+        /// <summary>
+        /// Wrapper for the RemoveMacro event, nulls checks the handler.
+        /// </summary>
+        private void OnRemoveMacro(PlaybackEventArgs args)
+        {
+            var handler = this.RemoveMacro;
             if (handler != null)
             {
                 handler(this, args);
@@ -115,6 +146,14 @@ namespace MacroManager.WinForms
                 this.DisplayActions(this.GetSelectedMacro());
                 // Resize the columns so that any potential scroll bar width is taken into account.
                 this.ResizeActionColumns();
+            }
+        }
+
+        private void removeButton_Click(object sender, EventArgs e)
+        {
+            if (this.HasSelectedMacro())
+            {
+                this.OnRemoveMacro(new PlaybackEventArgs(this.GetSelectedMacro()));
             }
         }
 
@@ -205,7 +244,6 @@ namespace MacroManager.WinForms
             return this.macroListBox.SelectedIndex != -1;
         }
         #endregion
-
 
     }
 }

@@ -30,6 +30,7 @@
         {
             this.macroListBox = new System.Windows.Forms.ListBox();
             this.macroDetails = new System.Windows.Forms.Panel();
+            this.hideShortWaitActionCheckBox = new System.Windows.Forms.CheckBox();
             this.descriptionBox = new System.Windows.Forms.GroupBox();
             this.macroDetailsDescription = new System.Windows.Forms.Label();
             this.stopPlaybackButton = new System.Windows.Forms.Button();
@@ -39,7 +40,6 @@
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeButton = new System.Windows.Forms.Button();
             this.macrosGroupBox = new System.Windows.Forms.GroupBox();
-            this.hideShortWaitActionCheckBox = new System.Windows.Forms.CheckBox();
             this.macroDetails.SuspendLayout();
             this.descriptionBox.SuspendLayout();
             this.macrosGroupBox.SuspendLayout();
@@ -71,6 +71,19 @@
             this.macroDetails.Name = "macroDetails";
             this.macroDetails.Size = new System.Drawing.Size(543, 535);
             this.macroDetails.TabIndex = 2;
+            // 
+            // hideShortWaitActionCheckBox
+            // 
+            this.hideShortWaitActionCheckBox.AutoSize = true;
+            this.hideShortWaitActionCheckBox.Checked = true;
+            this.hideShortWaitActionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.hideShortWaitActionCheckBox.Location = new System.Drawing.Point(0, 184);
+            this.hideShortWaitActionCheckBox.Name = "hideShortWaitActionCheckBox";
+            this.hideShortWaitActionCheckBox.Size = new System.Drawing.Size(134, 17);
+            this.hideShortWaitActionCheckBox.TabIndex = 7;
+            this.hideShortWaitActionCheckBox.Text = "Hide short WaitActions";
+            this.hideShortWaitActionCheckBox.UseVisualStyleBackColor = true;
+            this.hideShortWaitActionCheckBox.CheckedChanged += new System.EventHandler(this.hideShortWaitActionCheckBox_CheckedChanged);
             // 
             // descriptionBox
             // 
@@ -155,6 +168,7 @@
             this.removeButton.TabIndex = 3;
             this.removeButton.Text = "Remove Macro";
             this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
             // macrosGroupBox
             // 
@@ -167,19 +181,6 @@
             this.macrosGroupBox.TabIndex = 4;
             this.macrosGroupBox.TabStop = false;
             this.macrosGroupBox.Text = "Macros";
-            // 
-            // hideShortWaitActionCheckBox
-            // 
-            this.hideShortWaitActionCheckBox.AutoSize = true;
-            this.hideShortWaitActionCheckBox.Checked = true;
-            this.hideShortWaitActionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.hideShortWaitActionCheckBox.Location = new System.Drawing.Point(0, 184);
-            this.hideShortWaitActionCheckBox.Name = "hideShortWaitActionCheckBox";
-            this.hideShortWaitActionCheckBox.Size = new System.Drawing.Size(134, 17);
-            this.hideShortWaitActionCheckBox.TabIndex = 7;
-            this.hideShortWaitActionCheckBox.Text = "Hide short WaitActions";
-            this.hideShortWaitActionCheckBox.UseVisualStyleBackColor = true;
-            this.hideShortWaitActionCheckBox.CheckedChanged += new System.EventHandler(this.hideShortWaitActionCheckBox_CheckedChanged);
             // 
             // Playback
             // 
