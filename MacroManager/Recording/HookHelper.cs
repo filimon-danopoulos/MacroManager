@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MacroManager.Hooks
+namespace MacroManager.Recording
 {
     internal class HookHelper
     {

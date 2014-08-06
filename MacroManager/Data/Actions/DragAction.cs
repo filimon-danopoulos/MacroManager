@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 
 namespace MacroManager.Data.Actions
 {
-    public class DragAction : UserAction
+    public class DragAction : MouseAction
     {
-        public DragAction(ClickAction.MouseButton button, IEnumerable<Point> path) 
+        public DragAction(MouseButton button, IEnumerable<Point> path) 
         {
+            this.PressedButton = button;
             this.Path = path;
         }
         public IEnumerable<Point> Path
-        {
-            get;
-            private set;
-        }
-        public ClickAction.MouseButton PressedButton
         {
             get;
             private set;
@@ -30,7 +26,7 @@ namespace MacroManager.Data.Actions
             var last = this.Path.Last();
             return String.Format(
                 "{0} click drag from ({1}, {2}) to ({3}, {4}).",
-                this.PressedButton == ClickAction.MouseButton.Left ? "Left" : "Right",
+                this.PressedButton == MouseButton.Left ? "Left" : "Right",
                 first.X,
                 first.Y,
                 last.X,

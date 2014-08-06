@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MacroManager.Hooks
+namespace MacroManager.Recording
 {
-    public class VirtualKeyboard
+    public class KeyboardRecorder : IRecorder
     {
         #region Fields
 
@@ -18,13 +18,6 @@ namespace MacroManager.Hooks
         #endregion
 
         #region Public Methods
-
-        public void KeyPress(KeyPressAction keyPressAction)
-        {
-            var key = (byte)keyPressAction.VirtualKey;
-            keybd_event(key, 0, (int)Events.KEYBOARDEVENTF_KEYDOWN, 0);
-            keybd_event(key, 0, (int)Events.KEYBOARDEVENTF_KEYUP, 0);
-        }
 
         public void StartRecording()
         {
@@ -41,11 +34,11 @@ namespace MacroManager.Hooks
 
         private IntPtr HandleKeyboardHook(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var message = (VirtualKeyboard.Messages)wParam;
-            if (nCode >= 0 && message == VirtualKeyboard.Messages.WM_KEYDOWN)
+            var message = (Messages)wParam;
+            if (nCode >= 0 && message == Messages.WM_KEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                var args = new KeyboardEventArgs(new KeyPressAction(vkCode));
+                var args = new KeyboardEventArgs(new KeyboardAction(vkCode));
                 this.OnKeyPressed(args);
             }
             return HookHelper.CallNextHookEx(this.keyboardHookId, nCode, wParam, lParam);
@@ -60,7 +53,7 @@ namespace MacroManager.Hooks
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(VirtualKeyboard.WH_KEYBOARD_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(WH_KEYBOARD_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }
@@ -72,11 +65,11 @@ namespace MacroManager.Hooks
 
         public class KeyboardEventArgs : EventArgs
         {
-            public KeyboardEventArgs(KeyPressAction action)
+            public KeyboardEventArgs(KeyboardAction action)
             {
                 this.Action = action;
             }
-            public KeyPressAction Action
+            public KeyboardAction Action
             {
                 get;
                 private set;
@@ -113,15 +106,6 @@ namespace MacroManager.Hooks
         }
 
         /// <summary>
-        /// Enumeration of keyboard events, used when emulating events.
-        /// </summary>
-        private enum Events
-        {
-            KEYBOARDEVENTF_KEYDOWN = 0x00,
-            KEYBOARDEVENTF_KEYUP = 0x7F
-        }
-
-        /// <summary>
         /// Defines the signature for the low level keyboard callback
         /// </summary>
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -130,9 +114,6 @@ namespace MacroManager.Hooks
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern uint keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
 
         #endregion
 

@@ -84,9 +84,9 @@
             this.playbackControll.Name = "playbackControll";
             this.playbackControll.Size = new System.Drawing.Size(964, 588);
             this.playbackControll.TabIndex = 0;
-            this.playbackControll.StartPlayback += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_StartPlayback);
-            this.playbackControll.StopPlayback += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_StopPlayback);
-            this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.PlaybackEventArgs>(this.playbackControll_RemoveMacro);
+            this.playbackControll.StartPlayback += new System.EventHandler(this.playbackControll_StartPlayback);
+            this.playbackControll.StopPlayback += new System.EventHandler(this.playbackControll_StopPlayback);
+            this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.RemoveMacroEventArgs>(this.playbackControll_RemoveMacro);
             // 
             // recordTab
             // 
@@ -109,7 +109,8 @@
             this.recordingControll.Size = new System.Drawing.Size(964, 588);
             this.recordingControll.TabIndex = 0;
             this.recordingControll.StartRecording += new System.EventHandler(this.recordingControll_StartRecording);
-            this.recordingControll.StopRecording += new System.EventHandler<MacroManager.WinForms.Recording.RecordingEventArgs>(this.recordingControll_StopRecording);
+            this.recordingControll.StopRecording += new System.EventHandler(this.recordingControll_StopRecording);
+            this.recordingControll.SaveRecording += new System.EventHandler<MacroManager.WinForms.Recording.RecordingEventArgs>(this.recordingControll_SaveRecording);
             // 
             // mainMenuStrip
             // 
@@ -200,6 +201,7 @@
             this.statusMessage.AutoSize = false;
             this.statusMessage.Name = "statusMessage";
             this.statusMessage.Size = new System.Drawing.Size(400, 17);
+            this.statusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Main
             // 

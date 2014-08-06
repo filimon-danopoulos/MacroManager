@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace MacroManager.Data.Actions
 {
-    public class KeyPressAction : UserAction
+    public class KeyboardAction : UserAction
     {
-        public KeyPressAction(int vkCode)
+        public KeyboardAction(int vkCode)
         {
             this.VirtualKey = vkCode;
         }

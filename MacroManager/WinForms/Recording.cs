@@ -8,16 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MacroManager.Data;
+using MacroManager.Recording;
+using MacroManager.Data.Actions;
 
 namespace MacroManager.WinForms
 {
     public partial class Recording : UserControl
     {
+        #region Fields 
+
+        private RecordingService recordingService;
+
+        #endregion
+
         #region Constructors
 
         public Recording()
         {
             InitializeComponent();
+            this.recordingService = new RecordingService();
         }
 
         #endregion
@@ -28,19 +37,12 @@ namespace MacroManager.WinForms
 
         public class RecordingEventArgs : EventArgs
         {
-            public RecordingEventArgs(string macroName, string macroDescription)
+            public RecordingEventArgs(Macro macro)
             {
-                this.MacroName = macroName;
-                this.MacroDescription = macroDescription;
+                this.RecordedMacro = macro;
             }
 
-            public string MacroName
-            {
-                get;
-                private set;
-            }
-
-            public string MacroDescription
+            public Macro RecordedMacro
             {
                 get;
                 private set;
@@ -67,16 +69,32 @@ namespace MacroManager.WinForms
         }
 
         /// <summary>
-        /// Fires after the recording has stoped. Carries the name and description of the macro.
+        /// Fires after the recording has stoped.
         /// </summary>
-        public event EventHandler<RecordingEventArgs> StopRecording;
+        public event EventHandler StopRecording;
 
         /// <summary>
         /// Wrapper for firing the StopRecording event. Check the handler for null before firing the event.
         /// </summary>
-        private void OnStopRecording(RecordingEventArgs args)
+        private void OnStopRecording()
         {
             var handler = this.StopRecording;
+            if (handler != null)
+            {
+                handler(this, null);
+            }
+        }
+
+        /// <summary>
+        /// Fires when the save button is clicked. 
+        /// </summary>
+        public event EventHandler<RecordingEventArgs> SaveRecording;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void OnSaveRecording(RecordingEventArgs args) {
+            var handler = this.SaveRecording;
             if (handler != null)
             {
                 handler(this, args);
@@ -89,32 +107,41 @@ namespace MacroManager.WinForms
 
         private void startRecordingButton_Click(object sender, EventArgs e)
         {
-            this.nameTextBox.Enabled = false;
-            this.descriptionTextBox.Enabled = false;
-
             this.startRecordingButton.Enabled = false;
             this.stopRecordingButton.Enabled = true;
+
+            this.recordingService.StartRecording();
             this.OnStartRecording();
         }
 
         private void stopRecordingButton_Click(object sender, EventArgs e)
         {
-            
-            var args = new RecordingEventArgs(this.nameTextBox.Text, this.descriptionTextBox.Text);
-            this.OnStopRecording(args);
-
-            this.nameTextBox.Enabled = true;
-            this.nameTextBox.Text = "";
-
-            this.descriptionTextBox.Enabled = true;
-            this.descriptionTextBox.Text = "";
-
             this.stopRecordingButton.Enabled = false;
+            this.removeActionButton.Enabled = true;
+
+            this.recordingService.StopRecording();
+            this.OnStopRecording();
         }
 
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        private void saveButton_Click(object sender, EventArgs e)
         {
-            this.startRecordingButton.Enabled = this.nameTextBox.Text != "";
+            var name = this.nameTextBox.Text;
+
+            if (name == "")
+            {
+                MessageBox.Show(
+                    "Cannot create a Macro without a name!",
+                    "Name is required!",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation
+                );
+                return;
+            }
+
+            var description = this.descriptionTextBox.Text;
+            var actions = this.recordingService.GetRecordedActions().ToList();
+
+            this.OnSaveRecording(new RecordingEventArgs(new Macro(actions, name, description)));
         }
 
         #endregion

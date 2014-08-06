@@ -1,5 +1,4 @@
-﻿using MacroManager.Hooks;
-using MacroManager.Data;
+﻿using MacroManager.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +18,7 @@ namespace MacroManager
 
         #region Fields
 
-        private MacroService macroService;
+        private IFileMacroRepository macroRepository;
 
         #endregion
 
@@ -35,12 +34,8 @@ namespace MacroManager
                 fileName
             );
 
-            this.macroService = new MacroService(new HookService(), new XmlMacroRepository(path, true));
-            this.macroService.RecordingStopped += (sender, e) =>
-            {
-                var macros = this.macroService.GetAllMacros().ToList();
-                this.playbackControll.LoadMacros(macros);
-            };
+
+            this.macroRepository = new XmlMacroRepository(path, true);
 
             this.SetApplicationTile(fileName.Substring(0, fileName.Length - 4));
 
@@ -59,7 +54,7 @@ namespace MacroManager
             bool hasChanges;
             try
             {
-                hasChanges = this.macroService.HasChanges();
+                hasChanges = this.macroRepository.HasChanges();
             }
             // This will happen if the user exits before a macro file has been opened. 
             catch (NullReferenceException)
@@ -82,7 +77,7 @@ namespace MacroManager
             }
             if (dialogInput == DialogResult.Yes)
             {
-                this.macroService.SaveChanges();
+                this.macroRepository.SaveChanges();
             }
             return true;
         }
@@ -128,16 +123,14 @@ namespace MacroManager
                 return;
             }
             var fileName = dialog.FileName;
-            var macroRepository = new XmlMacroRepository(fileName);
-            this.macroService.UpdateRepository(macroRepository);
-            var macros = this.macroService.GetAllMacros().ToList();
-            this.playbackControll.LoadMacros(macros);
+            this.macroRepository.LoadData(fileName);
+            this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
             this.SetApplicationTile(Path.GetFileNameWithoutExtension(fileName));
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.macroService.SaveChanges();
+            this.macroRepository.SaveChanges();
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,50 +147,49 @@ namespace MacroManager
                 return;
             }
             var fileName = dialog.FileName;
-            this.macroService.SaveChanges(fileName);
+            this.macroRepository.SaveChanges(fileName);
         }
 
         #endregion
-
-        private void playbackControll_StartPlayback(object sender, Playback.PlaybackEventArgs eventArgs)
-        {
-            this.macroService.StartPlayback(eventArgs.SelectedMacro);
-            this.statusMessage.Text = "Playing Macro...";
-        }
-
-        private void playbackControll_StopPlayback(object sender, Playback.PlaybackEventArgs e)
-        {
-            this.macroService.StopPlayback();
-            this.statusMessage.Text = "Playback stopped!";
-        }
-        
-        private void playbackControll_RemoveMacro(object sender, Playback.PlaybackEventArgs args)
-        {
-            this.macroService.RemoveMacro(args.SelectedMacro);
-            this.playbackControll.LoadMacros(this.macroService.GetAllMacros().ToList());
-        }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = !this.CanCloseOpenFile();
         }
 
+        private void playbackControll_StartPlayback(object sender, EventArgs e)
+        {
+            this.statusMessage.Text = "Playing Macro...";
+        }
+
+        private void playbackControll_StopPlayback(object sender, EventArgs e)
+        {
+            this.statusMessage.Text = "Playback stopped!";
+        }
+        
+        private void playbackControll_RemoveMacro(object sender, MacroManager.WinForms.Playback.RemoveMacroEventArgs args)
+        {
+            this.macroRepository.Remove(args.SelectedMacro);
+            this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
+        }
+
         private void recordingControll_StartRecording(object sender, EventArgs e)
         {
             this.statusMessage.Text = "Recording Macro...";
-            this.macroService.StartRecording();
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void recordingControll_StopRecording(object sender, Recording.RecordingEventArgs args)
+        private void recordingControll_StopRecording(object sender, EventArgs e)
         {
-            this.macroService.StopRecording(args.MacroName, args.MacroDescription);
-            this.statusMessage.Text = "Macro recorded!";
+            this.statusMessage.Text = "Actions recorded!";
         }
 
-
+        private void recordingControll_SaveRecording(object sender, WinForms.Recording.RecordingEventArgs args)
+        {
+            this.statusMessage.Text = "Macro saved.";
+            this.macroRepository.Add(args.RecordedMacro);
+            this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
+        }
         #endregion
-
-
     }
 }

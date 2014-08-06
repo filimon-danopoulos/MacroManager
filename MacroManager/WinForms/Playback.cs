@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MacroManager.Data;
 using MacroManager.Data.Actions;
+using MacroManager.Playback;
 
 namespace MacroManager.WinForms
 {
@@ -17,8 +18,8 @@ namespace MacroManager.WinForms
         #region Fields
 
         private IList<Macro> macros;
-        private Macro playingMacro;
         private bool hideShortWaitActions;
+        private PlaybackService playbackService;
 
         #endregion
 
@@ -27,8 +28,8 @@ namespace MacroManager.WinForms
         public Playback()
         {
             InitializeComponent();
+            this.playbackService = new PlaybackService();
             this.macros = new List<Macro>();
-            this.playingMacro = null;
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
         }
 
@@ -36,11 +37,11 @@ namespace MacroManager.WinForms
 
         #region Events
 
-        #region Nested class PlaybackEventArgs
+        #region Nested class RemoveMacroEventArgs
 
-        public class PlaybackEventArgs : EventArgs
+        public class RemoveMacroEventArgs : EventArgs
         {
-            public PlaybackEventArgs(Macro macro)
+            public RemoveMacroEventArgs(Macro macro)
             {
                 this.SelectedMacro = macro;
             }
@@ -56,46 +57,46 @@ namespace MacroManager.WinForms
         /// <summary>
         /// Fires when the start playback button is clicked.
         /// </summary>
-        public event EventHandler<PlaybackEventArgs> StartPlayback;
+        public event EventHandler StartPlayback;
 
         /// <summary>
         /// Wrapper for the StartPlayback event, null checks handler.
         /// </summary>
-        private void OnStartPlayback(PlaybackEventArgs args)
+        private void OnStartPlayback()
         {
             var handler = this.StartPlayback;
             if (handler != null)
             {
-                handler(this, args);
+                handler(this, null);
             }
         }
 
         /// <summary>
         /// Fires when the stop playback button is clicked.
         /// </summary>
-        public event EventHandler<PlaybackEventArgs> StopPlayback;
+        public event EventHandler StopPlayback;
 
         /// <summary>
         /// Wrapper for the StopPlayback event, null checks the handler.
         /// </summary>
-        private void OnStopPlayback(PlaybackEventArgs args)
+        private void OnStopPlayback()
         {
             var handler = this.StopPlayback;
             if (handler != null)
             {
-                handler(this, args);
+                handler(this, null);
             }
         }
 
         /// <summary>
         /// Fires when the remove macro button is clicked.
         /// </summary>
-        public event EventHandler<PlaybackEventArgs> RemoveMacro;
+        public event EventHandler<RemoveMacroEventArgs> RemoveMacro;
 
         /// <summary>
         /// Wrapper for the RemoveMacro event, nulls checks the handler.
         /// </summary>
-        private void OnRemoveMacro(PlaybackEventArgs args)
+        private void OnRemoveMacro(RemoveMacroEventArgs args)
         {
             var handler = this.RemoveMacro;
             if (handler != null)
@@ -108,22 +109,23 @@ namespace MacroManager.WinForms
 
         #region Event handlers
 
-        private void startPlaybackButton_Click(object sender, EventArgs e)
+        private async void startPlaybackButton_Click(object sender, EventArgs e)
         {
+            if (!this.HasSelectedMacro())
+            {
+                return;
+            }
             this.removeButton.Enabled = false;
             this.stopPlaybackButton.Enabled = true;
             this.startPlaybackButton.Enabled = false;
-            this.playingMacro = this.GetSelectedMacro();
-            this.OnStartPlayback(new PlaybackEventArgs(this.playingMacro));
+            this.OnStartPlayback();
+            await this.playbackService.StartMacroPlaybackAsync(this.GetSelectedMacro());
         }
 
         private void stopPlaybackButton_Click(object sender, EventArgs e)
         {
-            if (this.playingMacro == null)
-            {
-                throw new NullReferenceException("playingMacro can't be null when the Stop button is clicked.");
-            }
-            this.OnStopPlayback(new PlaybackEventArgs(this.playingMacro));
+            this.playbackService.StopMacroPlayback();
+            this.OnStopPlayback();
         }
 
         private void macroListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -153,7 +155,7 @@ namespace MacroManager.WinForms
         {
             if (this.HasSelectedMacro())
             {
-                this.OnRemoveMacro(new PlaybackEventArgs(this.GetSelectedMacro()));
+                this.OnRemoveMacro(new RemoveMacroEventArgs(this.GetSelectedMacro()));
             }
         }
 

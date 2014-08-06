@@ -52,6 +52,15 @@ namespace MacroManager.Data
         }
 
         /// <summary>
+        /// Constructor that initializes a new Macro with a name, a description and a list of user actions.
+        /// Creates a new Guid.
+        /// </summary>
+        public Macro(IList<UserAction> userActions, string name, string description) : this (userActions, Guid.NewGuid(), name, description)
+        {
+            this.userActions = userActions;
+        }
+
+        /// <summary>
         /// Constructor that initializes a new Macro with a name and a description. 
         /// Creates a new Guid and empty list of UserActions.
         /// </summary>

@@ -46,24 +46,28 @@
   <ItemGroup>
     <Compile Include="Data\Actions\ClickAction.cs" />
     <Compile Include="Data\Actions\DragAction.cs" />
-    <Compile Include="Data\Actions\KeyPressAction.cs" />
+    <Compile Include="Data\Actions\KeyboardAction.cs" />
     <Compile Include="Data\Actions\LongClickAction.cs" />
-    <Compile Include="Hooks\HookHelper.cs" />
-    <Compile Include="Hooks\HookService.cs" />
+    <Compile Include="Data\Actions\MouseAction.cs" />
+    <Compile Include="Data\IFileMacroRepository.cs" />
+    <Compile Include="Recording\HookHelper.cs" />
+    <Compile Include="Playback\PlaybackService.cs" />
     <Compile Include="Data\Actions\UserAction.cs" />
-    <Compile Include="Hooks\IHookService.cs" />
     <Compile Include="Data\IMacroRepository.cs" />
     <Compile Include="Data\Macro.cs" />
     <Compile Include="Data\Actions\WaitAction.cs" />
-    <Compile Include="Hooks\VirtualKeyboard.cs" />
-    <Compile Include="Hooks\VirtualMouse.cs" />
+    <Compile Include="Playback\VirtualKeyboard.cs" />
+    <Compile Include="Playback\VirtualMouse.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Data\XmlMacroRepository.cs" />
-    <Compile Include="MacroService.cs" />
+    <Compile Include="Recording\IRecorder.cs" />
+    <Compile Include="Recording\KeyboardRecorder.cs" />
+    <Compile Include="Recording\MouseRecorder.cs" />
+    <Compile Include="Recording\RecordingService.cs" />
     <Compile Include="WinForms\Main.cs">
       <SubType>Form</SubType>
     </Compile>

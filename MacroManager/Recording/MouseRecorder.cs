@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MacroManager.Hooks
+namespace MacroManager.Recording
 {
-    public class VirtualMouse
+    public class MouseRecorder : IRecorder
     {
         #region Fields
 
@@ -25,7 +25,7 @@ namespace MacroManager.Hooks
 
         #region Constructors
 
-        public VirtualMouse()
+        public MouseRecorder()
         {
             this.path = new List<POINT>();
             this.previousPathReadTime = DateTime.Now;
@@ -34,82 +34,6 @@ namespace MacroManager.Hooks
         #endregion
 
         #region Public Methods
-
-        /// <summary>
-        /// Executes a single click
-        /// </summary>
-        public void Click(ClickAction action)
-        {
-            uint mouseEvent;
-            switch (action.PressedButton)
-            {
-                case ClickAction.MouseButton.Right:
-                    mouseEvent = (uint)Event.MOUSEEVENTF_RIGHTDOWN | (uint)Event.MOUSEEVENTF_RIGHTUP;
-                    break;
-                case ClickAction.MouseButton.Left:
-                    mouseEvent = (uint)Event.MOUSEEVENTF_LEFTDOWN | (uint)Event.MOUSEEVENTF_LEFTUP;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-            SetCursorPos(action.X, action.Y);
-            mouse_event(mouseEvent, (uint)action.X, (uint)action.Y, 0, 0);
-        }
-
-        /// <summary>
-        /// Executes a long click
-        /// </summary>
-        public async Task LongClickAsync(LongClickAction action)
-        {
-            uint mouseDownEvent;
-            uint mouseUpEvent;
-            switch (action.PressedButton)
-            {
-                case ClickAction.MouseButton.Right:
-                    mouseDownEvent = (uint)Event.MOUSEEVENTF_RIGHTDOWN;
-                    mouseUpEvent = (uint)Event.MOUSEEVENTF_RIGHTUP;
-                    break;
-                case ClickAction.MouseButton.Left:
-                    mouseDownEvent = (uint)Event.MOUSEEVENTF_LEFTDOWN;
-                    mouseUpEvent = (uint)Event.MOUSEEVENTF_LEFTUP;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-            SetCursorPos(action.X, action.Y);
-            mouse_event(mouseDownEvent, (uint)action.X, (uint)action.Y, 0, 0);
-            await Task.Delay(action.Duration).ConfigureAwait(false);
-            mouse_event(mouseUpEvent, (uint)action.X, (uint)action.Y, 0, 0);
-        }
-
-        public async Task DragAsync(DragAction action)
-        {
-            uint mouseDownEvent;
-            uint mouseUpEvent;
-            switch (action.PressedButton)
-            {
-                case ClickAction.MouseButton.Right:
-                    mouseDownEvent = (uint)Event.MOUSEEVENTF_RIGHTDOWN;
-                    mouseUpEvent = (uint)Event.MOUSEEVENTF_RIGHTUP;
-                    break;
-                case ClickAction.MouseButton.Left:
-                    mouseDownEvent = (uint)Event.MOUSEEVENTF_LEFTDOWN;
-                    mouseUpEvent = (uint)Event.MOUSEEVENTF_LEFTUP;
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-            var firstPoint = action.Path.First();
-            SetCursorPos(firstPoint.X, firstPoint.Y);
-            mouse_event(mouseDownEvent, (uint)firstPoint.X, (uint)firstPoint.Y, 0, 0);
-            foreach (var point in action.Path.Skip(1))
-            {
-                await Task.Delay(16).ConfigureAwait(false);
-                SetCursorPos(point.X, point.Y);
-            }
-            var lastPoint = action.Path.Last();
-            mouse_event(mouseUpEvent, (uint)lastPoint.X, (uint)lastPoint.Y, 0, 0);
-        }
 
         /// <summary>
         /// Starts recording all mouse activity the user makes
@@ -140,7 +64,6 @@ namespace MacroManager.Hooks
             MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
             if (nCode >= 0 && message != Message.WM_MOUSEMOVE)
             {
-                Debug.WriteLine("1: "+hookStruct.pt.x + " " + hookStruct.pt.y);
                 if (message == Message.WM_LBUTTONDOWN || message == Message.WM_RBUTTONDOWN)
                 {
                     this.clickDownTime = DateTime.Now;
@@ -173,7 +96,6 @@ namespace MacroManager.Hooks
             }
             else if (nCode >= 0 && message == Message.WM_MOUSEMOVE && this.mouseDown)
             {
-                Debug.WriteLine("2: "+hookStruct.pt.x + " " + hookStruct.pt.y);
                 var now = DateTime.Now;
                 var ellapsedTime = (int)Math.Floor((now - this.previousPathReadTime).TotalMilliseconds);
                 if (ellapsedTime >= 16)
@@ -255,17 +177,6 @@ namespace MacroManager.Hooks
         }
 
         /// <summary>
-        /// Enumeration of mouse events, used when emulating events.
-        /// </summary>
-        private enum Event
-        {
-            MOUSEEVENTF_LEFTDOWN = 0x02,
-            MOUSEEVENTF_LEFTUP = 0x04,
-            MOUSEEVENTF_RIGHTDOWN = 0x08,
-            MOUSEEVENTF_RIGHTUP = 0x10
-        }
-
-        /// <summary>
         /// Managed wrapper for the point struct used in the un-managed code
         /// </summary>
         [StructLayout(LayoutKind.Sequential)] // StructLayout is specified as sequential so that it behaves as C/C++ would
@@ -290,14 +201,7 @@ namespace MacroManager.Hooks
 
 
         #region Unmanaged imports
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
-
-        [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetCursorPos(int X, int Y);
-
+        
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 

@@ -1,4 +1,4 @@
-﻿using MacroManager.Hooks;
+﻿
 using MacroManager.Data.Actions;
 using System;
 using System.Collections.Generic;
@@ -13,11 +13,9 @@ namespace MacroManager.Data
     /// <summary>
     /// Repository class for persisting Macros to an XML file. 
     /// </summary>
-    public class XmlMacroRepository : IMacroRepository
+    public class XmlMacroRepository : IFileMacroRepository
     {
         #region Constants
-        // TODO: Figure out a better way to handle these constants. Reflection maybe?
-        private readonly string FILE_NAME;
         private const string MACRO_ROOT_LABEL = "macros";
         private const string MACRO_LABEL = "macro";
         private const string MACRO_ID_LABEL = "id";
@@ -44,10 +42,12 @@ namespace MacroManager.Data
 
         #region Fields
 
+        // TODO: Figure out a better way to handle these constants. Reflection maybe?
+        private string FILE_NAME;
         /// <summary>
         /// The XML document we are working with.
         /// </summary>
-        private readonly XDocument document;
+        private XDocument document;
 
         #endregion
 
@@ -127,7 +127,7 @@ namespace MacroManager.Data
                                         )
                                 );
                             case KEY_PRESS_ACTION_TYPE:
-                                return new KeyPressAction(
+                                return new KeyboardAction(
                                     int.Parse(action.Element(MACRO_ACTION_KEY_LABEL).Value)
                                 ) as UserAction;
                             case WAIT_ACTION_TYPE:
@@ -203,12 +203,12 @@ namespace MacroManager.Data
                                 new XElement(MACRO_ACTION_BUTTON_LABEL, (int)clickAction.PressedButton)
                             );
                         }
-                        else if (action is KeyPressAction)
+                        else if (action is KeyboardAction)
                         {
                             return new XElement(
                                 MACRO_ACTION_LABEL,
                                 new XElement(MACRO_ACTION_TYPE_LABEL, KEY_PRESS_ACTION_TYPE),
-                                new XElement(MACRO_ACTION_KEY_LABEL, (action as KeyPressAction).VirtualKey)
+                                new XElement(MACRO_ACTION_KEY_LABEL, (action as KeyboardAction).VirtualKey)
                             );
                         }
                         else if (action is WaitAction)
@@ -250,6 +250,24 @@ namespace MacroManager.Data
         public void SaveChanges()
         {
             document.Save(FILE_NAME);
+        }
+
+        /// <summary>
+        /// Saves all changes made to the repository to the specified file.
+        /// </summary>
+        public void SaveChanges(string fileName)
+        {
+            document.Save(fileName);
+            FILE_NAME = fileName;
+        }
+
+        /// <summary>
+        /// Loads a new file into the repository.
+        /// </summary>
+        public void LoadData(string fileName)
+        {
+            this.document = XDocument.Load(fileName);
+            FILE_NAME = fileName;
         }
 
         /// <summary>

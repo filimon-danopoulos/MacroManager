@@ -8,7 +8,7 @@ namespace MacroManager.Data.Actions
     /// <summary>
     /// Abstract class that represent a Click action
     /// </summary>
-    public class ClickAction : UserAction
+    public class ClickAction : MouseAction
     {
         /// <summary>
         /// What type of comment should I write on a constructor?
@@ -28,20 +28,6 @@ namespace MacroManager.Data.Actions
         /// The X coordinate of the click.
         /// </summary>
         public int X { get; private set; }
-
-        /// <summary>
-        /// Shows wether or not this action was a left of right button.
-        /// </summary>
-        public MouseButton PressedButton { get; set; }
-
-        /// <summary>
-        /// Enumeraion of all supported mouse buttons.
-        /// </summary>
-        public enum MouseButton
-        {
-            Left,
-            Right
-        }
 
         public override string ToString()
         {
