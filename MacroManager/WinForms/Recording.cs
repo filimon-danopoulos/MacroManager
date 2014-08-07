@@ -150,16 +150,22 @@ namespace MacroManager.WinForms
 
             var description = this.descriptionTextBox.Text;
             var actions = this.recordingService.GetRecordedActions().ToList();
-
+            this.ResetRecordForm();
             this.OnSaveRecording(new RecordingEventArgs(new Macro(actions, name, description)));
         }
 
         private void discardMacroButton_Click(object sender, EventArgs e)
         {
-            this.nameTextBox.Text = "";
-            this.descriptionTextBox.Text = "";
-            this.actionsListView.Items.Clear();
-            this.stopRecordingButton.Enabled = false;
+            var result = MessageBox.Show(
+                "All changes made to the new macro will be discarded. Do you want to continue?",
+                "Are you sure?", 
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+            if (result == DialogResult.Yes)
+            {
+                this.ResetRecordForm();
+            }
         }
 
         private void Recording_Resize(object sender, EventArgs e)
@@ -177,6 +183,15 @@ namespace MacroManager.WinForms
         private void ResizeActionColumns()
         {
             this.actionsListView.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        private void ResetRecordForm()
+        {
+            this.nameTextBox.Text = "";
+            this.descriptionTextBox.Text = "";
+            this.actionsListView.Items.Clear();
+            this.stopRecordingButton.Enabled = false;
+            this.startRecordingButton.Enabled = true;
         }
 
         #endregion
