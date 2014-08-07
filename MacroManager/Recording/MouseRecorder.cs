@@ -93,7 +93,9 @@ namespace MacroManager.Recording
                         if (windowHandle != IntPtr.Zero)
                         {
                             var applicationTitle = "";
-                            var window = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == windowHandle);
+                            int processId;
+                            GetWindowThreadProcessId(windowHandle, out processId);
+                            var window = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
                             if (window != null)
                             {
                                 applicationTitle = window.ProcessName;
@@ -222,6 +224,9 @@ namespace MacroManager.Recording
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr WindowFromPoint(POINT pnt);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out int lpdwProcessId);
 
         #endregion
 
