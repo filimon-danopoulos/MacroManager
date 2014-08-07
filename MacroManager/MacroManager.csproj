@@ -68,6 +68,12 @@
     <Compile Include="Recording\KeyboardRecorder.cs" />
     <Compile Include="Recording\MouseRecorder.cs" />
     <Compile Include="Recording\RecordingService.cs" />
+    <Compile Include="WinForms\EditAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\EditAction.Designer.cs">
+      <DependentUpon>EditAction.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinForms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +94,9 @@
     <Compile Include="WinForms\Recording.Designer.cs">
       <DependentUpon>Recording.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="WinForms\EditAction.resx">
+      <DependentUpon>EditAction.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WinForms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

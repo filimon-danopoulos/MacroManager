@@ -43,6 +43,7 @@
             this.actionTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.editActionButton = new System.Windows.Forms.Button();
             this.macroDetailsGroup.SuspendLayout();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
@@ -152,6 +153,7 @@
             this.actionGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.actionGroup.Controls.Add(this.editActionButton);
             this.actionGroup.Controls.Add(this.removeActionButton);
             this.actionGroup.Controls.Add(this.stopRecordingButton);
             this.actionGroup.Controls.Add(this.startRecordingButton);
@@ -208,6 +210,17 @@
             this.actionDescriptionColumnHeader.Text = "Description";
             this.actionDescriptionColumnHeader.Width = 552;
             // 
+            // editActionButton
+            // 
+            this.editActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.editActionButton.Location = new System.Drawing.Point(132, 370);
+            this.editActionButton.Name = "editActionButton";
+            this.editActionButton.Size = new System.Drawing.Size(120, 23);
+            this.editActionButton.TabIndex = 6;
+            this.editActionButton.Text = "Edit Action";
+            this.editActionButton.UseVisualStyleBackColor = true;
+            this.editActionButton.Click += new System.EventHandler(this.editActionButton_Click);
+            // 
             // Recording
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -241,5 +254,6 @@
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.ColumnHeader actionProcessColumnHeader;
         private System.Windows.Forms.Button discardMacroButton;
+        private System.Windows.Forms.Button editActionButton;
     }
 }

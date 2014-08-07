@@ -118,6 +118,7 @@ namespace MacroManager.WinForms
         {
             this.stopRecordingButton.Enabled = false;
             this.removeActionButton.Enabled = true;
+            this.editActionButton.Enabled = true;
 
             this.recordingService.StopRecording();
             this.actionsListView.Items.Clear();
@@ -168,6 +169,12 @@ namespace MacroManager.WinForms
             }
         }
 
+        private void editActionButton_Click(object sender, EventArgs e)
+        {
+            var form = new EditAction();
+            form.ShowDialog();
+        }
+
         private void Recording_Resize(object sender, EventArgs e)
         {
             this.ResizeActionColumns();
@@ -185,6 +192,9 @@ namespace MacroManager.WinForms
             this.actionsListView.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
+        /// <summary>
+        /// Resets the record input-form to it's original state.
+        /// </summary>
         private void ResetRecordForm()
         {
             this.nameTextBox.Text = "";
@@ -192,9 +202,12 @@ namespace MacroManager.WinForms
             this.actionsListView.Items.Clear();
             this.stopRecordingButton.Enabled = false;
             this.startRecordingButton.Enabled = true;
+            this.removeActionButton.Enabled = false;
+            this.editActionButton.Enabled = false;
         }
 
         #endregion
+
 
 
     }
