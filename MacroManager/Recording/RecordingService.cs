@@ -36,10 +36,10 @@ namespace MacroManager.Recording
             this.previousAction = DateTime.MinValue;
 
             this.mouseRecorder = new MouseRecorder();
-            this.mouseRecorder.MouseClicked += (sender, args) => this.AddActionToMacro(args.Action);
+            this.mouseRecorder.MouseClicked += (sender, args) => this.AddAction(args.Action);
 
             this.keyboardRecorder = new KeyboardRecorder();
-            this.keyboardRecorder.KeyPressed += (sender, args) => this.AddActionToMacro(args.Action);
+            this.keyboardRecorder.KeyPressed += (sender, args) => this.AddAction(args.Action);
         }
 
         #endregion
@@ -47,9 +47,8 @@ namespace MacroManager.Recording
         #region Public Methods
 
         /// <summary>
-        /// Starts the recording of a macro, will add all actions to the macro supplied.
+        /// Starts recording actions
         /// </summary>
-        /// <param name="inputMacro">The macro that all actions should be writen to.</param>
         public void StartRecording()
         {
             this.actions.Clear();
@@ -59,7 +58,7 @@ namespace MacroManager.Recording
         }
 
         /// <summary>
-        /// Stops recording the current macro (if any)
+        /// Stops recording actionss
         /// </summary>
         public void StopRecording()
         {
@@ -77,10 +76,10 @@ namespace MacroManager.Recording
         #region Private Methods
 
         /// <summary>
-        /// Add an action to the macro, also adds a WaitAction before the supplied action. 
+        /// Add an action, also adds a WaitAction before the supplied action. 
         /// The WaitAction is added so that the macro replays in the same time the user entered it.
         /// </summary>
-        private void AddActionToMacro(UserAction action)
+        private void AddAction(UserAction action)
         {
             if (previousAction == DateTime.MinValue)
             {
