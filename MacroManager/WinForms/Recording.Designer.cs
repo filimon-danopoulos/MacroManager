@@ -29,18 +29,20 @@
         private void InitializeComponent()
         {
             this.macroDetailsGroup = new System.Windows.Forms.GroupBox();
+            this.saveButton = new System.Windows.Forms.Button();
             this.descriptionTextBox = new System.Windows.Forms.TextBox();
-            this.startRecordingButton = new System.Windows.Forms.Button();
-            this.stopRecordingButton = new System.Windows.Forms.Button();
             this.editDescriptionLabel = new System.Windows.Forms.Label();
             this.nameTextBox = new System.Windows.Forms.TextBox();
             this.editNameLabel = new System.Windows.Forms.Label();
+            this.startRecordingButton = new System.Windows.Forms.Button();
+            this.stopRecordingButton = new System.Windows.Forms.Button();
             this.actionGroup = new System.Windows.Forms.GroupBox();
             this.removeActionButton = new System.Windows.Forms.Button();
             this.actionsListView = new System.Windows.Forms.ListView();
             this.actionTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.saveButton = new System.Windows.Forms.Button();
+            this.actionApplicationColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.discardMacroButton = new System.Windows.Forms.Button();
             this.macroDetailsGroup.SuspendLayout();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
@@ -49,6 +51,7 @@
             // 
             this.macroDetailsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.macroDetailsGroup.Controls.Add(this.discardMacroButton);
             this.macroDetailsGroup.Controls.Add(this.saveButton);
             this.macroDetailsGroup.Controls.Add(this.descriptionTextBox);
             this.macroDetailsGroup.Controls.Add(this.editDescriptionLabel);
@@ -61,6 +64,17 @@
             this.macroDetailsGroup.TabStop = false;
             this.macroDetailsGroup.Text = "Macro Details";
             // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Location = new System.Drawing.Point(754, 167);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(120, 23);
+            this.saveButton.TabIndex = 4;
+            this.saveButton.Text = "Save Macro";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
             // descriptionTextBox
             // 
             this.descriptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -71,29 +85,6 @@
             this.descriptionTextBox.Name = "descriptionTextBox";
             this.descriptionTextBox.Size = new System.Drawing.Size(792, 117);
             this.descriptionTextBox.TabIndex = 3;
-            // 
-            // startRecordingButton
-            // 
-            this.startRecordingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.startRecordingButton.Location = new System.Drawing.Point(754, 370);
-            this.startRecordingButton.Name = "startRecordingButton";
-            this.startRecordingButton.Size = new System.Drawing.Size(120, 23);
-            this.startRecordingButton.TabIndex = 4;
-            this.startRecordingButton.Text = "Record Actions";
-            this.startRecordingButton.UseVisualStyleBackColor = true;
-            this.startRecordingButton.Click += new System.EventHandler(this.startRecordingButton_Click);
-            // 
-            // stopRecordingButton
-            // 
-            this.stopRecordingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.stopRecordingButton.Enabled = false;
-            this.stopRecordingButton.Location = new System.Drawing.Point(628, 370);
-            this.stopRecordingButton.Name = "stopRecordingButton";
-            this.stopRecordingButton.Size = new System.Drawing.Size(120, 23);
-            this.stopRecordingButton.TabIndex = 5;
-            this.stopRecordingButton.Text = "Stop Recording";
-            this.stopRecordingButton.UseVisualStyleBackColor = true;
-            this.stopRecordingButton.Click += new System.EventHandler(this.stopRecordingButton_Click);
             // 
             // editDescriptionLabel
             // 
@@ -121,6 +112,29 @@
             this.editNameLabel.Size = new System.Drawing.Size(35, 13);
             this.editNameLabel.TabIndex = 0;
             this.editNameLabel.Text = "Name";
+            // 
+            // startRecordingButton
+            // 
+            this.startRecordingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.startRecordingButton.Location = new System.Drawing.Point(754, 370);
+            this.startRecordingButton.Name = "startRecordingButton";
+            this.startRecordingButton.Size = new System.Drawing.Size(120, 23);
+            this.startRecordingButton.TabIndex = 4;
+            this.startRecordingButton.Text = "Record Actions";
+            this.startRecordingButton.UseVisualStyleBackColor = true;
+            this.startRecordingButton.Click += new System.EventHandler(this.startRecordingButton_Click);
+            // 
+            // stopRecordingButton
+            // 
+            this.stopRecordingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.stopRecordingButton.Enabled = false;
+            this.stopRecordingButton.Location = new System.Drawing.Point(628, 370);
+            this.stopRecordingButton.Name = "stopRecordingButton";
+            this.stopRecordingButton.Size = new System.Drawing.Size(120, 23);
+            this.stopRecordingButton.TabIndex = 5;
+            this.stopRecordingButton.Text = "Stop Recording";
+            this.stopRecordingButton.UseVisualStyleBackColor = true;
+            this.stopRecordingButton.Click += new System.EventHandler(this.stopRecordingButton_Click);
             // 
             // actionGroup
             // 
@@ -157,6 +171,7 @@
             this.actionsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.actionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.actionTypeColumnHeader,
+            this.actionApplicationColumnHeader,
             this.actionDescriptionColumnHeader});
             this.actionsListView.FullRowSelect = true;
             this.actionsListView.Location = new System.Drawing.Point(6, 19);
@@ -177,16 +192,21 @@
             this.actionDescriptionColumnHeader.Text = "Description";
             this.actionDescriptionColumnHeader.Width = 552;
             // 
-            // saveButton
+            // actionApplicationColumnHeader
             // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Location = new System.Drawing.Point(754, 167);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(120, 23);
-            this.saveButton.TabIndex = 4;
-            this.saveButton.Text = "Save Macro";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            this.actionApplicationColumnHeader.Text = "Application";
+            this.actionApplicationColumnHeader.Width = 117;
+            // 
+            // discardMacroButton
+            // 
+            this.discardMacroButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.discardMacroButton.Location = new System.Drawing.Point(628, 167);
+            this.discardMacroButton.Name = "discardMacroButton";
+            this.discardMacroButton.Size = new System.Drawing.Size(120, 23);
+            this.discardMacroButton.TabIndex = 5;
+            this.discardMacroButton.Text = "Discard Macro";
+            this.discardMacroButton.UseVisualStyleBackColor = true;
+            this.discardMacroButton.Click += new System.EventHandler(this.discardMacroButton_Click);
             // 
             // Recording
             // 
@@ -196,6 +216,7 @@
             this.Controls.Add(this.macroDetailsGroup);
             this.Name = "Recording";
             this.Size = new System.Drawing.Size(888, 607);
+            this.Resize += new System.EventHandler(this.Recording_Resize);
             this.macroDetailsGroup.ResumeLayout(false);
             this.macroDetailsGroup.PerformLayout();
             this.actionGroup.ResumeLayout(false);
@@ -218,5 +239,7 @@
         private System.Windows.Forms.ColumnHeader actionTypeColumnHeader;
         private System.Windows.Forms.ColumnHeader actionDescriptionColumnHeader;
         private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.ColumnHeader actionApplicationColumnHeader;
+        private System.Windows.Forms.Button discardMacroButton;
     }
 }

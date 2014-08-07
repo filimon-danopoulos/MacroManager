@@ -88,8 +88,23 @@ namespace MacroManager.Recording
                     }
                     else
                     {
-                        var args = new MouseEventArgs(new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton));
-                        this.OnMouseClicked(args);
+                        var windowHandle = WindowFromPoint(hookStruct.pt);
+                        ClickAction clickAction;
+                        if (windowHandle != IntPtr.Zero)
+                        {
+                            var applicationTitle = "";
+                            var window = Process.GetProcesses().FirstOrDefault(x => x.MainWindowHandle == windowHandle);
+                            if (window != null)
+                            {
+                                applicationTitle = window.ProcessName;
+                            }
+                            clickAction = new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, applicationTitle);
+                        }
+                        else
+                        {
+                             clickAction = new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton);
+                        }
+                        this.OnMouseClicked(new MouseEventArgs(clickAction));
                     }
                     this.path.Clear();
                 }
@@ -204,6 +219,9 @@ namespace MacroManager.Recording
         
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr WindowFromPoint(POINT pnt);
 
         #endregion
 

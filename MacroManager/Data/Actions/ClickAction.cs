@@ -11,14 +11,21 @@ namespace MacroManager.Data.Actions
     public class ClickAction : MouseAction
     {
         /// <summary>
-        /// What type of comment should I write on a constructor?
+        /// Creates a click action at the provided point. 
+        /// Contains metadata about the window that was clicked.
         /// </summary>
-        public ClickAction(int x, int y, MouseButton button)
+        public ClickAction(int x, int y, MouseButton button, string applicationTitle)
         {
             this.X = x;
             this.Y = y;
             this.PressedButton = button;
+            this.Aplication = applicationTitle;
         }
+
+        /// <summary>
+        /// Creates a click action at the provided point.
+        /// </summary>
+        public ClickAction(int x, int y, MouseButton button) : this (x, y, button, "") {}
 
         /// <summary>
         /// The Y coordinate of the click.

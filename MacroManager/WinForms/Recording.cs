@@ -120,6 +120,16 @@ namespace MacroManager.WinForms
             this.removeActionButton.Enabled = true;
 
             this.recordingService.StopRecording();
+            this.actionsListView.Items.Clear();
+            foreach (var action in this.recordingService.GetRecordedActions())
+            {
+                this.actionsListView.Items.Add(new ListViewItem(new [] {
+                    action.GetType().Name,
+                    action.Aplication,
+                    action.ToString()
+                }));
+            }
+            this.ResizeActionColumns();
             this.OnStopRecording();
         }
 
@@ -144,6 +154,33 @@ namespace MacroManager.WinForms
             this.OnSaveRecording(new RecordingEventArgs(new Macro(actions, name, description)));
         }
 
+        private void discardMacroButton_Click(object sender, EventArgs e)
+        {
+            this.nameTextBox.Text = "";
+            this.descriptionTextBox.Text = "";
+            this.actionsListView.Items.Clear();
+            this.stopRecordingButton.Enabled = false;
+        }
+
+        private void Recording_Resize(object sender, EventArgs e)
+        {
+            this.ResizeActionColumns();
+        }
+
         #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Resizes the columns in the actionListView.
+        /// </summary>
+        private void ResizeActionColumns()
+        {
+            this.actionsListView.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        #endregion
+
+
     }
 }

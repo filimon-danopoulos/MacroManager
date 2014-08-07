@@ -10,5 +10,10 @@ namespace MacroManager.Data.Actions
     /// </summary>
     public abstract class UserAction
     {
+        public string Aplication
+        {
+            get;
+            protected set;
+        }
     }
 }
