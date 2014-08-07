@@ -14,33 +14,43 @@ namespace MacroManager.Data.Actions
         /// Creates a click action at the provided point. 
         /// Contains metadata about the window that was clicked.
         /// </summary>
-        public ClickAction(int x, int y, MouseButton button, string applicationTitle)
+        public ClickAction(int x, int y, MouseButton button, string process)
         {
             this.X = x;
             this.Y = y;
             this.PressedButton = button;
-            this.Aplication = applicationTitle;
+            this.Process = process;
         }
 
         /// <summary>
         /// Creates a click action at the provided point.
         /// </summary>
-        public ClickAction(int x, int y, MouseButton button) : this (x, y, button, "") {}
+        public ClickAction(int x, int y, MouseButton button) : this(x, y, button, "")
+        {
+        }
 
         /// <summary>
         /// The Y coordinate of the click.
         /// </summary>
-        public int Y { get; private set; }
+        public int Y
+        {
+            get;
+            protected set;
+        }
         /// <summary>
         /// The X coordinate of the click.
         /// </summary>
-        public int X { get; private set; }
+        public int X
+        {
+            get;
+            protected set;
+        }
 
         public override string ToString()
         {
-            return String.Format("{0} click at ({1}, {2})", 
+            return String.Format("{0} click at ({1}, {2})",
                 this.PressedButton == MouseButton.Left ? "Left" : "Right",
-                this.X, 
+                this.X,
                 this.Y
             );
         }

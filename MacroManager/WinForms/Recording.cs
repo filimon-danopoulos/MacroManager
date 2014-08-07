@@ -125,7 +125,7 @@ namespace MacroManager.WinForms
             {
                 this.actionsListView.Items.Add(new ListViewItem(new [] {
                     action.GetType().Name,
-                    action.Aplication,
+                    action.Process,
                     action.ToString()
                 }));
             }

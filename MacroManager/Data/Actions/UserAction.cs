@@ -10,7 +10,7 @@ namespace MacroManager.Data.Actions
     /// </summary>
     public abstract class UserAction
     {
-        public string Aplication
+        public string Process
         {
             get;
             protected set;

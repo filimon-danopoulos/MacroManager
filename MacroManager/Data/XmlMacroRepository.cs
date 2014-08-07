@@ -21,6 +21,7 @@ namespace MacroManager.Data
         private const string MACRO_ID_LABEL = "id";
         private const string MACRO_NAME_LABEL = "name";
         private const string MACRO_DESCRIPTION_LABEL = "description";
+        private const string MACRO_PROCESS_LABEL = "process";
 
         private const string MACRO_ACTION_LABEL = "action";
         private const string MACRO_ACTION_TYPE_LABEL = "type";

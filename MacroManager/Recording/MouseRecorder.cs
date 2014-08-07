@@ -64,6 +64,7 @@ namespace MacroManager.Recording
             MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
             if (nCode >= 0 && message != Message.WM_MOUSEMOVE)
             {
+                var processName = this.GetProcessName(hookStruct.pt);
                 if (message == Message.WM_LBUTTONDOWN || message == Message.WM_RBUTTONDOWN)
                 {
                     this.clickDownTime = DateTime.Now;
@@ -78,34 +79,19 @@ namespace MacroManager.Recording
                     var mouseMoved = this.clickDownPoint.x != hookStruct.pt.x || this.clickDownPoint.y != hookStruct.pt.y;
                     if (ellapsedTime > 200 && !mouseMoved)
                     {
-                        var args = new MouseEventArgs(new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime));
+                        var longClick = new LongClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, ellapsedTime, processName);
+                        var args = new MouseEventArgs(longClick);
                         this.OnMouseClicked(args);
                     }
                     else if (ellapsedTime > 200 && mouseMoved)
                     {
-                        var args = new MouseEventArgs(new DragAction(pressedButton, this.path.Select(x => new Point(x.x, x.y)).ToList()));
+                        var dragAction = new DragAction(pressedButton, this.path.Select(x => new Point(x.x, x.y)).ToList(), processName);
+                        var args = new MouseEventArgs(dragAction);
                         this.OnMouseClicked(args);
                     }
                     else
                     {
-                        var windowHandle = WindowFromPoint(hookStruct.pt);
-                        ClickAction clickAction;
-                        if (windowHandle != IntPtr.Zero)
-                        {
-                            var applicationTitle = "";
-                            int processId;
-                            GetWindowThreadProcessId(windowHandle, out processId);
-                            var window = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
-                            if (window != null)
-                            {
-                                applicationTitle = window.ProcessName;
-                            }
-                            clickAction = new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, applicationTitle);
-                        }
-                        else
-                        {
-                             clickAction = new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton);
-                        }
+                        var clickAction = new ClickAction(hookStruct.pt.x, hookStruct.pt.y, pressedButton, processName);
                         this.OnMouseClicked(new MouseEventArgs(clickAction));
                     }
                     this.path.Clear();
@@ -122,6 +108,19 @@ namespace MacroManager.Recording
                 }
             }
             return HookHelper.CallNextHookEx(mouseHookId, nCode, wParam, lParam);
+        }
+
+        private string GetProcessName(POINT point)
+        {
+            var windowHandle = WindowFromPoint(point);
+            int processId;
+            GetWindowThreadProcessId(windowHandle, out processId);
+            var window = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
+            if (window != null)
+            {
+                return window.ProcessName;
+            }
+            return "";
         }
 
         /// <summary>

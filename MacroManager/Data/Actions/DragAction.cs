@@ -9,11 +9,15 @@ namespace MacroManager.Data.Actions
 {
     public class DragAction : MouseAction
     {
-        public DragAction(MouseButton button, IEnumerable<Point> path) 
+
+        public DragAction(MouseButton pressedButton, IEnumerable<Point> path) : this (pressedButton, path, "") {}
+        public DragAction(MouseButton pressedButton, IEnumerable<Point> path, string process)
         {
-            this.PressedButton = button;
+            this.PressedButton = pressedButton;
             this.Path = path;
+            this.Process = process;
         }
+
         public IEnumerable<Point> Path
         {
             get;

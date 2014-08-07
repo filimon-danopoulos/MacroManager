@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.macroDetailsGroup = new System.Windows.Forms.GroupBox();
+            this.discardMacroButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.descriptionTextBox = new System.Windows.Forms.TextBox();
             this.editDescriptionLabel = new System.Windows.Forms.Label();
@@ -40,9 +41,8 @@
             this.removeActionButton = new System.Windows.Forms.Button();
             this.actionsListView = new System.Windows.Forms.ListView();
             this.actionTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.actionApplicationColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.discardMacroButton = new System.Windows.Forms.Button();
             this.macroDetailsGroup.SuspendLayout();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +63,17 @@
             this.macroDetailsGroup.TabIndex = 3;
             this.macroDetailsGroup.TabStop = false;
             this.macroDetailsGroup.Text = "Macro Details";
+            // 
+            // discardMacroButton
+            // 
+            this.discardMacroButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.discardMacroButton.Location = new System.Drawing.Point(628, 167);
+            this.discardMacroButton.Name = "discardMacroButton";
+            this.discardMacroButton.Size = new System.Drawing.Size(120, 23);
+            this.discardMacroButton.TabIndex = 5;
+            this.discardMacroButton.Text = "Discard Macro";
+            this.discardMacroButton.UseVisualStyleBackColor = true;
+            this.discardMacroButton.Click += new System.EventHandler(this.discardMacroButton_Click);
             // 
             // saveButton
             // 
@@ -171,7 +182,7 @@
             this.actionsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.actionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.actionTypeColumnHeader,
-            this.actionApplicationColumnHeader,
+            this.actionProcessColumnHeader,
             this.actionDescriptionColumnHeader});
             this.actionsListView.FullRowSelect = true;
             this.actionsListView.Location = new System.Drawing.Point(6, 19);
@@ -187,26 +198,15 @@
             this.actionTypeColumnHeader.Text = "Action Type";
             this.actionTypeColumnHeader.Width = 100;
             // 
+            // actionProcessColumnHeader
+            // 
+            this.actionProcessColumnHeader.Text = "Process";
+            this.actionProcessColumnHeader.Width = 117;
+            // 
             // actionDescriptionColumnHeader
             // 
             this.actionDescriptionColumnHeader.Text = "Description";
             this.actionDescriptionColumnHeader.Width = 552;
-            // 
-            // actionApplicationColumnHeader
-            // 
-            this.actionApplicationColumnHeader.Text = "Application";
-            this.actionApplicationColumnHeader.Width = 117;
-            // 
-            // discardMacroButton
-            // 
-            this.discardMacroButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.discardMacroButton.Location = new System.Drawing.Point(628, 167);
-            this.discardMacroButton.Name = "discardMacroButton";
-            this.discardMacroButton.Size = new System.Drawing.Size(120, 23);
-            this.discardMacroButton.TabIndex = 5;
-            this.discardMacroButton.Text = "Discard Macro";
-            this.discardMacroButton.UseVisualStyleBackColor = true;
-            this.discardMacroButton.Click += new System.EventHandler(this.discardMacroButton_Click);
             // 
             // Recording
             // 
@@ -239,7 +239,7 @@
         private System.Windows.Forms.ColumnHeader actionTypeColumnHeader;
         private System.Windows.Forms.ColumnHeader actionDescriptionColumnHeader;
         private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.ColumnHeader actionApplicationColumnHeader;
+        private System.Windows.Forms.ColumnHeader actionProcessColumnHeader;
         private System.Windows.Forms.Button discardMacroButton;
     }
 }
