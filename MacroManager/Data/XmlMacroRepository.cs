@@ -108,14 +108,16 @@ namespace MacroManager.Data
                                 return new ClickAction(
                                     int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value),
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
-                                    (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value)
+                                    (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
+                                    action.Element(MACRO_PROCESS_LABEL).Value
                                 ) as UserAction;
                             case LONG_CLICK_ACTION_TYPE:
                                 return new LongClickAction(
                                     int.Parse(action.Element(MACRO_ACTION_X_LABEL).Value),
                                     int.Parse(action.Element(MACRO_ACTION_Y_LABEL).Value),
                                     (ClickAction.MouseButton)int.Parse(action.Element(MACRO_ACTION_BUTTON_LABEL).Value),
-                                    int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value)
+                                    int.Parse(action.Element(MACRO_ACTION_DURATION_LABEL).Value),
+                                    action.Element(MACRO_PROCESS_LABEL).Value
                                 );
                             case DRAG_ACTION_TYPE:
                                 return new DragAction(
@@ -125,7 +127,8 @@ namespace MacroManager.Data
                                         .Select(x => new Point(
                                             int.Parse(x.Element(MACRO_ACTION_X_LABEL).Value),
                                             int.Parse(x.Element(MACRO_ACTION_Y_LABEL).Value))
-                                        )
+                                        ),
+                                    action.Element(MACRO_PROCESS_LABEL).Value
                                 );
                             case KEY_PRESS_ACTION_TYPE:
                                 return new KeyboardAction(
@@ -170,6 +173,7 @@ namespace MacroManager.Data
                             var dragAction = action as DragAction;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
+                                new XElement(MACRO_PROCESS_LABEL, action.Process),
                                 new XElement(MACRO_ACTION_TYPE_LABEL, DRAG_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_BUTTON_LABEL, (int)dragAction.PressedButton),
                                 new XElement(MACRO_ACTION_PATH_LABEL, dragAction.Path
@@ -188,6 +192,7 @@ namespace MacroManager.Data
                             {
                                 return new XElement(
                                     MACRO_ACTION_LABEL,
+                                    new XElement(MACRO_PROCESS_LABEL, action.Process),
                                     new XElement(MACRO_ACTION_TYPE_LABEL, LONG_CLICK_ACTION_TYPE),
                                     new XElement(MACRO_ACTION_X_LABEL, longClickAction.X),
                                     new XElement(MACRO_ACTION_Y_LABEL, longClickAction.Y),
@@ -198,6 +203,7 @@ namespace MacroManager.Data
                             var clickAction = action as ClickAction;
                             return new XElement(
                                 MACRO_ACTION_LABEL,
+                                new XElement(MACRO_PROCESS_LABEL, action.Process),
                                 new XElement(MACRO_ACTION_TYPE_LABEL, CLICK_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_X_LABEL, clickAction.X),
                                 new XElement(MACRO_ACTION_Y_LABEL, clickAction.Y),
@@ -208,6 +214,7 @@ namespace MacroManager.Data
                         {
                             return new XElement(
                                 MACRO_ACTION_LABEL,
+                                new XElement(MACRO_PROCESS_LABEL, action.Process),
                                 new XElement(MACRO_ACTION_TYPE_LABEL, KEY_PRESS_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_KEY_LABEL, (action as KeyboardAction).VirtualKey)
                             );
@@ -216,6 +223,7 @@ namespace MacroManager.Data
                         {
                             return new XElement(
                                 MACRO_ACTION_LABEL,
+                                new XElement(MACRO_PROCESS_LABEL, action.Process),
                                 new XElement(MACRO_ACTION_TYPE_LABEL, WAIT_ACTION_TYPE),
                                 new XElement(MACRO_ACTION_DURATION_LABEL, (action as WaitAction).Duration)
                             );
