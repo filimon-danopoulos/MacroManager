@@ -35,7 +35,7 @@ namespace MacroManager.Data.Actions
         public int Y
         {
             get;
-            protected set;
+            set;
         }
         /// <summary>
         /// The X coordinate of the click.
@@ -43,7 +43,7 @@ namespace MacroManager.Data.Actions
         public int X
         {
             get;
-            protected set;
+            set;
         }
 
         public override string ToString()

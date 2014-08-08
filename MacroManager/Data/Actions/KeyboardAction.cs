@@ -12,9 +12,14 @@ namespace MacroManager.Data.Actions
         public KeyboardAction(int vkCode)
         {
             this.VirtualKey = vkCode;
+            this.Process = "";
         }
 
-        public int VirtualKey { get; private set; }
+        public int VirtualKey
+        {
+            get;
+            set;
+        }
 
         public override string ToString()
         {

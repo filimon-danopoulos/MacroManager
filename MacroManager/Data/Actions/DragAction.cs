@@ -21,7 +21,7 @@ namespace MacroManager.Data.Actions
         public IEnumerable<Point> Path
         {
             get;
-            private set;
+            set;
         }
 
         public override string ToString()

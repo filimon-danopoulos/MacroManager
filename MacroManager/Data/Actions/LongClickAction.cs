@@ -8,8 +8,11 @@ namespace MacroManager.Data.Actions
 {
     public class LongClickAction : ClickAction
     {
-        public LongClickAction(int x, int y, MouseButton pressedButton, int duration) : this(x, y, pressedButton, duration, "") {}
-        public LongClickAction(int x, int y, MouseButton pressedButton, int duration, string process) : base(x, y, pressedButton, process)
+        public LongClickAction(int x, int y, MouseButton pressedButton, int duration) : this(x, y, pressedButton, duration, "")
+        {
+        }
+        public LongClickAction(int x, int y, MouseButton pressedButton, int duration, string process)
+            : base(x, y, pressedButton, process)
         {
             this.Duration = duration;
         }
@@ -18,7 +21,7 @@ namespace MacroManager.Data.Actions
         public int Duration
         {
             get;
-            private set;
+            set;
         }
 
         public override string ToString()
@@ -26,9 +29,9 @@ namespace MacroManager.Data.Actions
             return String.Format(
                 "Long {0} click at ({1}, {2}) for {3} seconds",
                 this.PressedButton == MouseButton.Left ? "left" : "right",
-                this.X, 
+                this.X,
                 this.Y,
-                this.Duration/1000f
+                this.Duration / 1000f
             );
         }
     }

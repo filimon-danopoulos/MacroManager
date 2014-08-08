@@ -121,15 +121,7 @@ namespace MacroManager.WinForms
             this.editActionButton.Enabled = true;
 
             this.recordingService.StopRecording();
-            this.actionsListView.Items.Clear();
-            foreach (var action in this.recordingService.GetRecordedActions())
-            {
-                this.actionsListView.Items.Add(new ListViewItem(new [] {
-                    action.GetType().Name,
-                    action.Process,
-                    action.ToString()
-                }));
-            }
+            this.LoadActions();
             this.ResizeActionColumns();
             this.OnStopRecording();
         }
@@ -171,8 +163,21 @@ namespace MacroManager.WinForms
 
         private void editActionButton_Click(object sender, EventArgs e)
         {
-            var form = new EditAction();
-            form.ShowDialog();
+            if (!this.HasSelectedAction())
+            {
+                return;
+            }
+
+            var selectedAction = this.GetSelectedAction();
+            using (var form = new EditAction(selectedAction))
+            {
+                var dialogResult = form.ShowDialog();
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    return;
+                }
+                this.LoadActions();
+            }
         }
 
         private void Recording_Resize(object sender, EventArgs e)
@@ -206,6 +211,47 @@ namespace MacroManager.WinForms
             this.editActionButton.Enabled = false;
         }
 
+        /// <summary>
+        /// Returns the selected action
+        /// </summary>
+        private UserAction GetSelectedAction()
+        {
+            if (!this.HasSelectedAction())
+            {
+                return null;
+            }
+            if (this.actionsListView.MultiSelect)
+            {
+                throw new Exception("The actionsListView can not have MultiSelect set to true");
+            }
+
+            return this.recordingService.GetRecordedActions().ToArray()[this.actionsListView.SelectedIndices[0]];
+
+        }
+
+        /// <summary>
+        /// Returns true if the use has selected any actions.
+        /// </summary>
+        private bool HasSelectedAction()
+        {
+            return this.actionsListView.SelectedIndices.Count > 0;
+        }
+
+        /// <summary>
+        /// Loads the actions that have been recorded.
+        /// </summary>
+        private void LoadActions()
+        {
+            this.actionsListView.Items.Clear();
+            foreach (var action in this.recordingService.GetRecordedActions())
+            {
+                this.actionsListView.Items.Add(new ListViewItem(new[] {
+                    action.GetType().Name,
+                    action.Process,
+                    action.ToString()
+                }));
+            }
+        }
         #endregion
 
 

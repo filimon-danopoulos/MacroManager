@@ -13,7 +13,7 @@ namespace MacroManager.Data.Actions
         public string Process
         {
             get;
-            protected set;
+            set;
         }
     }
 }

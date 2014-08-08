@@ -14,7 +14,7 @@ namespace MacroManager.Data.Actions
         public MouseButton PressedButton
         {
             get;
-            protected set;
+            set;
         }
 
         /// <summary>

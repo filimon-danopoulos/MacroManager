@@ -38,12 +38,12 @@
             this.startRecordingButton = new System.Windows.Forms.Button();
             this.stopRecordingButton = new System.Windows.Forms.Button();
             this.actionGroup = new System.Windows.Forms.GroupBox();
+            this.editActionButton = new System.Windows.Forms.Button();
             this.removeActionButton = new System.Windows.Forms.Button();
             this.actionsListView = new System.Windows.Forms.ListView();
             this.actionTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.editActionButton = new System.Windows.Forms.Button();
             this.macroDetailsGroup.SuspendLayout();
             this.actionGroup.SuspendLayout();
             this.SuspendLayout();
@@ -165,6 +165,18 @@
             this.actionGroup.TabStop = false;
             this.actionGroup.Text = "Actions";
             // 
+            // editActionButton
+            // 
+            this.editActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.editActionButton.Enabled = false;
+            this.editActionButton.Location = new System.Drawing.Point(132, 370);
+            this.editActionButton.Name = "editActionButton";
+            this.editActionButton.Size = new System.Drawing.Size(120, 23);
+            this.editActionButton.TabIndex = 6;
+            this.editActionButton.Text = "Edit Action...";
+            this.editActionButton.UseVisualStyleBackColor = true;
+            this.editActionButton.Click += new System.EventHandler(this.editActionButton_Click);
+            // 
             // removeActionButton
             // 
             this.removeActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -209,17 +221,6 @@
             // 
             this.actionDescriptionColumnHeader.Text = "Description";
             this.actionDescriptionColumnHeader.Width = 552;
-            // 
-            // editActionButton
-            // 
-            this.editActionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.editActionButton.Location = new System.Drawing.Point(132, 370);
-            this.editActionButton.Name = "editActionButton";
-            this.editActionButton.Size = new System.Drawing.Size(120, 23);
-            this.editActionButton.TabIndex = 6;
-            this.editActionButton.Text = "Edit Action";
-            this.editActionButton.UseVisualStyleBackColor = true;
-            this.editActionButton.Click += new System.EventHandler(this.editActionButton_Click);
             // 
             // Recording
             // 
