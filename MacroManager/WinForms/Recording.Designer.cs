@@ -199,10 +199,10 @@
             this.actionProcessColumnHeader,
             this.actionDescriptionColumnHeader});
             this.actionsListView.FullRowSelect = true;
-            this.actionsListView.Location = new System.Drawing.Point(6, 19);
+            this.actionsListView.Location = new System.Drawing.Point(1, 19);
             this.actionsListView.MultiSelect = false;
             this.actionsListView.Name = "actionsListView";
-            this.actionsListView.Size = new System.Drawing.Size(868, 343);
+            this.actionsListView.Size = new System.Drawing.Size(880, 343);
             this.actionsListView.TabIndex = 0;
             this.actionsListView.UseCompatibleStateImageBehavior = false;
             this.actionsListView.View = System.Windows.Forms.View.Details;
