@@ -37,10 +37,11 @@
             this.startPlaybackButton = new System.Windows.Forms.Button();
             this.macroActionsList = new System.Windows.Forms.ListView();
             this.actionTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeButton = new System.Windows.Forms.Button();
             this.macrosGroupBox = new System.Windows.Forms.GroupBox();
-            this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.editMacroButton = new System.Windows.Forms.Button();
             this.macroDetails.SuspendLayout();
             this.descriptionBox.SuspendLayout();
             this.macrosGroupBox.SuspendLayout();
@@ -48,13 +49,11 @@
             // 
             // macroListBox
             // 
-            this.macroListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.macroListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.macroListBox.FormattingEnabled = true;
             this.macroListBox.Location = new System.Drawing.Point(6, 16);
             this.macroListBox.Name = "macroListBox";
-            this.macroListBox.Size = new System.Drawing.Size(228, 481);
+            this.macroListBox.Size = new System.Drawing.Size(246, 481);
             this.macroListBox.TabIndex = 1;
             this.macroListBox.SelectedIndexChanged += new System.EventHandler(this.macroListBox_SelectedIndexChanged);
             // 
@@ -68,9 +67,9 @@
             this.macroDetails.Controls.Add(this.stopPlaybackButton);
             this.macroDetails.Controls.Add(this.startPlaybackButton);
             this.macroDetails.Controls.Add(this.macroActionsList);
-            this.macroDetails.Location = new System.Drawing.Point(249, 3);
+            this.macroDetails.Location = new System.Drawing.Point(267, 3);
             this.macroDetails.Name = "macroDetails";
-            this.macroDetails.Size = new System.Drawing.Size(543, 535);
+            this.macroDetails.Size = new System.Drawing.Size(525, 535);
             this.macroDetails.TabIndex = 2;
             // 
             // hideShortWaitActionCheckBox
@@ -93,7 +92,7 @@
             this.descriptionBox.Controls.Add(this.macroDetailsDescription);
             this.descriptionBox.Location = new System.Drawing.Point(0, 0);
             this.descriptionBox.Name = "descriptionBox";
-            this.descriptionBox.Size = new System.Drawing.Size(543, 174);
+            this.descriptionBox.Size = new System.Drawing.Size(525, 174);
             this.descriptionBox.TabIndex = 6;
             this.descriptionBox.TabStop = false;
             this.descriptionBox.Text = "Description";
@@ -104,14 +103,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.macroDetailsDescription.Location = new System.Drawing.Point(6, 16);
             this.macroDetailsDescription.Name = "macroDetailsDescription";
-            this.macroDetailsDescription.Size = new System.Drawing.Size(531, 146);
+            this.macroDetailsDescription.Size = new System.Drawing.Size(513, 146);
             this.macroDetailsDescription.TabIndex = 0;
             // 
             // stopPlaybackButton
             // 
             this.stopPlaybackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.stopPlaybackButton.Enabled = false;
-            this.stopPlaybackButton.Location = new System.Drawing.Point(297, 180);
+            this.stopPlaybackButton.Location = new System.Drawing.Point(279, 180);
             this.stopPlaybackButton.Name = "stopPlaybackButton";
             this.stopPlaybackButton.Size = new System.Drawing.Size(120, 23);
             this.stopPlaybackButton.TabIndex = 5;
@@ -123,7 +122,7 @@
             // 
             this.startPlaybackButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startPlaybackButton.Enabled = false;
-            this.startPlaybackButton.Location = new System.Drawing.Point(423, 180);
+            this.startPlaybackButton.Location = new System.Drawing.Point(405, 180);
             this.startPlaybackButton.Name = "startPlaybackButton";
             this.startPlaybackButton.Size = new System.Drawing.Size(120, 23);
             this.startPlaybackButton.TabIndex = 1;
@@ -145,7 +144,7 @@
             this.macroActionsList.Location = new System.Drawing.Point(0, 209);
             this.macroActionsList.MultiSelect = false;
             this.macroActionsList.Name = "macroActionsList";
-            this.macroActionsList.Size = new System.Drawing.Size(543, 326);
+            this.macroActionsList.Size = new System.Drawing.Size(525, 326);
             this.macroActionsList.TabIndex = 0;
             this.macroActionsList.UseCompatibleStateImageBehavior = false;
             this.macroActionsList.View = System.Windows.Forms.View.Details;
@@ -154,6 +153,10 @@
             // 
             this.actionTypeColumnHeader.Text = "Action Type";
             this.actionTypeColumnHeader.Width = 100;
+            // 
+            // actionProcessColumnHeader
+            // 
+            this.actionProcessColumnHeader.Text = "Process";
             // 
             // actionDescriptionColumnHeader
             // 
@@ -164,9 +167,9 @@
             // 
             this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.removeButton.Enabled = false;
-            this.removeButton.Location = new System.Drawing.Point(3, 515);
+            this.removeButton.Location = new System.Drawing.Point(6, 506);
             this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(240, 23);
+            this.removeButton.Size = new System.Drawing.Size(120, 23);
             this.removeButton.TabIndex = 3;
             this.removeButton.Text = "Remove Macro";
             this.removeButton.UseVisualStyleBackColor = true;
@@ -176,24 +179,32 @@
             // 
             this.macrosGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.macrosGroupBox.Controls.Add(this.editMacroButton);
             this.macrosGroupBox.Controls.Add(this.macroListBox);
+            this.macrosGroupBox.Controls.Add(this.removeButton);
             this.macrosGroupBox.Location = new System.Drawing.Point(3, 3);
             this.macrosGroupBox.Name = "macrosGroupBox";
-            this.macrosGroupBox.Size = new System.Drawing.Size(240, 506);
+            this.macrosGroupBox.Size = new System.Drawing.Size(258, 535);
             this.macrosGroupBox.TabIndex = 4;
             this.macrosGroupBox.TabStop = false;
             this.macrosGroupBox.Text = "Macros";
             // 
-            // actionProcessColumnHeader
+            // editMacroButton
             // 
-            this.actionProcessColumnHeader.Text = "Process";
+            this.editMacroButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.editMacroButton.Enabled = false;
+            this.editMacroButton.Location = new System.Drawing.Point(132, 506);
+            this.editMacroButton.Name = "editMacroButton";
+            this.editMacroButton.Size = new System.Drawing.Size(120, 23);
+            this.editMacroButton.TabIndex = 5;
+            this.editMacroButton.Text = "Edit Macro";
+            this.editMacroButton.UseVisualStyleBackColor = true;
             // 
             // Playback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.macrosGroupBox);
-            this.Controls.Add(this.removeButton);
             this.Controls.Add(this.macroDetails);
             this.Name = "Playback";
             this.Size = new System.Drawing.Size(795, 541);
@@ -221,5 +232,6 @@
         private System.Windows.Forms.GroupBox macrosGroupBox;
         private System.Windows.Forms.CheckBox hideShortWaitActionCheckBox;
         private System.Windows.Forms.ColumnHeader actionProcessColumnHeader;
+        private System.Windows.Forms.Button editMacroButton;
     }
 }
