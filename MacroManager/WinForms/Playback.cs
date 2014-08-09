@@ -130,7 +130,10 @@ namespace MacroManager.WinForms
 
         private void macroListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.DisplayActions(this.GetSelectedMacro());
+            if (this.HasSelectedMacro())
+            {
+                this.DisplayActions(this.GetSelectedMacro());
+            }
         }
 
         private void applicationTabs_Resize(object sender, EventArgs e)
@@ -168,6 +171,7 @@ namespace MacroManager.WinForms
         /// </summary>
         public void LoadMacros(IList<Macro> macros)
         {
+            this.ResetForm();
             this.macros = macros;
             this.DisplayMacros();
         }
@@ -245,6 +249,19 @@ namespace MacroManager.WinForms
         private bool HasSelectedMacro()
         {
             return this.macroListBox.SelectedIndex != -1;
+        }
+
+        /// <summary>
+        /// Resets all the controls in the form to their original state.
+        /// </summary>
+        private void ResetForm()
+        {
+            this.macroListBox.DataSource = null;
+            this.macroActionsList.Items.Clear();
+            this.macroDetailsDescription.Text = "";
+            this.stopPlaybackButton.Enabled = false;
+            this.startPlaybackButton.Enabled = false;
+            this.removeButton.Enabled = false;
         }
         #endregion
 
