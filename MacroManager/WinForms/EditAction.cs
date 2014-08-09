@@ -72,6 +72,10 @@ namespace MacroManager.WinForms
             this.typeTextBox.Text = type.Name;
             var counter = 1;
             foreach(var prop in type.GetProperties()) {
+                if (prop.CustomAttributes.Any(x => x.AttributeType == typeof(UserAction.NonEditableAttribute))) {
+                    continue;
+                }
+
                 var label = new Label();
                 label.Size = this.typeLabel.Size;
                 label.Location = new Point(this.typeLabel.Location.X,  this.typeLabel.Location.Y + 26 * counter);
