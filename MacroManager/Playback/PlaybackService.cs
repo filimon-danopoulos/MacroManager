@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using MacroManager.Util;
+using System.Drawing;
 
 namespace MacroManager.Playback
 {
@@ -50,6 +52,13 @@ namespace MacroManager.Playback
                     this.OnMacroCanceled();
                     return;
                 }
+
+                if (action is MouseAction && action.Process != "" && !this.IsSameProcess((ClickAction)action))
+                {
+                    this.OnActionError();
+                    return;
+                }
+
                 this.OnActionStarted();
                 if (action is MacroManager.Data.Actions.DragAction)
                 {
@@ -75,14 +84,28 @@ namespace MacroManager.Playback
                 {
                     throw new NotImplementedException(String.Format("Specified action {0} is not implemented.", action.GetType().Name));
                 }
+
                 this.OnActionCompleted();
             }
             this.OnMacroCompleted();
         }
 
+
         public void StopMacroPlayback()
         {
             this.stopPlayback = true;
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private bool IsSameProcess(ClickAction action)
+        {
+            var windowHandle = Util.ProcessHelper.WindowFromPoint(new Point(action.X, action.Y));
+            int processId;
+            Util.ProcessHelper.GetWindowThreadProcessId(windowHandle, out processId);
+            return Process.GetProcesses().Any(x => x.Id == processId && x.ProcessName == action.Process);
         }
 
         #endregion
@@ -126,6 +149,15 @@ namespace MacroManager.Playback
             var handler = this.ActionCompleted;
             if (handler != null)
             {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler ActionError;
+        private void OnActionError()
+        {
+            var handler = this.ActionError;
+            if (handler != null) {
                 handler(this, EventArgs.Empty);
             }
         }
