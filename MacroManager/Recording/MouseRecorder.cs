@@ -117,9 +117,9 @@ namespace MacroManager.Recording
 
         private string GetProcessName(POINT point)
         {
-            var windowHandle = WindowFromPoint(point);
+            var windowHandle = Util.ProcessHelper.WindowFromPoint(new Point(point.x, point.y));
             int processId;
-            GetWindowThreadProcessId(windowHandle, out processId);
+            Util.ProcessHelper.GetWindowThreadProcessId(windowHandle, out processId);
             var window = Process.GetProcesses().FirstOrDefault(x => x.Id == processId);
             if (window != null)
             {
@@ -225,12 +225,6 @@ namespace MacroManager.Recording
         
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr WindowFromPoint(POINT pnt);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out int lpdwProcessId);
 
         #endregion
 
