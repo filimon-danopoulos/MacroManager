@@ -10,10 +10,16 @@ namespace MacroManager.Data.Actions
     /// </summary>
     public abstract class UserAction
     {
+        [NonEditable]
         public string Process
         {
             get;
             set;
+        }
+
+        [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+        internal sealed class NonEditableAttribute : Attribute
+        {
         }
     }
 }
