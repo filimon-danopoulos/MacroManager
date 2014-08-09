@@ -14,6 +14,17 @@ namespace MacroManager.Recording
         #region Fields
 
         private IntPtr keyboardHookId = IntPtr.Zero;
+        private LowLevelKeyboardProc hookCallback;
+
+        #endregion
+
+        #region Constructors
+
+        public KeyboardRecorder()
+        {
+            // We have to save the callback as a field other wise it is GC:d
+            this.hookCallback = this.HandleKeyboardHook;
+        }
 
         #endregion
 
@@ -21,7 +32,7 @@ namespace MacroManager.Recording
 
         public void StartRecording()
         {
-            this.keyboardHookId = this.SetKeyboardHook(this.HandleKeyboardHook);
+            this.keyboardHookId = this.SetKeyboardHook();
         }
 
         public void StopRecording()
@@ -47,13 +58,13 @@ namespace MacroManager.Recording
         /// <summary>
         /// Sets a low level keyboard hook
         /// </summary>
-        private IntPtr SetKeyboardHook(LowLevelKeyboardProc proc)
+        private IntPtr SetKeyboardHook()
         {
             using (Process curProcess = Process.GetCurrentProcess())
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(WH_KEYBOARD_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(WH_KEYBOARD_LL, this.hookCallback, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }

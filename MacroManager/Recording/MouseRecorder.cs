@@ -21,6 +21,8 @@ namespace MacroManager.Recording
         private List<POINT> path;
         private bool mouseDown;
 
+        private LowLevelMouseProc hookCallback;
+
         #endregion
 
         #region Constructors
@@ -29,6 +31,9 @@ namespace MacroManager.Recording
         {
             this.path = new List<POINT>();
             this.previousPathReadTime = DateTime.Now;
+
+            // We have to save the hook callback as a field otherwise it GC:d
+            this.hookCallback = this.HandleMouseHook;
         }
 
         #endregion
@@ -40,7 +45,7 @@ namespace MacroManager.Recording
         /// </summary>
         public void StartRecording()
         {
-            this.mouseHookId = this.SetMouseHook(this.HandleMouseHook);
+            this.mouseHookId = this.SetMouseHook();
         }
 
         /// <summary>
@@ -126,13 +131,13 @@ namespace MacroManager.Recording
         /// <summary>
         /// Sets a low level mouse hook
         /// </summary>
-        private IntPtr SetMouseHook(LowLevelMouseProc proc)
+        private IntPtr SetMouseHook()
         {
             using (Process curProcess = Process.GetCurrentProcess())
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    return SetWindowsHookEx(WH_MOUSE_LL, proc, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
+                    return SetWindowsHookEx(WH_MOUSE_LL, hookCallback, HookHelper.GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
         }
