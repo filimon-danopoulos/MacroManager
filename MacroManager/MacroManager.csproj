@@ -68,6 +68,7 @@
     <Compile Include="Recording\KeyboardRecorder.cs" />
     <Compile Include="Recording\MouseRecorder.cs" />
     <Compile Include="Recording\RecordingService.cs" />
+    <Compile Include="Util\ProcessHelper.cs" />
     <Compile Include="WinForms\EditAction.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,15 +126,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icons\accept.png">
+    <EmbeddedResource Include="Icons\accept.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\clock.png">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\clock.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\cog.png">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\cog.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\exclamation.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Macros.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

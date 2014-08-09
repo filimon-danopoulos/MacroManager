@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using MacroManager.Data;
 using MacroManager.Data.Actions;
 using MacroManager.Playback;
+using System.Reflection;
+using System.IO;
 
 namespace MacroManager.WinForms
 {
@@ -33,8 +35,12 @@ namespace MacroManager.WinForms
             this.playbackService = new PlaybackService();
             this.playbackService.ActionStarted += playbackService_ActionStarted;
             this.playbackService.ActionCompleted += playbackService_ActionCompleted;
+            this.playbackService.ActionError += playbackService_ActionError;
+
             this.playbackService.MacroCompleted += playbackService_MacroCompleted;
             this.playbackService.MacroCanceled += playbackService_MacroCanceled;
+
+
             this.macros = new List<Macro>();
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
         }
@@ -115,6 +121,19 @@ namespace MacroManager.WinForms
 
         #region Event handlers
 
+        private async void playbackService_ActionError(object sender, EventArgs e)
+        {
+            if (this.currectActionIndex < this.macroActionsList.Items.Count)
+            {
+                this.macroActionsList.Items[this.currectActionIndex++].ImageKey = "error";
+            }
+            this.stopPlaybackButton.Enabled = false;
+            await Task.Delay(5000);
+            this.ResetActionIcons();
+            this.currectActionIndex = 0;
+            this.startPlaybackButton.Enabled = true;
+        }
+
         private void playbackService_ActionStarted(object sender, EventArgs e)
         {
             if (this.currectActionIndex < this.macroActionsList.Items.Count)
@@ -143,10 +162,7 @@ namespace MacroManager.WinForms
             this.currectActionIndex = 0;
             this.stopPlaybackButton.Enabled = false;
             await Task.Delay(5000);
-            foreach (ListViewItem action in this.macroActionsList.Items)
-            {
-                action.ImageKey = "waiting";
-            }
+            this.ResetActionIcons();
             this.startPlaybackButton.Enabled = true;
         }
 
@@ -308,16 +324,42 @@ namespace MacroManager.WinForms
             this.removeButton.Enabled = false;
         }
 
+        /// <summary>
+        /// This is a hack to get around some designer issues. It inilizes the actionIcons IconCollection
+        /// lazyly so that the designer doesnt complain!
+        /// </summary>
         private void InitializeActionIcons()
         {
             if (this.actionIcons == null)
             {
+                var assembly = Assembly.GetExecutingAssembly();
                 this.actionIcons = new ImageList();
-                this.actionIcons.Images.Add("waiting", Image.FromFile("Icons\\clock.png"));
-                this.actionIcons.Images.Add("executing", Image.FromFile("Icons\\cog.png"));
-                this.actionIcons.Images.Add("done", Image.FromFile("Icons\\accept.png"));
+                this.actionIcons.Images.Add(
+                    "waiting", 
+                    Image.FromStream(assembly.GetManifestResourceStream("MacroManager.Icons.clock.png"))
+                );
+                this.actionIcons.Images.Add(
+                    "executing", 
+                    Image.FromStream(assembly.GetManifestResourceStream("MacroManager.Icons.cog.png"))
+                );
+                this.actionIcons.Images.Add(
+                    "done", 
+                    Image.FromStream(assembly.GetManifestResourceStream("MacroManager.Icons.accept.png"))
+                );
+                this.actionIcons.Images.Add(
+                    "error", 
+                    Image.FromStream(assembly.GetManifestResourceStream("MacroManager.Icons.exclamation.png"))
+                );
                 this.actionIcons.ImageSize = new Size(16, 16);
                 this.macroActionsList.SmallImageList = this.actionIcons;
+            }
+        }
+
+        private void ResetActionIcons()
+        {
+            foreach (ListViewItem action in this.macroActionsList.Items)
+            {
+                action.ImageKey = "waiting";
             }
         }
         #endregion
