@@ -53,7 +53,7 @@ namespace MacroManager.Playback
                     return;
                 }
 
-                if (action is MouseAction && action.Process != "" && !this.IsSameProcess((ClickAction)action))
+                if (action is ClickAction && action.Process != "" && !this.IsSameProcess((ClickAction)action))
                 {
                     this.OnActionError();
                     return;
