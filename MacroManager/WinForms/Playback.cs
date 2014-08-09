@@ -20,6 +20,8 @@ namespace MacroManager.WinForms
         private IList<Macro> macros;
         private bool hideShortWaitActions;
         private PlaybackService playbackService;
+        private ImageList actionIcons;
+        private int currectActionIndex;
 
         #endregion
 
@@ -29,6 +31,10 @@ namespace MacroManager.WinForms
         {
             InitializeComponent();
             this.playbackService = new PlaybackService();
+            this.playbackService.ActionStarted += playbackService_ActionStarted;
+            this.playbackService.ActionCompleted += playbackService_ActionCompleted;
+            this.playbackService.MacroCompleted += playbackService_MacroCompleted;
+            this.playbackService.MacroCanceled += playbackService_MacroCanceled;
             this.macros = new List<Macro>();
             this.hideShortWaitActions = this.hideShortWaitActionCheckBox.Checked;
         }
@@ -109,12 +115,48 @@ namespace MacroManager.WinForms
 
         #region Event handlers
 
+        private void playbackService_ActionStarted(object sender, EventArgs e)
+        {
+            if (this.currectActionIndex < this.macroActionsList.Items.Count)
+            {
+                this.macroActionsList.Items[this.currectActionIndex].ImageKey = "executing";
+            }
+        }
+
+        private void playbackService_ActionCompleted(object sender, EventArgs e)
+        {
+            if (this.currectActionIndex < this.macroActionsList.Items.Count)
+            {
+                this.macroActionsList.Items[this.currectActionIndex++].ImageKey = "done";
+            }
+        }
+
+        private void playbackService_MacroCanceled(object sender, EventArgs e)
+        {
+            this.currectActionIndex = 0;
+            this.stopPlaybackButton.Enabled = false;
+            this.startPlaybackButton.Enabled = true;
+        }
+
+        private async void playbackService_MacroCompleted(object sender, EventArgs e)
+        {
+            this.currectActionIndex = 0;
+            this.stopPlaybackButton.Enabled = false;
+            await Task.Delay(5000);
+            foreach (ListViewItem action in this.macroActionsList.Items)
+            {
+                action.ImageKey = "waiting";
+            }
+            this.startPlaybackButton.Enabled = true;
+        }
+
         private async void startPlaybackButton_Click(object sender, EventArgs e)
         {
             if (!this.HasSelectedMacro())
             {
                 return;
             }
+            this.currectActionIndex = 0;
             this.removeButton.Enabled = false;
             this.stopPlaybackButton.Enabled = true;
             this.startPlaybackButton.Enabled = false;
@@ -194,6 +236,7 @@ namespace MacroManager.WinForms
         /// </summary>
         private void DisplayActions(Macro macro)
         {
+            this.InitializeActionIcons();
             this.macroActionsList.Items.Clear();
             var actions = macro.GetUserActions();
             if (this.hideShortWaitActions)
@@ -210,7 +253,8 @@ namespace MacroManager.WinForms
                     action.GetType().Name,
                     action.Process,
                     action.ToString()
-                }));
+                },
+                "waiting"));
             }
             if (macro.Description == "")
             {
@@ -262,6 +306,19 @@ namespace MacroManager.WinForms
             this.stopPlaybackButton.Enabled = false;
             this.startPlaybackButton.Enabled = false;
             this.removeButton.Enabled = false;
+        }
+
+        private void InitializeActionIcons()
+        {
+            if (this.actionIcons == null)
+            {
+                this.actionIcons = new ImageList();
+                this.actionIcons.Images.Add("waiting", Image.FromFile("Icons\\clock.png"));
+                this.actionIcons.Images.Add("executing", Image.FromFile("Icons\\cog.png"));
+                this.actionIcons.Images.Add("done", Image.FromFile("Icons\\accept.png"));
+                this.actionIcons.ImageSize = new Size(16, 16);
+                this.macroActionsList.SmallImageList = this.actionIcons;
+            }
         }
         #endregion
 

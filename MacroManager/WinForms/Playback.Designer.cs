@@ -157,6 +157,7 @@
             // actionProcessColumnHeader
             // 
             this.actionProcessColumnHeader.Text = "Process";
+            this.actionProcessColumnHeader.Width = 119;
             // 
             // actionDescriptionColumnHeader
             // 

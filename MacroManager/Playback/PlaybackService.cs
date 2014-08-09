@@ -47,9 +47,10 @@ namespace MacroManager.Playback
             {
                 if (this.stopPlayback)
                 {
+                    this.OnMacroCanceled();
                     return;
                 }
-
+                this.OnActionStarted();
                 if (action is MacroManager.Data.Actions.DragAction)
                 {
                     await this.virtualMouse.DragAsync(action as MacroManager.Data.Actions.DragAction);
@@ -70,12 +71,63 @@ namespace MacroManager.Playback
                 {
                     await Task.Delay((action as WaitAction).Duration);
                 }
+                else
+                {
+                    throw new NotImplementedException(String.Format("Specified action {0} is not implemented.", action.GetType().Name));
+                }
+                this.OnActionCompleted();
             }
+            this.OnMacroCompleted();
         }
 
         public void StopMacroPlayback()
         {
             this.stopPlayback = true;
+        }
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler MacroCanceled;
+        private void OnMacroCanceled()
+        {
+            var handler = this.MacroCanceled;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler MacroCompleted;
+        private void OnMacroCompleted()
+        {
+            var handler = this.MacroCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler ActionStarted;
+        private void OnActionStarted()
+        {
+            var handler = this.ActionStarted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+    
+
+        public event EventHandler ActionCompleted;
+        private void OnActionCompleted()
+        {
+            var handler = this.ActionCompleted;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         #endregion

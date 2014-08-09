@@ -131,6 +131,9 @@
     <Content Include="Icons\clock.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\cog.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Macros.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
