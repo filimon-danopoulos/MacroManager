@@ -40,6 +40,7 @@
             this.actionDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.removeButton = new System.Windows.Forms.Button();
             this.macrosGroupBox = new System.Windows.Forms.GroupBox();
+            this.actionProcessColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.macroDetails.SuspendLayout();
             this.descriptionBox.SuspendLayout();
             this.macrosGroupBox.SuspendLayout();
@@ -137,6 +138,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.macroActionsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.actionTypeColumnHeader,
+            this.actionProcessColumnHeader,
             this.actionDescriptionColumnHeader});
             this.macroActionsList.FullRowSelect = true;
             this.macroActionsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -182,6 +184,10 @@
             this.macrosGroupBox.TabStop = false;
             this.macrosGroupBox.Text = "Macros";
             // 
+            // actionProcessColumnHeader
+            // 
+            this.actionProcessColumnHeader.Text = "Process";
+            // 
             // Playback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,5 +220,6 @@
         private System.Windows.Forms.Button removeButton;
         private System.Windows.Forms.GroupBox macrosGroupBox;
         private System.Windows.Forms.CheckBox hideShortWaitActionCheckBox;
+        private System.Windows.Forms.ColumnHeader actionProcessColumnHeader;
     }
 }

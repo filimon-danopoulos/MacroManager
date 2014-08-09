@@ -204,6 +204,7 @@ namespace MacroManager.WinForms
             {
                 this.macroActionsList.Items.Add(new ListViewItem(new[] {
                     action.GetType().Name,
+                    action.Process,
                     action.ToString()
                 }));
             }
@@ -227,7 +228,7 @@ namespace MacroManager.WinForms
         /// </summary>
         private void ResizeActionColumns()
         {
-            this.macroActionsList.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.HeaderSize);
+            this.macroActionsList.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         /// <summary>
