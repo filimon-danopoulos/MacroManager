@@ -157,6 +157,8 @@ namespace MacroManager
             e.Cancel = !this.CanCloseOpenFile();
         }
 
+        #region Playback Controll
+
         private void playbackControll_StartPlayback(object sender, EventArgs e)
         {
             this.statusMessage.Text = "Playing Macro...";
@@ -164,14 +166,28 @@ namespace MacroManager
 
         private void playbackControll_StopPlayback(object sender, EventArgs e)
         {
-            this.statusMessage.Text = "Playback stopped!";
+            this.statusMessage.Text = "Playback Finished, macro will reset in five seconds.";
         }
-        
+
+        private void playbackControll_CancelPlayback(object sender, EventArgs e)
+        {
+            this.statusMessage.Text = "Playback Canceled!";
+        }
+
         private void playbackControll_RemoveMacro(object sender, MacroManager.WinForms.Playback.RemoveMacroEventArgs args)
         {
             this.macroRepository.Remove(args.SelectedMacro);
             this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
         }
+
+        private void playbackControll_PlaybackError(object sender, EventArgs e)
+        {
+            this.statusMessage.Text = "Playback failed!";
+        }
+
+        #endregion
+
+        #region Recording Controll
 
         private void recordingControll_StartRecording(object sender, EventArgs e)
         {
@@ -190,6 +206,10 @@ namespace MacroManager
             this.macroRepository.Add(args.RecordedMacro);
             this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
         }
+
         #endregion
+
+        #endregion
+
     }
 }
