@@ -30,7 +30,9 @@
         {
             this.applicationTabs = new System.Windows.Forms.TabControl();
             this.playbackTab = new System.Windows.Forms.TabPage();
+            this.playbackControll = new MacroManager.WinForms.Playback();
             this.recordTab = new System.Windows.Forms.TabPage();
+            this.recordingControll = new MacroManager.WinForms.Recording();
             this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,8 +44,6 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.playbackControll = new MacroManager.WinForms.Playback();
-            this.recordingControll = new MacroManager.WinForms.Recording();
             this.applicationTabs.SuspendLayout();
             this.playbackTab.SuspendLayout();
             this.recordTab.SuspendLayout();
@@ -75,6 +75,21 @@
             this.playbackTab.Text = "Playback Macro";
             this.playbackTab.UseVisualStyleBackColor = true;
             // 
+            // playbackControll
+            // 
+            this.playbackControll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.playbackControll.Location = new System.Drawing.Point(0, 0);
+            this.playbackControll.Name = "playbackControll";
+            this.playbackControll.Size = new System.Drawing.Size(964, 588);
+            this.playbackControll.TabIndex = 0;
+            this.playbackControll.PlaybackStarted += new System.EventHandler(this.playbackControll_StartPlayback);
+            this.playbackControll.PlaybackStoped += new System.EventHandler(this.playbackControll_StopPlayback);
+            this.playbackControll.PlaybackCanceled += new System.EventHandler(this.playbackControll_CancelPlayback);
+            this.playbackControll.PlaybackError += new System.EventHandler(this.playbackControll_PlaybackError);
+            this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.RemoveMacroEventArgs>(this.playbackControll_RemoveMacro);
+            // 
             // recordTab
             // 
             this.recordTab.Controls.Add(this.recordingControll);
@@ -85,6 +100,19 @@
             this.recordTab.TabIndex = 1;
             this.recordTab.Text = "Record Macro";
             this.recordTab.UseVisualStyleBackColor = true;
+            // 
+            // recordingControll
+            // 
+            this.recordingControll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.recordingControll.Location = new System.Drawing.Point(0, 0);
+            this.recordingControll.Name = "recordingControll";
+            this.recordingControll.Size = new System.Drawing.Size(964, 588);
+            this.recordingControll.TabIndex = 0;
+            this.recordingControll.StartRecording += new System.EventHandler(this.recordingControll_StartRecording);
+            this.recordingControll.StopRecording += new System.EventHandler(this.recordingControll_StopRecording);
+            this.recordingControll.SaveRecording += new System.EventHandler<MacroManager.WinForms.Recording.RecordingEventArgs>(this.recordingControll_SaveRecording);
             // 
             // mainMenuStrip
             // 
@@ -176,32 +204,6 @@
             this.statusMessage.Name = "statusMessage";
             this.statusMessage.Size = new System.Drawing.Size(400, 17);
             this.statusMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // playbackControll
-            // 
-            this.playbackControll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.playbackControll.Location = new System.Drawing.Point(0, 0);
-            this.playbackControll.Name = "playbackControll";
-            this.playbackControll.Size = new System.Drawing.Size(964, 588);
-            this.playbackControll.TabIndex = 0;
-            this.playbackControll.StartPlayback += new System.EventHandler(this.playbackControll_StartPlayback);
-            this.playbackControll.StopPlayback += new System.EventHandler(this.playbackControll_StopPlayback);
-            this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.RemoveMacroEventArgs>(this.playbackControll_RemoveMacro);
-            // 
-            // recordingControll
-            // 
-            this.recordingControll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.recordingControll.Location = new System.Drawing.Point(0, 0);
-            this.recordingControll.Name = "recordingControll";
-            this.recordingControll.Size = new System.Drawing.Size(964, 588);
-            this.recordingControll.TabIndex = 0;
-            this.recordingControll.StartRecording += new System.EventHandler(this.recordingControll_StartRecording);
-            this.recordingControll.StopRecording += new System.EventHandler(this.recordingControll_StopRecording);
-            this.recordingControll.SaveRecording += new System.EventHandler<MacroManager.WinForms.Recording.RecordingEventArgs>(this.recordingControll_SaveRecording);
             // 
             // Main
             // 
