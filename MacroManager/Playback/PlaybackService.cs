@@ -53,13 +53,15 @@ namespace MacroManager.Playback
                     return;
                 }
 
+                var actionEventArgs = new ActionEventArgs(action);
+
                 if (action is ClickAction && action.Process != "" && !this.IsSameProcess((ClickAction)action))
                 {
-                    this.OnActionError();
+                    this.OnActionError(actionEventArgs);
                     return;
                 }
 
-                this.OnActionStarted();
+                this.OnActionStarted(actionEventArgs);
                 if (action is MacroManager.Data.Actions.DragAction)
                 {
                     await this.virtualMouse.DragAsync(action as MacroManager.Data.Actions.DragAction);
@@ -85,7 +87,7 @@ namespace MacroManager.Playback
                     throw new NotImplementedException(String.Format("Specified action {0} is not implemented.", action.GetType().Name));
                 }
 
-                this.OnActionCompleted();
+                this.OnActionCompleted(actionEventArgs);
             }
             this.OnMacroCompleted();
         }
@@ -132,33 +134,50 @@ namespace MacroManager.Playback
             }
         }
 
-        public event EventHandler ActionStarted;
-        private void OnActionStarted()
+        #region Nested Class ActionEventArgs
+
+        public class ActionEventArgs : EventArgs
+        {
+            public ActionEventArgs(UserAction action)
+            {
+                this.Action = action;
+            }
+
+            public UserAction Action
+            {
+                get;
+                private set;
+            }
+        }
+
+        #endregion
+
+        public event EventHandler<ActionEventArgs> ActionStarted;
+        private void OnActionStarted(ActionEventArgs args)
         {
             var handler = this.ActionStarted;
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
+                handler(this, args);
             }
         }
-    
 
-        public event EventHandler ActionCompleted;
-        private void OnActionCompleted()
+        public event EventHandler<ActionEventArgs> ActionCompleted;
+        private void OnActionCompleted(ActionEventArgs args)
         {
             var handler = this.ActionCompleted;
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
+                handler(this, args);
             }
         }
 
-        public event EventHandler ActionError;
-        private void OnActionError()
+        public event EventHandler<ActionEventArgs> ActionError;
+        private void OnActionError(ActionEventArgs args)
         {
             var handler = this.ActionError;
             if (handler != null) {
-                handler(this, EventArgs.Empty);
+                handler(this, args);
             }
         }
 
