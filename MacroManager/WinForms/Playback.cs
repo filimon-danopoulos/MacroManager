@@ -67,47 +67,60 @@ namespace MacroManager.WinForms
         #endregion
 
         /// <summary>
-        /// Fires when the start playback button is clicked.
+        /// Fires when the playback is started.
         /// </summary>
-        public event EventHandler StartPlayback;
-
-        /// <summary>
-        /// Wrapper for the StartPlayback event, null checks handler.
-        /// </summary>
-        private void OnStartPlayback()
+        public event EventHandler PlaybackStarted;
+        private void OnPlaybackStarted()
         {
-            var handler = this.StartPlayback;
+            var handler = this.PlaybackStarted;
             if (handler != null)
             {
-                handler(this, null);
+                handler(this, EventArgs.Empty);
             }
         }
 
         /// <summary>
-        /// Fires when the stop playback button is clicked.
+        /// Fires when the playback is stoped.
         /// </summary>
-        public event EventHandler StopPlayback;
-
-        /// <summary>
-        /// Wrapper for the StopPlayback event, null checks the handler.
-        /// </summary>
-        private void OnStopPlayback()
+        public event EventHandler PlaybackStoped;
+        private void OnPlaybackStoped()
         {
-            var handler = this.StopPlayback;
+            var handler = this.PlaybackStoped;
             if (handler != null)
             {
-                handler(this, null);
+                handler(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// Fires when the playback is canceled.
+        /// </summary>
+        public event EventHandler PlaybackCanceled;
+        private void OnPlaybackCanceled() {
+            var handler = this.PlaybackCanceled;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Fires when an actions fails.
+        /// </summary>
+        public event EventHandler PlaybackError;
+        private void OnPlaybackError() {
+            var handler = this.PlaybackError;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+        
 
         /// <summary>
         /// Fires when the remove macro button is clicked.
         /// </summary>
         public event EventHandler<RemoveMacroEventArgs> RemoveMacro;
-
-        /// <summary>
-        /// Wrapper for the RemoveMacro event, nulls checks the handler.
-        /// </summary>
         private void OnRemoveMacro(RemoveMacroEventArgs args)
         {
             var handler = this.RemoveMacro;
@@ -117,33 +130,51 @@ namespace MacroManager.WinForms
             }
         }
 
+
         #endregion
 
-        #region Event handlers
+        #region Event Handlers
 
-        private async void playbackService_ActionError(object sender, EventArgs e)
+        #region Playback Service Event Handlers
+
+        private void playbackService_ActionError(object sender, PlaybackService.ActionEventArgs args)
         {
+            if (this.hideShortWaitActions && args.Action.GetType() == typeof(WaitAction) && (args.Action as WaitAction).Duration < 500)
+            {
+                return;
+            }
             if (this.currectActionIndex < this.macroActionsList.Items.Count)
             {
                 this.macroActionsList.Items[this.currectActionIndex++].ImageKey = "error";
             }
-            this.stopPlaybackButton.Enabled = false;
-            await Task.Delay(5000);
-            this.ResetActionIcons();
-            this.currectActionIndex = 0;
-            this.startPlaybackButton.Enabled = true;
+            this.OnPlaybackError();
+            MessageBox.Show(
+                "An action could not be performed! Execution terminated.",
+                "Error...",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error
+            );
+            this.ResetActionListView();
         }
 
-        private void playbackService_ActionStarted(object sender, EventArgs e)
+        private void playbackService_ActionStarted(object sender, PlaybackService.ActionEventArgs args)
         {
+            if (this.hideShortWaitActions && args.Action.GetType() == typeof(WaitAction) && (args.Action as WaitAction).Duration < 500)
+            {
+                return;
+            }
             if (this.currectActionIndex < this.macroActionsList.Items.Count)
             {
                 this.macroActionsList.Items[this.currectActionIndex].ImageKey = "executing";
             }
         }
 
-        private void playbackService_ActionCompleted(object sender, EventArgs e)
+        private void playbackService_ActionCompleted(object sender, PlaybackService.ActionEventArgs args)
         {
+            if (this.hideShortWaitActions && args.Action.GetType() == typeof(WaitAction) && (args.Action as WaitAction).Duration < 500)
+            {
+                return;
+            }
             if (this.currectActionIndex < this.macroActionsList.Items.Count)
             {
                 this.macroActionsList.Items[this.currectActionIndex++].ImageKey = "done";
@@ -152,19 +183,28 @@ namespace MacroManager.WinForms
 
         private void playbackService_MacroCanceled(object sender, EventArgs e)
         {
-            this.currectActionIndex = 0;
-            this.stopPlaybackButton.Enabled = false;
-            this.startPlaybackButton.Enabled = true;
+            MessageBox.Show(
+                "The macro execution was canceled!",
+                "Canceled...",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+            this.ResetActionListView();
         }
 
         private async void playbackService_MacroCompleted(object sender, EventArgs e)
         {
             this.currectActionIndex = 0;
             this.stopPlaybackButton.Enabled = false;
+            this.OnPlaybackStoped();
             await Task.Delay(5000);
             this.ResetActionIcons();
             this.startPlaybackButton.Enabled = true;
         }
+
+        #endregion
+
+        #region Form Event Handlers
 
         private async void startPlaybackButton_Click(object sender, EventArgs e)
         {
@@ -176,14 +216,14 @@ namespace MacroManager.WinForms
             this.removeButton.Enabled = false;
             this.stopPlaybackButton.Enabled = true;
             this.startPlaybackButton.Enabled = false;
-            this.OnStartPlayback();
+            this.OnPlaybackStarted();
             await this.playbackService.StartMacroPlaybackAsync(this.GetSelectedMacro());
         }
 
         private void stopPlaybackButton_Click(object sender, EventArgs e)
         {
             this.playbackService.StopMacroPlayback();
-            this.OnStopPlayback();
+            this.OnPlaybackCanceled();
         }
 
         private void macroListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -222,7 +262,9 @@ namespace MacroManager.WinForms
 
         #endregion
 
-        #region Public Method
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Populates the controllers macro list.
@@ -355,12 +397,26 @@ namespace MacroManager.WinForms
             }
         }
 
+        /// <summary>
+        /// Sets all the actions' icon to the "waiting" icon.
+        /// </summary>
         private void ResetActionIcons()
         {
             foreach (ListViewItem action in this.macroActionsList.Items)
             {
                 action.ImageKey = "waiting";
             }
+        }
+
+        /// <summary>
+        /// Resets the ActionListView so that the macro can be re-run!
+        /// </summary>
+        private void ResetActionListView()
+        {
+            this.ResetActionIcons();
+            this.currectActionIndex = 0;
+            this.startPlaybackButton.Enabled = true;
+            this.stopPlaybackButton.Enabled = false;
         }
         #endregion
 
