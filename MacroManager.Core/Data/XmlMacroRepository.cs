@@ -22,6 +22,7 @@ namespace MacroManager.Core.Data
         private const string MACRO_NAME_LABEL = "name";
         private const string MACRO_DESCRIPTION_LABEL = "description";
         private const string MACRO_PROCESS_LABEL = "process";
+        private const string MACRO_SCREEN_CAPTURE_FOLDER = "screenCaptureFolder";
 
         private const string MACRO_ACTION_LABEL = "action";
         private const string MACRO_ACTION_TYPE_LABEL = "type";
@@ -145,7 +146,8 @@ namespace MacroManager.Core.Data
                     .ToList(),
                     Guid.Parse(macro.Attribute(MACRO_ID_LABEL).Value),
                     macro.Attribute(MACRO_NAME_LABEL).Value,
-                    macro.Element(MACRO_DESCRIPTION_LABEL).Value
+                    macro.Element(MACRO_DESCRIPTION_LABEL).Value,
+                    macro.Attribute(MACRO_SCREEN_CAPTURE_FOLDER).Value
                 ));
         }
 
@@ -157,13 +159,14 @@ namespace MacroManager.Core.Data
             var root = document.Element(MACRO_ROOT_LABEL);
             if (root.Elements(MACRO_LABEL).Any(x => x.Attribute(MACRO_ID_LABEL).Value == macro.MacroId.ToString()))
             {
-                throw new InvalidOperationException("Can't add the same macro twice!");
+                throw new Exception("Can't add the same macro twice!");
             }
             var userActions = macro.GetUserActions();
             var macroXml = new XElement(
                 MACRO_LABEL,
                 new XAttribute(MACRO_ID_LABEL, macro.MacroId.ToString()),
                 new XAttribute(MACRO_NAME_LABEL, macro.Name),
+                new XAttribute(MACRO_SCREEN_CAPTURE_FOLDER, macro.ScreenCaptureFolder),
                 new XElement(MACRO_DESCRIPTION_LABEL, macro.Description),
                 userActions
                     .Select(action =>
@@ -186,7 +189,6 @@ namespace MacroManager.Core.Data
                         }
                         else if (action is ClickAction)
                         {
-
                             var longClickAction = action as LongClickAction;
                             if (longClickAction != null)
                             {

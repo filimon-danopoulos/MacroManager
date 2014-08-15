@@ -26,15 +26,38 @@ namespace MacroManager.Core.Data
         /// <summary>
         /// The Macro identifier.
         /// </summary>
-        public Guid MacroId { get; private set; }
+        public Guid MacroId
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// The name of this Macro, does not have to be unique.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// The description of the Macro, is not required.
         /// </summary>
-        public string Description { get; set; }
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The root folder where all the screen captures will be placed.
+        /// </summary>
+        public string ScreenCaptureFolder
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -43,33 +66,45 @@ namespace MacroManager.Core.Data
         /// <summary>
         /// Constructor that initializes all the fields and properties with the supplied values.
         /// </summary>
-        public Macro(IList<UserAction> userActions, Guid macroId, string name, string description)
+        public Macro(IList<UserAction> userActions, Guid macroId, string name, string description, string screenCaptureFolder)
         {
             this.userActions = userActions;
             this.MacroId = macroId;
             this.Name = name;
             this.Description = description;
+            this.ScreenCaptureFolder = screenCaptureFolder;
+        }
+
+        public Macro(IList<UserAction> userActions, Guid macroId, string name, string description)
+            : this(userActions, macroId, name, description, "")
+        {
         }
 
         /// <summary>
         /// Constructor that initializes a new Macro with a name, a description and a list of user actions.
         /// Creates a new Guid.
         /// </summary>
-        public Macro(IList<UserAction> userActions, string name, string description) : this (userActions, Guid.NewGuid(), name, description)
+        public Macro(IList<UserAction> userActions, string name, string description)
+            : this(userActions, Guid.NewGuid(), name, description)
         {
-            this.userActions = userActions;
         }
 
         /// <summary>
         /// Constructor that initializes a new Macro with a name and a description. 
         /// Creates a new Guid and empty list of UserActions.
         /// </summary>
-        public Macro(string name, string description) : this(new List<UserAction>(), Guid.NewGuid(), name, description) {}
+        public Macro(string name, string description)
+            : this(new List<UserAction>(), Guid.NewGuid(), name, description)
+        {
+        }
 
         /// <summary>
-        /// Default constructor that initializes a macro with the namem Untitled and no description.
+        /// Default constructor that initializes a macro with the name Untitled and no description.
         /// </summary>
-        public Macro() : this("Untitled", String.Empty) {}
+        public Macro()
+            : this("Untitled", String.Empty)
+        {
+        }
 
         #endregion
 
@@ -84,14 +119,15 @@ namespace MacroManager.Core.Data
             {
                 var x = userAction as ClickAction;
                 Debug.WriteLine(String.Format("x: {0} y: {1}", x.X, x.Y));
-            } 
+            }
             this.userActions.Add(userAction);
         }
 
         /// <summary>
         /// Returns all the UserAction of this Macro.
         /// </summary>
-        public IEnumerable<UserAction> GetUserActions() {
+        public IEnumerable<UserAction> GetUserActions()
+        {
             return this.userActions;
         }
 
