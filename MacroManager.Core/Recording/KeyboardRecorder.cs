@@ -1,4 +1,5 @@
 ﻿using MacroManager.Core.Data.Actions;
+using MacroManager.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

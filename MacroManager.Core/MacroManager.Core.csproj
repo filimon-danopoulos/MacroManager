@@ -64,7 +64,7 @@
     <Compile Include="Playback\VirtualKeyboard.cs" />
     <Compile Include="Playback\VirtualMouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Recording\HookHelper.cs" />
+    <Compile Include="Util\HookHelper.cs" />
     <Compile Include="Recording\IRecorder.cs" />
     <Compile Include="Recording\KeyboardRecorder.cs" />
     <Compile Include="Recording\MouseRecorder.cs" />

@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MacroManager.Core.Recording
+namespace MacroManager.Core.Util
 {
-    internal class HookHelper
+    internal static class HookHelper
     {
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
