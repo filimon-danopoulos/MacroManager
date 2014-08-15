@@ -84,9 +84,9 @@
             this.playbackControll.Name = "playbackControll";
             this.playbackControll.Size = new System.Drawing.Size(964, 588);
             this.playbackControll.TabIndex = 0;
-            this.playbackControll.PlaybackStarted += new System.EventHandler(this.playbackControll_StartPlayback);
-            this.playbackControll.PlaybackStoped += new System.EventHandler(this.playbackControll_StopPlayback);
-            this.playbackControll.PlaybackCanceled += new System.EventHandler(this.playbackControll_CancelPlayback);
+            this.playbackControll.PlaybackStarted += new System.EventHandler(this.playbackControll_PlaybackStarted);
+            this.playbackControll.PlaybackStoped += new System.EventHandler(this.playbackControll_PlaybackStoped);
+            this.playbackControll.PlaybackCanceled += new System.EventHandler(this.playbackControll_PlaybackCanceled);
             this.playbackControll.PlaybackError += new System.EventHandler(this.playbackControll_PlaybackError);
             this.playbackControll.RemoveMacro += new System.EventHandler<MacroManager.WinForms.Playback.RemoveMacroEventArgs>(this.playbackControll_RemoveMacro);
             // 

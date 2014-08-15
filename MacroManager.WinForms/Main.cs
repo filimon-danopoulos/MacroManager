@@ -92,7 +92,7 @@ namespace MacroManager
         
         #endregion
 
-        #region Eventhandlers
+        #region Event Handlers
 
         #region Toolstrip
 
@@ -159,30 +159,34 @@ namespace MacroManager
 
         #region Playback Controll
 
-        private void playbackControll_StartPlayback(object sender, EventArgs e)
+        private void playbackControll_PlaybackStarted(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Minimized;
             this.statusMessage.Text = "Playing Macro...";
         }
 
-        private void playbackControll_StopPlayback(object sender, EventArgs e)
+        private void playbackControll_PlaybackStoped(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Normal;
             this.statusMessage.Text = "Playback Finished, macro will reset in five seconds.";
         }
 
-        private void playbackControll_CancelPlayback(object sender, EventArgs e)
+        private void playbackControll_PlaybackCanceled(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Normal;
             this.statusMessage.Text = "Playback Canceled!";
+        }
+
+        private void playbackControll_PlaybackError(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            this.statusMessage.Text = "Playback failed!";
         }
 
         private void playbackControll_RemoveMacro(object sender, MacroManager.WinForms.Playback.RemoveMacroEventArgs args)
         {
             this.macroRepository.Remove(args.SelectedMacro);
             this.playbackControll.LoadMacros(this.macroRepository.Read().ToList());
-        }
-
-        private void playbackControll_PlaybackError(object sender, EventArgs e)
-        {
-            this.statusMessage.Text = "Playback failed!";
         }
 
         #endregion
