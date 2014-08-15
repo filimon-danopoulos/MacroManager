@@ -157,7 +157,7 @@ namespace MacroManager.Core.Data
             var root = document.Element(MACRO_ROOT_LABEL);
             if (root.Elements(MACRO_LABEL).Any(x => x.Attribute(MACRO_ID_LABEL).Value == macro.MacroId.ToString()))
             {
-                throw new Exception("Can't add the same macro twice!");
+                throw new InvalidOperationException("Can't add the same macro twice!");
             }
             var userActions = macro.GetUserActions();
             var macroXml = new XElement(
@@ -294,7 +294,6 @@ namespace MacroManager.Core.Data
         }
 
         #endregion
-
 
     }
 }
