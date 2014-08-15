@@ -16,6 +16,7 @@ namespace MacroManager.Core.Data
     public class XmlMacroRepository : IFileMacroRepository
     {
         #region Constants
+
         private const string MACRO_ROOT_LABEL = "macros";
         private const string MACRO_LABEL = "macro";
         private const string MACRO_ID_LABEL = "id";
